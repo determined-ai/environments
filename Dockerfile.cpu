@@ -1,0 +1,65 @@
+FROM ubuntu:18.04
+
+RUN rm -f /etc/apt/sources.list.d/*
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+
+RUN mkdir -p /etc/pedl/conda.d
+RUN mkdir -p /var/run/sshd
+RUN apt-get update \
+	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+		autoconf \
+		automake \
+		autotools-dev \
+		build-essential \
+		ca-certificates \
+		curl \
+		libkrb5-dev \
+		libssl-dev \
+		libtool \
+		git \
+		krb5-user \
+		cmake \
+		g++-4.8 \
+		make \
+		openssh-client \
+		openssh-server \
+		pkg-config \
+		wget \
+	&& rm -rf /var/lib/apt/lists/*
+
+ARG CONDA_DIR="/opt/conda"
+ARG CONDA_INSTALLER="Miniconda3-4.7.10-Linux-x86_64.sh"
+ARG CONDA_MD5="1c945f2b3335c7b2b15130b1b2dc5cf4"
+ARG CONDA_URL="https://repo.continuum.io/miniconda"
+ENV CONDA_DIR="${CONDA_DIR}" PATH="${CONDA_DIR}/bin:${PATH}"
+
+RUN cd /tmp \
+ && mkdir -p "${CONDA_DIR}" \
+ && curl --retry 3 -fsSL -O "${CONDA_URL}/${CONDA_INSTALLER}" \
+ && echo "${CONDA_MD5}  ${CONDA_INSTALLER}" | md5sum -c - \
+ && bash "./${CONDA_INSTALLER}" -u -b -p "${CONDA_DIR}" \
+ && rm -f "./${CONDA_INSTALLER}"
+
+ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
+
+RUN conda install python=3.6
+
+COPY profiler /opt/pedl/profiler
+# Stock pyflame writes stack traces only at the end of the sampling period.
+# Patch pyflame to have a new option that periodically dumps stack traces to
+# facilitate profiling long running programs.
+RUN mkdir -p /build \
+  && cd /build \
+  && curl -fsSL https://github.com/uber/pyflame/archive/v1.6.7.tar.gz | tar xzvf - \
+  && cd /build/pyflame-1.6.7 \
+  && patch -p1 < /opt/pedl/profiler/pyflame-add-output-rate.patch \
+  && patch -p1 < /opt/pedl/profiler/pyflame-fix-for-conda.patch \
+  && ./autogen.sh \
+  && PY36_CFLAGS='-I/opt/conda/include/python3.6m' \
+     PY36_LIBS='-L/opt/conda/lib -lpython3.6m' \
+     ./configure \
+  && make install
+
+COPY files/cpu-requirements.txt files/cpu-requirements.txt
+RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/cpu-requirements.txt
+ENV JUPYTER_CONFIG_DIR=/run/pedl/jupyter/config JUPYTER_CONFIG_DIR=/run/pedl/jupyter/config JUPYTER_DATA_DIR=/run/pedl/jupyter/data JUPYTER_RUNTIME_DIR=/run/pedl/jupyter/runtime

@@ -1,0 +1,129 @@
+diff -ur pyflame/src/prober.cc pyflame.mod/src/prober.cc
+--- pyflame/src/prober.cc	2019-02-12 15:34:24.000000000 -0800
++++ pyflame.mod/src/prober.cc	2019-02-12 15:03:20.000000000 -0800
+@@ -64,6 +64,8 @@
+      "  -x, --exclude-idle       Exclude idle time from statistics\n"
+      "\n"
+      "Advanced Options:\n"
++     "  --output-rate=RATE       Output rate, as a fractional value of seconds "
++     "(default do not output incrementally)\n"
+      "  --abi                    Force a particular Python ABI (26, 34, 36)\n"
+      "  --flamechart             Include timestamps for generating Chrome "
+      "\"flamecharts\"\n");
+@@ -179,6 +181,20 @@
+   }
+ }
+ 
++void Prober::DumpFrames(std::ostream& out, std::vector<FrameTS> &call_stacks,
++    size_t &idle_count, size_t &failed_count) {
++  if (!call_stacks.empty() || idle_count || failed_count) {
++    if (!include_ts_) {
++      PrintFrames(out, call_stacks, idle_count, failed_count, include_line_number_);
++    } else {
++      PrintFramesTS(out, call_stacks, include_line_number_);
++    }
++    call_stacks.clear();
++    idle_count = 0;
++    failed_count = 0;
++  }
++}
++
+ int Prober::ParseOpts(int argc, char **argv) {
+   static const char short_opts[] = "dhno:p:r:s:tvx";
+   static struct option long_opts[] = {
+@@ -192,6 +208,7 @@
+ #endif
+     {"no-line-numbers", no_argument, 0, 'n'},
+     {"output", required_argument, 0, 'o'},
++    {"output-rate", required_argument, 0, 'R'},
+     {"pid", required_argument, 0, 'p'},
+     {"trace", no_argument, 0, 't'},
+     {"flamechart", no_argument, 0, 'T'},
+@@ -262,6 +279,9 @@
+       case 'T':
+         include_ts_ = true;
+         break;
++      case 'R':
++        output_rate_ = std::stod(optarg);
++        break;
+       case 'v':
+         ShowVersion(std::cout);
+         return 0;
+@@ -310,6 +330,7 @@
+                  "see Pyflame issue #99 for details.\n";
+   }
+   interval_ = ToMicroseconds(sample_rate_);
++  output_interval_ = ToMicroseconds(output_rate_);
+   return -1;
+ }
+ 
+@@ -398,7 +419,8 @@
+   size_t idle_count = 0;
+   size_t failed_count = 0;
+   bool check_end = seconds_ >= 0;
+-  auto end = std::chrono::system_clock::now() + ToMicroseconds(seconds_);
++  auto last = std::chrono::system_clock::now();
++  auto end = last + ToMicroseconds(seconds_);
+   for (;;) {
+     auto now = std::chrono::system_clock::now();
+     try {
+@@ -422,6 +444,10 @@
+       if (check_end && (now + interval_ >= end)) {
+         break;
+       }
++      if (output_rate_ && (last + output_interval_ >= now)) {
++        DumpFrames(*out, call_stacks, idle_count, failed_count);
++        last = now;
++      }
+       PtraceCont(pid_);
+       std::this_thread::sleep_for(interval_);
+       PtraceInterrupt(pid_);
+@@ -443,13 +469,8 @@
+     }
+   }
+ finish:
+-  if (!call_stacks.empty() || idle_count || failed_count) {
+-    if (!include_ts_) {
+-      PrintFrames(*out, call_stacks, idle_count, failed_count, include_line_number_);
+-    } else {
+-      PrintFramesTS(*out, call_stacks, include_line_number_);
+-    }
+-  }
++  DumpFrames(*out, call_stacks, idle_count, failed_count);
++
+   return return_code;
+ }
+ 
+diff -ur pyflame/src/prober.h pyflame.mod/src/prober.h
+--- pyflame/src/prober.h	2019-02-12 15:34:24.000000000 -0800
++++ pyflame.mod/src/prober.h	2019-02-12 15:04:11.000000000 -0800
+@@ -39,6 +39,7 @@
+         include_ts_(false),
+         include_line_number_(true),
+         enable_threads_(false),
++        output_rate_(0.0),
+         seconds_(1),
+         sample_rate_(0.01) {}
+   Prober(const Prober &other) = delete;
+@@ -63,9 +64,11 @@
+   bool include_ts_;
+   bool include_line_number_;
+   bool enable_threads_;
++  double output_rate_;
+   double seconds_;
+   double sample_rate_;
+   std::chrono::microseconds interval_;
++  std::chrono::microseconds output_interval_;
+   std::string output_file_;
+   std::string trace_target_;
+ 
+@@ -75,6 +78,9 @@
+ 
+   int DumpStacks(const PyFrob &frobber, std::ostream *out);
+ 
++  void DumpFrames(std::ostream& out, std::vector<FrameTS> &call_stacks,
++      size_t &idle_count, size_t &failed_count);
++
+   inline size_t MaxRetries() const {
+     return trace_ ? MAX_TRACE_RETRIES : MAX_ATTACH_RETRIES;
+   }

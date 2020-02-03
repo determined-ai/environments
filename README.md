@@ -1,2 +1,1 @@
-# environments
-Determined AI public environments
+# Determined AI Public Environments
