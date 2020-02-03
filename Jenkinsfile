@@ -4,9 +4,11 @@ pipeline {
     agent { label 'general' }
     stages {
         stage('Build and Push') {
-            sh "${dockerLogin}"
-            sh "make build"
-            sh "make publish"
+            steps {
+                sh "${dockerLogin}"
+                sh "make build"
+                sh "make publish"
+            }
         }
     }
 }
