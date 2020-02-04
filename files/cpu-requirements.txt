@@ -66,3 +66,4 @@ git+https://github.com/determined-ai/tensorpack.git@0cb4fe8e6e9b7de861c9a1e0d48f
 torch==1.4.0
 torchvision==0.5.0
 jupyterlab==1.0.6
+mlflow==1.6.0
