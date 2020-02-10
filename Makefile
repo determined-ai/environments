@@ -1,4 +1,6 @@
-.PHONY: build publish
+.PHONY: build publish release
+
+VERSION := $(shell cat VERSION)
 
 DOCKER_REGISTRY ?= ""
 
@@ -12,3 +14,7 @@ build:
 publish:
 	docker push $(DOCKER_REGISTRY)$(CPU_IMAGE)
 	docker push $(DOCKER_REGISTRY)$(GPU_IMAGE)
+
+release: PART?=patch
+release:
+	bumpversion --current-version $(VERSION) $(PART)
