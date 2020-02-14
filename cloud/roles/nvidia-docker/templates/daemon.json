@@ -1,0 +1,9 @@
+{
+    "default-runtime": "{{ docker_default_runtime }}",
+    "runtimes": {
+        "nvidia": {
+            "path": "/usr/bin/nvidia-container-runtime",
+            "runtimeArgs": [ ]
+        }
+    }
+}

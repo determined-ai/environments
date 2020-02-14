@@ -1,0 +1,49 @@
+---
+- name: Install boto3 for Python2.
+  become: yes
+  apt:
+    name:
+    - python-boto3
+    state: present
+
+- name: Install gpumon.
+  become: yes
+  copy:
+    mode: 0755
+    src: gpumon
+    dest: /usr/local/bin/gpumon
+
+- name: Install gpumon systemd timer.
+  become: yes
+  template:
+    mode: 0644
+    src: gpumon.timer
+    dest: /etc/systemd/system/gpumon.timer
+
+- name: Install gpumon systemd service.
+  become: yes
+  template:
+    mode: 0644
+    src: gpumon.service
+    dest: /etc/systemd/system/gpumon.service
+
+- name: Ensure gpumon configuration directory
+  become: yes
+  file:
+    path: /etc/systemd/system/gpumon.service.d
+    state: directory
+
+- name: Configure gpumon systemd service.
+  become: yes
+  template:
+    mode: 0644
+    src: 10-namespace.conf
+    dest: /etc/systemd/system/gpumon.service.d/10-namespace.conf
+
+- name: Enable gpumon.
+  become: yes
+  systemd:
+    name: journald-cloudwatch
+    enabled: yes
+    state: started
+    daemon_reload: yes

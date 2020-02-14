@@ -1,0 +1,32 @@
+---
+- name: Install utility packages.
+  become: yes
+  apt:
+    name:
+    - python3-pip
+
+- name: Install Docker Python SDK
+  become: yes
+  pip:
+    name:
+      - docker
+    state: present
+
+- name: Start and enable Docker
+  become: yes
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Pull GPU environment
+  become: yes
+  docker_image:
+    name: "{{ gpu_environment_name }}{{ short_git_hash }}"
+    source: pull
+
+- name: Pull CPU environment
+  become: yes
+  docker_image:
+    name: "{{ cpu_environment_name }}{{ short_git_hash }}"
+    source: pull

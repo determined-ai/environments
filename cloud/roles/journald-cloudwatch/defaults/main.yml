@@ -1,0 +1,2 @@
+---
+journald_cloudwatch_log_group: /determined/pedl/journald

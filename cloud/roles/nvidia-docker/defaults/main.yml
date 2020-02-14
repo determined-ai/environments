@@ -1,0 +1,3 @@
+---
+# Nvidia Settings
+docker_default_runtime: nvidia

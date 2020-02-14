@@ -1,0 +1,30 @@
+---
+- name: Install systemd-cloud-watch.
+  become: yes
+  get_url:
+    url: "https://github.com/advantageous/systemd-cloud-watch/releases/download/v0.2.1/systemd-cloud-watch_linux"
+    dest: "/usr/local/bin/journald-cloudwatch"
+    checksum: "sha256:ef14f622d96ab5bc5c8470414b9f1543dfc2386d65829bffe16acfb8f667a709"
+    mode: 0755
+
+- name: Install journald-cloudwatch config.
+  become: yes
+  template:
+    mode: 0644
+    src: journald-cloudwatch.conf
+    dest: /etc/journald-cloudwatch.conf
+
+- name: Install journald-cloudwatch systemd service.
+  become: yes
+  template:
+    mode: 0644
+    src: journald-cloudwatch.service
+    dest: /etc/systemd/system/journald-cloudwatch.service
+
+- name: Enable journald-cloudwatch.
+  become: yes
+  systemd:
+    name: journald-cloudwatch
+    enabled: yes
+    state: started
+    daemon_reload: yes

@@ -1,0 +1,97 @@
+{
+  "variables": {
+    "aws_access_key_id": "{{ env `AWS_ACCESS_KEY_ID` }}",
+    "aws_secret_access_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
+    "aws_base_image": "ami-79873901",
+    "gcp_base_image": "ubuntu-1604-xenial-v20190628",
+    "image_description": "PEDL environments",
+    "gpu_environment_name": "{{ env `GPU_ENVIRONMENT_NAME` }}",
+    "cpu_environment_name": "{{ env `CPU_ENVIRONMENT_NAME` }}",
+    "short_git_hash": "{{ env `short_git_hash` }}",
+    "image_suffix": ""
+  },
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done"
+      ]
+    },
+    {
+      "type": "ansible",
+      "playbook_file": "environments-playbook.yml",
+      "extra_arguments": [
+        "--verbose",
+        "-e ansible_python_interpreter=/usr/bin/python3",
+        "-e linux_kernel_suffix=aws",
+        "-e build_type={{ build_type }}",
+        "-e gpu_environment_name={{ user `gpu_environment_name` }}",
+        "-e cpu_environment_name={{ user `cpu_environment_name` }}",
+        "-e short_git_hash={{ user `short_git_hash` }}"
+      ],
+      "user": "ubuntu",
+      "only": ["amazon-ebs"]
+    },
+    {
+      "type": "ansible",
+      "playbook_file": "environments-playbook.yml",
+      "extra_arguments": [
+        "--verbose",
+        "-e ansible_python_interpreter=/usr/bin/python3",
+        "-e linux_kernel_suffix=gcp",
+        "-e build_type={{ build_type }}",
+        "-e gpu_environment_name={{ user `gpu_environment_name` }}",
+        "-e cpu_environment_name={{ user `cpu_environment_name` }}",
+        "-e short_git_hash={{ user `short_git_hash` }}"
+      ],
+      "user": "ubuntu",
+      "only": ["googlecompute"]
+    },
+    {
+      "type": "shell",
+      "expect_disconnect": true,
+      "inline": ["sudo reboot"]
+    }
+  ],
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{ user `aws_access_key_id` }}",
+      "secret_key": "{{ user `aws_secret_access_key` }}",
+      "region": "us-west-2",
+      "ami_regions": ["us-east-1"],
+      "source_ami": "{{ user `aws_base_image`}}",
+      "instance_type": "p2.xlarge",
+      "ssh_username": "ubuntu",
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_size": 100,
+          "volume_type": "gp2",
+          "delete_on_termination": true
+        }
+      ],
+      "run_tags": {
+        "managed-by": "packer"
+      },
+      "ami_name": "pedl-environments-{{ user `image_suffix` }}",
+      "ami_description": "{{ user `image_description` }}",
+      "ami_groups": ["all"]
+    },
+    {
+      "type": "googlecompute",
+      "project_id": "determined-ai",
+      "source_image": "{{ user `gcp_base_image`}}",
+      "ssh_username": "packer",
+      "zone": "us-west1-b",
+      "disk_size": 100,
+      "on_host_maintenance": "TERMINATE",
+      "machine_type": "n1-standard-1",
+      "accelerator_type": "zones/us-west1-b/acceleratorTypes/nvidia-tesla-k80",
+      "accelerator_count": 1,
+      "state_timeout": "10m",
+      "image_name": "pedl-environments-{{ user `image_suffix` }}",
+      "image_description": "{{ user `image_description` }}"
+    }
+  ]
+}

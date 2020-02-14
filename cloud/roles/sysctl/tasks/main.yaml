@@ -1,0 +1,16 @@
+---
+- name: Configure TCP.
+  become: yes
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+  with_items:
+  - name: net.ipv4.tcp_keepalive_intvl
+    value: 30
+  - name: net.ipv4.tcp_keepalive_time
+    value: 600
+  - name: net.ipv4.tcp_keepalive_probes
+    value: 3
+  - name: net.ipv4.tcp_fin_timeout
+    value: 10

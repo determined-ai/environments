@@ -1,0 +1,24 @@
+---
+- name: Update apt-get.
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: Install utility packages.
+  become: yes
+  apt:
+    name:
+    - curl
+    - git
+    - htop
+    - iftop
+    - iotop
+    - lsof
+    - net-tools
+    - screen
+    - tmux
+    - tree
+    - unzip
+    - wget
+    - zip
+    state: present
