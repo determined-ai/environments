@@ -1,0 +1,25 @@
+---
+- name: Hold linux kernel.
+  become: yes
+  dpkg_selections:
+    name: linux-{{ linux_kernel_suffix }}
+    selection: hold
+
+- name: Hold linux headers.
+  become: yes
+  dpkg_selections:
+    name: linux-image-{{ linux_kernel_suffix }}
+    selection: hold
+
+- name: Hold linux image.
+  become: yes
+  dpkg_selections:
+    name: linux-headers-{{ linux_kernel_suffix }}
+    selection: hold
+
+- name: Disable unattended upgrades.
+  become: yes
+  systemd:
+    name: unattended-upgrades
+    state: stopped
+    enabled: no

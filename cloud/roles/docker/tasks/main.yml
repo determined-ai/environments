@@ -1,0 +1,54 @@
+---
+- name: Remove old version of docker.
+  become: yes
+  apt:
+    name:
+    - docker
+    - docker-engine
+    - docker.io
+    state: absent
+
+- name: Add Docker apt key.
+  become: yes
+  apt_key:
+    url: https://download.docker.com/linux/{{ ansible_distribution|lower }}/gpg
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    state: present
+
+- name: Add Docker apt repository.
+  become: yes
+  apt_repository:
+    repo: deb https://download.docker.com/linux/{{ ansible_distribution|lower }} {{ ansible_distribution_release }} stable
+    filename: docker
+    state: present
+    update_cache: yes
+
+- name: Install Docker dependencies.
+  become: yes
+  apt:
+    name:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    state: present
+
+- name: Install docker-ce.
+  become: yes
+  apt:
+    name: docker-ce
+    state: present
+
+- name: Install docker-ce-cli.
+  become: yes
+  apt:
+    name: docker-ce-cli
+    force: yes
+    state: present
+
+- name: Add current user "{{ ansible_user }}" to docker group.
+  become: yes
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes

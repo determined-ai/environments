@@ -1,0 +1,12 @@
+[Unit]
+Description=Periodically upload GPU metrics
+Requires=network.target
+After=network.target
+
+[Timer]
+OnActiveSec=5s
+OnUnitActiveSec=5s
+Unit=gpumon.service
+
+[Install]
+WantedBy=multi-user.target

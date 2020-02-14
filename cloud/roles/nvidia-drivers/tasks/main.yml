@@ -1,0 +1,32 @@
+---
+- name: Install gcc.
+  become: yes
+  apt:
+    name: gcc
+    update_cache: yes
+
+- name: Install make.
+  become: yes
+  apt:
+    name: make
+
+- name: Download NVIDIA drivers.
+  become: yes
+  get_url:
+    url: "{{ driver_url }}"
+    dest: "/tmp/{{ driver_script_name }}"
+
+- name: Run NVIDIA driver install.
+  become: yes
+  command: "sh /tmp/{{ driver_script_name }} --no-questions --ui=none"
+
+- name: Unarchive NVIDIA Persistence Daemon.
+  become: yes
+  unarchive:
+    src: /usr/share/doc/NVIDIA_GLX-1.0/sample/nvidia-persistenced-init.tar.bz2
+    dest: /tmp
+    remote_src: yes
+
+- name: Install NVIDIA Persistence Daemon.
+  become: yes
+  command: sh /tmp/nvidia-persistenced-init/install.sh

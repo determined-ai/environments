@@ -1,0 +1,5 @@
+---
+# NVIDIA Driver Settings
+driver_version: "410.104"
+driver_script_name: "NVIDIA-Linux-x86_64-{{ driver_version }}.run"
+driver_url: "http://us.download.nvidia.com/XFree86/Linux-x86_64/{{ driver_version }}/{{ driver_script_name }}"
