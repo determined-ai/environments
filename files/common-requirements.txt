@@ -1,0 +1,8 @@
+boto3>=1.9.220
+google-cloud-storage>=1.20.0
+hdfs>=2.2.2
+lomond==0.3.3
+pathspec>=0.6.0
+requests>=2.20.0
+ruamel.yaml>=0.15.78
+simplejson==3.16.0
