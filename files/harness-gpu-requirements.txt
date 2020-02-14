@@ -13,4 +13,4 @@ simplejson==3.16.0
 torch==1.4.0+cu100
 torchvision==0.5.0+cu100
 GPUtil
-tensorflow-gpu==1.14.0
+tensorflow-gpu==1.15.2
