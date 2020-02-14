@@ -60,6 +60,10 @@ RUN mkdir -p /build \
      ./configure \
   && make install
 
-COPY files/cpu-requirements.txt files/cpu-requirements.txt
-RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/cpu-requirements.txt
+COPY files/common-requirements.txt files/common-requirements.txt
+RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/common-requirements.txt
+COPY files/harness-cpu-requirements.txt files/harness-cpu-requirements.txt
+RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/harness-cpu-requirements.txt
+COPY files/cli-requirements.txt files/cli-requirements.txt
+RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/cli-requirements.txt
 ENV JUPYTER_CONFIG_DIR=/run/pedl/jupyter/config JUPYTER_CONFIG_DIR=/run/pedl/jupyter/config JUPYTER_DATA_DIR=/run/pedl/jupyter/data JUPYTER_RUNTIME_DIR=/run/pedl/jupyter/runtime
