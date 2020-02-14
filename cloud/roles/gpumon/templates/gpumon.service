@@ -1,0 +1,8 @@
+[Unit]
+Description=Collect GPU metrics
+
+[Service]
+User=nobody
+Group=nogroup
+Type=oneshot
+ExecStart=/usr/local/bin/gpumon

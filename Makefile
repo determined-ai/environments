@@ -1,29 +1,37 @@
-.PHONY: build publish release
+.PHONY: build publish-dev publish release
 
 VERSION := $(shell cat VERSION)
+VERSION_DASHES := $(subst .,-,$(VERSION))
+SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
 
-DOCKER_REGISTRY ?= ""
+export CPU_ENVIRONMENT_NAME := determinedai/environments:py-3.6.9-pytorch-1.4-tf-1.14-cpu
+export GPU_ENVIRONMENT_NAME := determinedai/environments:cuda-10-py-3.6.9-pytorch-1.4-tf-1.14-gpu
 
-CPU_IMAGE=determinedai/environments:py-3.6.9-pytorch-1.4-tf-1.14-cpu
-GPU_IMAGE=determinedai/environments:cuda-10-py-3.6.9-pytorch-1.4-tf-1.14-gpu
-CPU_IMAGE_VERSIONED=$(CPU_IMAGE)-$(VERSION)
-GPU_IMAGE_VERSIONED=$(GPU_IMAGE)-$(VERSION)
+# Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
+# waiting for AMI availablity. Bump to 180 attempts = 45 minutes.
+export AWS_MAX_ATTEMPTS=180
 
 build:
 	docker build -f Dockerfile.cpu \
-		-t $(DOCKER_REGISTRY)$(CPU_IMAGE) \
-		-t $(DOCKER_REGISTRY)$(CPU_IMAGE_VERSIONED) \
+		-t $(CPU_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(CPU_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 	docker build -f Dockerfile.gpu \
-		-t $(DOCKER_REGISTRY)$(GPU_IMAGE) \
-		-t $(DOCKER_REGISTRY)$(GPU_IMAGE_VERSIONED) \
+		-t $(GPU_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(GPU_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
+publish-dev:
+	docker push $(CPU_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+	docker push $(GPU_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+	cd cloud && packer build -var "image_suffix=$(SHORT_GIT_HASH)" environments-packer.json
+
 publish:
-	docker push $(DOCKER_REGISTRY)$(CPU_IMAGE)
-	docker push $(DOCKER_REGISTRY)$(CPU_IMAGE_VERSIONED)
-	docker push $(DOCKER_REGISTRY)$(GPU_IMAGE)
-	docker push $(DOCKER_REGISTRY)$(GPU_IMAGE_VERSIONED)
+	docker push $(CPU_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+	docker push $(GPU_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+	docker push $(CPU_ENVIRONMENT_NAME)-$(VERSION)
+	docker push $(GPU_ENVIRONMENT_NAME)-$(VERSION)
+	cd cloud && packer build -var "image_suffix=$(VERSION_DASHES)" environments-packer.json
 
 release: PART?=patch
 release:

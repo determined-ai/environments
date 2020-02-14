@@ -1,0 +1,12 @@
+---
+- name: Agent Base Environment
+  hosts: all
+  roles:
+    - { role: prevent-kernel-upgrades, tags: "prevent-kernel-upgrades" }
+    - { role: utilities, tags: "utilities" }
+    - { role: nvidia-drivers, tags: "nvidia-drivers" }
+    - { role: docker, tags: "docker" }
+    - { role: nvidia-docker, tags: "nvidia-docker" }
+    - { role: journald-cloudwatch, tags: "journald-cloudwatch", when: "build_type == 'amazon-ebs'"}
+    - { role: gpumon, tags: "gpumon", when: "build_type == 'amazon-ebs'"}
+    - { role: environments, tags: "nvidia-docker" }

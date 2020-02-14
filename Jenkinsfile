@@ -1,13 +1,17 @@
-dockerLogin = "\$(AWS_DEFAULT_REGION=\$(ec2metadata --availability-zone | sed 's/.\$//') aws ecr get-login --no-include-email)"
-
 pipeline {
     agent { label 'general' }
+    environment {
+        GOOGLE_APPLICATION_CREDENTIALS = "/home/ubuntu/gcp-creds.json"
+    }
     stages {
         stage('Build and Push') {
             steps {
-                sh "${dockerLogin}"
                 sh "make build"
-                sh "make publish"
+                // Install ansible onto AMI.
+                sh 'virtualenv --python="$(command -v python3.6)" --no-site-packages venv'
+                sh "venv/bin/python -m pip install ansible"
+                sh "cat /home/ubuntu/docker-hub-password.txt | docker login -u determinedaidev --password-stdin"
+                sh ". venv/bin/activate && make publish-dev"
             }
         }
     }

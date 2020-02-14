@@ -1,0 +1,119 @@
+#!/usr/bin/env python
+
+import argparse
+import boto3
+import os
+import subprocess
+import urllib2
+
+# Storage resolution (between 1-60). 60 is for a low-resolution metric, which
+# is stored per minute.
+RESOLUTION = 60
+
+# Instance information
+BASE_URL = "http://169.254.169.254/latest/meta-data/"
+INSTANCE_ID = urllib2.urlopen(BASE_URL + "instance-id").read()
+IMAGE_ID = urllib2.urlopen(BASE_URL + "ami-id").read()
+INSTANCE_TYPE = urllib2.urlopen(BASE_URL + "instance-type").read()
+INSTANCE_AZ = urllib2.urlopen(BASE_URL + "placement/availability-zone").read()
+EC2_REGION = INSTANCE_AZ[:-1]
+
+
+class GPUMetrics:
+    def __init__(self, gpu_index, power_draw, temperature, gpu_utilization, memory_utilization):
+        """
+        Args:
+            gpu_index: index of GPU on machine
+            power_draw: in Watts
+            temperature: in degrees Celsius
+            gpu_utilization:
+            memory_utilization:
+        """
+        self.gpu_index = gpu_index
+        self.power_draw = power_draw
+        self.temperature = temperature
+        self.gpu_utilization = gpu_utilization
+        self.memory_utilization = memory_utilization
+
+
+def get_metrics_list():
+    output = subprocess.check_output(
+        [
+            "nvidia-smi",
+            "--format=csv,noheader,nounits",
+            "--query-gpu=power.draw,temperature.gpu,utilization.gpu,utilization.memory",
+        ]
+    )
+    metrics_list = []
+    for idx, line in enumerate(output.split("\n")):
+        if not line:
+            continue
+        words = line.split(",")
+        m = GPUMetrics(
+            gpu_index=idx,
+            power_draw=float(words[0]),
+            temperature=float(words[1]),
+            gpu_utilization=float(words[2]),
+            memory_utilization=float(words[3]),
+        )
+        metrics_list.append(m)
+    return metrics_list
+
+
+def log_metrics_list(cloudwatch, metrics_list, namespace, resolution):
+    for metrics in metrics_list:
+        dim = [
+            {"Name": "InstanceId", "Value": INSTANCE_ID},
+            {"Name": "ImageId", "Value": IMAGE_ID},
+            {"Name": "InstanceType", "Value": INSTANCE_TYPE},
+            {"Name": "GPUNumber", "Value": str(metrics.gpu_index)},
+        ]
+
+        cloudwatch.put_metric_data(
+            MetricData=[
+                {
+                    "MetricName": "GPU Usage",
+                    "Dimensions": dim,
+                    "Unit": "Percent",
+                    "Value": metrics.gpu_utilization,
+                },
+                {
+                    "MetricName": "Memory Usage",
+                    "Dimensions": dim,
+                    "Unit": "Percent",
+                    "Value": metrics.memory_utilization,
+                },
+                {
+                    "MetricName": "Power Usage (Watts)",
+                    "Dimensions": dim,
+                    "Unit": "None",
+                    "Value": metrics.power_draw,
+                },
+                {
+                    "MetricName": "Temperature (C)",
+                    "Dimensions": dim,
+                    "Unit": "None",
+                    "Value": metrics.temperature,
+                },
+            ],
+            Namespace=namespace,
+        )
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--namespace",
+        default=os.environ.get("GPUMON_NAMESPACE", "gpu"),
+        help="metric namespace to write to",
+    )
+    args = parser.parse_args()
+
+    cloudwatch = boto3.client("cloudwatch", region_name=EC2_REGION)
+
+    metrics_list = get_metrics_list()
+    log_metrics_list(cloudwatch, metrics_list, args.namespace, RESOLUTION)
+
+
+if __name__ == "__main__":
+    main()
