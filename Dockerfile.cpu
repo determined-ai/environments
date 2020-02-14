@@ -66,4 +66,6 @@ COPY files/harness-cpu-requirements.txt files/harness-cpu-requirements.txt
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/harness-cpu-requirements.txt
 COPY files/cli-requirements.txt files/cli-requirements.txt
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/cli-requirements.txt
+COPY files/additional-requirements.txt files/additional-requirements.txt
+RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/additional-requirements.txt
 ENV JUPYTER_CONFIG_DIR=/run/pedl/jupyter/config JUPYTER_CONFIG_DIR=/run/pedl/jupyter/config JUPYTER_DATA_DIR=/run/pedl/jupyter/data JUPYTER_RUNTIME_DIR=/run/pedl/jupyter/runtime
