@@ -68,6 +68,8 @@ COPY files/harness-gpu-requirements.txt files/harness-gpu-requirements.txt
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/harness-gpu-requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
 COPY files/cli-requirements.txt files/cli-requirements.txt
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/cli-requirements.txt
+COPY files/additional-requirements.txt files/additional-requirements.txt
+RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/additional-requirements.txt
 COPY patches/. /opt/pedl/patches/.
 RUN cd ${CONDA_DIR}/lib/python3.6/site-packages/tensorflow && find /opt/pedl/patches -name "tf1.14*" -print0 | xargs -0 -n 1 patch -p1 -i
 RUN TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5" pip install --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" git+https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061
