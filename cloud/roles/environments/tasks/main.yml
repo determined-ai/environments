@@ -22,11 +22,11 @@
 - name: Pull GPU environment
   become: yes
   docker_image:
-    name: "{{ gpu_environment_name }}{{ short_git_hash }}"
+    name: "{{ gpu_environment_name }}{{ image_suffix }}"
     source: pull
 
 - name: Pull CPU environment
   become: yes
   docker_image:
-    name: "{{ cpu_environment_name }}{{ short_git_hash }}"
+    name: "{{ cpu_environment_name }}{{ image_suffix }}"
     source: pull
