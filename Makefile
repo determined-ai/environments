@@ -24,14 +24,14 @@ build:
 publish-dev:
 	docker push $(CPU_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
 	docker push $(GPU_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
-	cd cloud && packer build -var "image_suffix=$(SHORT_GIT_HASH)" environments-packer.json
+	cd cloud && packer build -var "image_suffix=-$(SHORT_GIT_HASH)" environments-packer.json
 
 publish:
 	docker push $(CPU_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
 	docker push $(GPU_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
 	docker push $(CPU_ENVIRONMENT_NAME)-$(VERSION)
 	docker push $(GPU_ENVIRONMENT_NAME)-$(VERSION)
-	cd cloud && packer build -var "image_suffix=$(VERSION_DASHES)" environments-packer.json
+	cd cloud && packer build -var "image_suffix=-$(VERSION_DASHES)" environments-packer.json
 
 release: PART?=patch
 release:

@@ -27,7 +27,8 @@
         "-e build_type={{ build_type }}",
         "-e gpu_environment_name={{ user `gpu_environment_name` }}",
         "-e cpu_environment_name={{ user `cpu_environment_name` }}",
-        "-e short_git_hash={{ user `short_git_hash` }}"
+        "-e short_git_hash={{ user `short_git_hash` }}",
+        "-e image_suffix={{ user `image_suffix` }}"
       ],
       "user": "ubuntu",
       "only": ["amazon-ebs"]
@@ -42,7 +43,8 @@
         "-e build_type={{ build_type }}",
         "-e gpu_environment_name={{ user `gpu_environment_name` }}",
         "-e cpu_environment_name={{ user `cpu_environment_name` }}",
-        "-e short_git_hash={{ user `short_git_hash` }}"
+        "-e short_git_hash={{ user `short_git_hash` }}",
+        "-e image_suffix={{ user `image_suffix` }}"
       ],
       "user": "ubuntu",
       "only": ["googlecompute"]
@@ -74,7 +76,7 @@
       "run_tags": {
         "managed-by": "packer"
       },
-      "ami_name": "pedl-environments-{{ user `image_suffix` }}",
+      "ami_name": "pedl-environments{{ user `image_suffix` }}",
       "ami_description": "{{ user `image_description` }}",
       "ami_groups": ["all"]
     },
@@ -90,7 +92,7 @@
       "accelerator_type": "zones/us-west1-b/acceleratorTypes/nvidia-tesla-k80",
       "accelerator_count": 1,
       "state_timeout": "10m",
-      "image_name": "pedl-environments-{{ user `image_suffix` }}",
+      "image_name": "pedl-environments{{ user `image_suffix` }}",
       "image_description": "{{ user `image_description` }}"
     }
   ]
