@@ -19,14 +19,26 @@
     state: started
     enabled: yes
 
-- name: Pull GPU environment
+- name: Pull tf1 GPU environment
   become: yes
   docker_image:
-    name: "{{ gpu_environment_name }}{{ image_suffix }}"
+    name: "{{ gpu_tf1_environment_name }}{{ image_suffix }}"
     source: pull
 
-- name: Pull CPU environment
+- name: Pull tf1 CPU environment
   become: yes
   docker_image:
-    name: "{{ cpu_environment_name }}{{ image_suffix }}"
+    name: "{{ cpu_tf1_environment_name }}{{ image_suffix }}"
+    source: pull
+
+- name: Pull TF2 GPU environment
+  become: yes
+  docker_image:
+    name: "{{ gpu_tf2_environment_name }}{{ image_suffix }}"
+    source: pull
+
+- name: Pull TF2 CPU environment
+  become: yes
+  docker_image:
+    name: "{{ cpu_tf2_environment_name }}{{ image_suffix }}"
     source: pull
