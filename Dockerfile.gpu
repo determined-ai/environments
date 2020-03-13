@@ -67,10 +67,20 @@ RUN apt-get install apt-transport-https ca-certificates gnupg -y
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
 RUN apt-get update -y && apt-get install google-cloud-sdk -y
 
+ARG TENSORFLOW_PIP
+ARG TORCH_PIP
+ARG TORCHVISION_PIP
+ARG TENSORPACK_PIP
+RUN if [ $TENSORFLOW_PIP ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TENSORFLOW_PIP; fi
+RUN if [ $TORCH_PIP ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TORCH_PIP; fi
+RUN if [ $TORCHVISION_PIP ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TORCHVISION_PIP; fi
+RUN if [ $TENSORPACK_PIP ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TENSORPACK_PIP; fi
+RUN ${CONDA_DIR}/bin/python3.6 -m pip install GPUtil
+
 COPY files/common-requirements.txt files/common-requirements.txt
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/common-requirements.txt
-COPY files/harness-gpu-requirements.txt files/harness-gpu-requirements.txt
-RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/harness-gpu-requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
+COPY files/harness-requirements.txt files/harness-requirements.txt
+RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/harness-requirements.txt
 COPY files/cli-requirements.txt files/cli-requirements.txt
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/cli-requirements.txt
 COPY files/additional-requirements.txt files/additional-requirements.txt
