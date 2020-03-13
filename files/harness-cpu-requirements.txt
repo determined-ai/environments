@@ -5,6 +5,7 @@ h5py>=2.9.0
 lomond==0.3.3
 matplotlib
 packaging==19.0
+mlflow==1.6.0
 numpy>=1.16.2
 psutil
 pyzmq==18.1.0
