@@ -1,4 +1,4 @@
-.PHONY: build build-cpu build-gpu publish-dev publish release
+.PHONY: build publish-dev publish release
 
 VERSION := $(shell cat VERSION)
 VERSION_DASHES := $(subst .,-,$(VERSION))
@@ -11,9 +11,7 @@ export GPU_ENVIRONMENT_NAME := determinedai/environments:cuda-10-py-3.6.9-pytorc
 # waiting for AMI availablity. Bump to 180 attempts = 45 minutes.
 export AWS_MAX_ATTEMPTS=180
 
-build: build-cpu build-gpu
-
-build-cpu:
+build:
 	docker build -f Dockerfile.cpu \
 		--build-arg TENSORFLOW_PIP="tensorflow==1.14.0" \
 		--build-arg TORCH_PIP="torch==1.4.0" \
@@ -22,8 +20,6 @@ build-cpu:
 		-t $(CPU_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(CPU_ENVIRONMENT_NAME)-$(VERSION) \
 		.
-
-build-gpu:
 	docker build -f Dockerfile.gpu \
 		--build-arg TENSORFLOW_PIP="tensorflow==1.14.0" \
 		--build-arg TORCH_PIP="torch==1.4.0+cu100 -f https://download.pytorch.org/whl/torch_stable.html" \
