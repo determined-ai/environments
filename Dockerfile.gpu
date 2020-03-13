@@ -71,10 +71,10 @@ ARG TENSORFLOW_PIP
 ARG TORCH_PIP
 ARG TORCHVISION_PIP
 ARG TENSORPACK_PIP
-RUN if [ $TENSORFLOW_PIP ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TENSORFLOW_PIP; fi
-RUN if [ $TORCH_PIP ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TORCH_PIP; fi
-RUN if [ $TORCHVISION_PIP ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TORCHVISION_PIP; fi
-RUN if [ $TENSORPACK_PIP ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TENSORPACK_PIP; fi
+RUN if [ "$TENSORFLOW_PIP" ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TENSORFLOW_PIP; fi
+RUN if [ "$TORCH_PIP" ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TORCH_PIP; fi
+RUN if [ "$TORCHVISION_PIP" ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TORCHVISION_PIP; fi
+RUN if [ "$TENSORPACK_PIP" ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TENSORPACK_PIP; fi
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install GPUtil
 
 COPY patches/. /opt/pedl/patches/.
