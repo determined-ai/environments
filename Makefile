@@ -29,6 +29,8 @@ build:
 		.
 	docker build -f Dockerfile.cpu \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.1.0" \
+		--build-arg TORCH_PIP="torch==1.4.0" \
+		--build-arg TORCHVISION_PIP="torchvision==0.5.0" \
 		-t $(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		.
