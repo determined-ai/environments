@@ -95,7 +95,7 @@ RUN git clone https://github.com/determined-ai/nccl.git /tmp/pedl_nccl\
  && (cd /tmp/pedl_nccl && git checkout -q 750520b1f458b6612955f23e0a0a40dc3e0856bd)\
  && make -C /tmp/pedl_nccl -j 4\
  && ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs \
- && pip install --no-cache-dir git+https://github.com/determined-ai/horovod.git@4e58583c0ec3293d97e8c5332b62477e71d784b7\
+ && pip install --no-cache-dir git+https://github.com/determined-ai/horovod.git@348aa11b04257b10a75c952b678ecdb618d56b51\
  && ldconfig\
  && rm -rf /tmp/pedl_nccl
 
