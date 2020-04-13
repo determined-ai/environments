@@ -1,8 +1,0 @@
-argcomplete==1.9.4
-gitpython==2.1.11
-packaging==19.0
-python-dateutil==2.8.0
-requests>=2.20.0
-ruamel.yaml>=0.15.78
-tabulate>=0.8.3
-termcolor==1.1.0
