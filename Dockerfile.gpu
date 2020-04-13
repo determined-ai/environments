@@ -99,14 +99,7 @@ RUN git clone https://github.com/determined-ai/nccl.git /tmp/pedl_nccl\
  && ldconfig\
  && rm -rf /tmp/pedl_nccl
 
-COPY files/common-requirements.txt files/common-requirements.txt
-RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/common-requirements.txt
-
-COPY files/harness-requirements.txt files/harness-requirements.txt
-RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/harness-requirements.txt
-
-COPY files/cli-requirements.txt files/cli-requirements.txt
-RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/cli-requirements.txt
+RUN ${CONDA_DIR}/bin/python3.6 -m pip install determined determined-cli
 
 COPY files/additional-requirements.txt files/additional-requirements.txt
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/additional-requirements.txt
