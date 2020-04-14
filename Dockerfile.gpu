@@ -101,6 +101,12 @@ RUN git clone https://github.com/determined-ai/nccl.git /tmp/pedl_nccl\
 
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install determined determined-cli
 
+# We uninstall these packages after installing. This ensures that we can
+# successfully install these packages into containers running as non-root.
+# `pip` does not uninstall dependencies, so we still have all the dependencies
+# installed.
+RUN ${CONDA_DIR}/bin/python3.6 -m pip uninstall -y determined determined-cli determined-common
+
 COPY files/additional-requirements.txt files/additional-requirements.txt
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/additional-requirements.txt
 
