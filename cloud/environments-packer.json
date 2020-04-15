@@ -102,5 +102,11 @@
       "image_name": "pedl-environments{{ user `image_suffix` }}",
       "image_description": "{{ user `image_description` }}"
     }
+  ],
+  "post-processors": [
+    {
+      "type": "shell-local",
+      "scripts": ["./post-process.sh"]
+    }
   ]
 }
