@@ -53,7 +53,7 @@
         "-e image_suffix={{ user `image_suffix` }}"
       ],
       "user": "ubuntu",
-      "only": ["googlecompute"]
+      "only": ["pedl-environments{{ user `image_suffix` }}"]
     },
     {
       "type": "shell",
@@ -88,6 +88,7 @@
     },
     {
       "type": "googlecompute",
+      "name": "pedl-environments{{ user `image_suffix` }}",
       "project_id": "determined-ai",
       "source_image": "{{ user `gcp_base_image`}}",
       "ssh_username": "packer",
