@@ -69,6 +69,6 @@ publish:
 	docker push $(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
 	cd cloud && packer build -var "image_suffix=-$(SHORT_GIT_HASH)" environments-packer.json
 
-release: PART?=patch
+release: PART?=minor
 release:
 	bumpversion --current-version $(VERSION) $(PART)
