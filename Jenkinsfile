@@ -15,7 +15,7 @@ pipeline {
                 sh "curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -"
                 sh "sudo apt-get update && sudo apt-get install -y google-cloud-sdk"
                 sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS} --project=determined-ai"
-                sh ". venv/bin/activate && make publish-dev"
+                sh ". venv/bin/activate && make publish"
             }
         }
     }
