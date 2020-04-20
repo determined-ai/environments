@@ -41,7 +41,6 @@ build:
 		--build-arg TORCH_PIP="torch==1.4.0+cu100 -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.5.0+cu100 -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TENSORPACK_PIP="git+https://github.com/determined-ai/tensorpack.git@0cb4fe8e6e9b7de861c9a1e0d48ffff72b72138a" \
-		--build-arg PATCH_NAME="tf1.14*" \
 		--build-arg HOROVOD_WITH_TENSORFLOW="1" \
 		--build-arg HOROVOD_WITH_PYTORCH="1" \
 		-t $(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
