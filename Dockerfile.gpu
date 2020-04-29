@@ -108,4 +108,4 @@ RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/additional-requirements.t
 
 COPY files/notebook-requirements.txt files/notebook-requirements.txt
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/notebook-requirements.txt
-ENV JUPYTER_CONFIG_DIR=/run/pedl/jupyter/config JUPYTER_DATA_DIR=/run/pedl/jupyter/data JUPYTER_RUNTIME_DIR=/run/pedl/jupyter/runtime
+ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config JUPYTER_DATA_DIR=/run/determined/jupyter/data JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
