@@ -1,5 +1,3 @@
-.PHONY: build publish-dev publish release
-
 VERSION := $(shell cat VERSION)
 VERSION_DASHES := $(subst .,-,$(VERSION))
 SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
@@ -19,7 +17,8 @@ export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_101_PREFIX)pytorch-1.4-tf-2.1$(GPU_SUF
 # waiting for AMI availablity. Bump to 240 attempts = 60 minutes.
 export AWS_MAX_ATTEMPTS=240
 
-build:
+.PHONY: build-tf1-cpu
+build-tf1-cpu:
 	docker build -f Dockerfile.cpu \
 		--build-arg TENSORFLOW_PIP="tensorflow==1.14.0" \
 		--build-arg TORCH_PIP="torch==1.4.0" \
@@ -28,6 +27,9 @@ build:
 		-t $(CPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(CPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
 		.
+
+.PHONY: build-tf2-cpu
+build-tf2-cpu:
 	docker build -f Dockerfile.cpu \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.1.0" \
 		--build-arg TORCH_PIP="torch==1.4.0" \
@@ -35,6 +37,9 @@ build:
 		-t $(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		.
+
+.PHONY: build-tf1-gpu
+build-tf1-gpu:
 	docker build -f Dockerfile.gpu \
 		--build-arg CUDA="10.0" \
 		--build-arg TENSORFLOW_PIP="tensorflow-gpu==1.14.0" \
@@ -46,6 +51,9 @@ build:
 		-t $(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
 		.
+
+.PHONY: build-tf2-gpu
+build-tf2-gpu:
 	docker build -f Dockerfile.gpu \
 		--build-arg CUDA="10.1" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.1.0" \
@@ -57,17 +65,26 @@ build:
 		-t $(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
-publish:
+.PHONY: publish-tf1-cpu
+publish-tf1-cpu:
 	docker push $(CPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
-	docker push $(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
-	docker push $(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
-	docker push $(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
 	docker push $(CPU_TF1_ENVIRONMENT_NAME)-$(VERSION)
-	docker push $(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION)
-	docker push $(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
-	docker push $(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
-	cd cloud && packer build -var "image_suffix=-$(SHORT_GIT_HASH)" environments-packer.json
 
-release: PART?=minor
-release:
-	bumpversion --current-version $(VERSION) $(PART)
+.PHONY: publish-tf2-cpu
+publish-tf2-cpu:
+	docker push $(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+	docker push $(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+
+.PHONY: publish-tf1-gpu
+publish-tf1-gpu:
+	docker push $(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+	docker push $(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION)
+
+.PHONY: publish-tf2-gpu
+publish-tf2-gpu:
+	docker push $(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+	docker push $(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+
+.PHONY: publish-cloud-images
+publish-cloud-images:
+	cd cloud && packer build -var "image_suffix=-$(SHORT_GIT_HASH)" environments-packer.json
