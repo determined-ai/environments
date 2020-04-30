@@ -1,0 +1,92 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+
+orbs:
+  gcp-cli: circleci/gcp-cli@1.8.4
+
+commands:
+  docker-login:
+    steps:
+      - run: echo "${DOCKER_PASS}" | docker login --username ${DOCKER_USER} --password-stdin
+  activate-service-account:
+    steps:
+      - run:
+          name: Activate GCP service account
+          command: |
+              GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcloud-service-key.json
+              echo ${GCLOUD_SERVICE_KEY} > ${GOOGLE_APPLICATION_CREDENTIALS}
+              echo "export GOOGLE_APPLICATION_CREDENTIALS=\"${GOOGLE_APPLICATION_CREDENTIALS}\"" >> $BASH_ENV
+              gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
+
+              gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+              gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+  install-packer:
+    steps:
+      - run:
+          name: Install Packer
+          command: |
+              cd /tmp
+              wget https://releases.hashicorp.com/packer/1.4.5/packer_1.4.5_linux_amd64.zip
+              sudo unzip packer_1.4.5_linux_amd64.zip -d /usr/local/bin
+  install-ansible:
+    steps:
+      - run:
+          name: Install Ansible
+          command: sudo apt-add-repository --yes --update ppa:ansible/ansible && sudo apt install ansible
+
+  install-docker:
+    steps:
+      - run: sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+      - run: sudo systemctl restart docker
+
+
+
+jobs:
+  build-and-publish-docker:
+    parameters:
+      image-type:
+        type: string
+    machine:
+      image: ubuntu-1604:201903-01
+    resource_class: large
+    steps:
+      - checkout
+      - install-docker
+      - docker-login
+      - run: make build-<<parameters.image-type>>
+      - run: make publish-<<parameters.image-type>>
+
+  publish-cloud-images:
+    docker:
+      - image: cimg/python:3.6
+    steps:
+      - checkout
+      - install-packer
+      - gcp-cli/install
+      - activate-service-account
+      - install-ansible
+      - run:
+          no_output_timeout: 60m
+          command: make publish-cloud-images
+
+
+
+workflows:
+  publish:
+    jobs:
+      - build-and-publish-docker:
+          context: determined-production
+          matrix:
+            parameters:
+              image-type: ["tf1-cpu", "tf2-cpu", "tf1-gpu", "tf2-gpu"]
+          filters:
+            branches:
+              only: master
+
+      - publish-cloud-images:
+          context: determined-production
+          requires:
+            - build-and-publish-docker
+          filters:
+            branches:
+              only: master
