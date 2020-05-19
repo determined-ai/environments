@@ -10,8 +10,8 @@ GPU_SUFFIX := -gpu
 
 export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.4-tf-1.14$(CPU_SUFFIX)
 export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_100_PREFIX)pytorch-1.4-tf-1.14$(GPU_SUFFIX)
-export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.4-tf-2.1$(CPU_SUFFIX)
-export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_101_PREFIX)pytorch-1.4-tf-2.1$(GPU_SUFFIX)
+export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.4-tf-2.2$(CPU_SUFFIX)
+export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_101_PREFIX)pytorch-1.4-tf-2.2$(GPU_SUFFIX)
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
 # waiting for AMI availablity. Bump to 240 attempts = 60 minutes.
@@ -31,7 +31,7 @@ build-tf1-cpu:
 .PHONY: build-tf2-cpu
 build-tf2-cpu:
 	docker build -f Dockerfile.cpu \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.1.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.2.0" \
 		--build-arg TORCH_PIP="torch==1.4.0" \
 		--build-arg TORCHVISION_PIP="torchvision==0.5.0" \
 		-t $(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -56,7 +56,7 @@ build-tf1-gpu:
 build-tf2-gpu:
 	docker build -f Dockerfile.gpu \
 		--build-arg CUDA="10.1" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.1.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.2.0" \
 		--build-arg TORCH_PIP="torch==1.4.0" \
 		--build-arg TORCHVISION_PIP="torchvision==0.5.0" \
 		--build-arg HOROVOD_WITH_TENSORFLOW="1" \
