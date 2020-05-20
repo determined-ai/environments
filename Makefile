@@ -14,8 +14,8 @@ export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.4-tf-2.2$(CPU_SUFFIX)
 export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_101_PREFIX)pytorch-1.4-tf-2.2$(GPU_SUFFIX)
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
-# waiting for AMI availablity. Bump to 240 attempts = 60 minutes.
-export AWS_MAX_ATTEMPTS=240
+# waiting for AMI availablity. Bump to 360 attempts = 90 minutes.
+export AWS_MAX_ATTEMPTS=360
 
 .PHONY: build-tf1-cpu
 build-tf1-cpu:
