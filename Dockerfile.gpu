@@ -88,7 +88,7 @@ ARG HOROVOD_WITHOUT_MPI=1
 ARG HOROVOD_NCCL_HOME=/tmp/pedl_nccl/build
 ARG HOROVOD_NCCL_LINK=STATIC
 RUN git clone https://github.com/determined-ai/nccl.git /tmp/pedl_nccl\
- && (cd /tmp/pedl_nccl && git checkout -q 750520b1f458b6612955f23e0a0a40dc3e0856bd)\
+ && (cd /tmp/pedl_nccl && git checkout -q 136b9edbaa8eb5af36db2e0d125fd3e83eec4017)\
  && make -C /tmp/pedl_nccl -j 4\
  && ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs \
  && pip install --no-cache-dir git+https://github.com/determined-ai/horovod.git@76d178303ddcf69e4bbdac48f4e3bc2ed319a4e0\
