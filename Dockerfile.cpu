@@ -84,6 +84,14 @@ RUN ${CONDA_DIR}/bin/python3.6 -m pip uninstall -y determined determined-cli det
 
 COPY files/additional-requirements.txt files/additional-requirements.txt
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/additional-requirements.txt
+
 COPY files/notebook-requirements.txt files/notebook-requirements.txt
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install -r files/notebook-requirements.txt
 ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config JUPYTER_DATA_DIR=/run/determined/jupyter/data JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
+
+# Add a det-nobody user. Unlike the traditional nobody user, det-nobody will
+# have a HOME directory that exists in order to support tools which require a
+# home directory, like gsutil. det-nobody is designed to be an out-of-the-box
+# solution for running workloads in unprivileged containers.
+RUN groupadd --gid 65533 det-nobody \
+  && useradd --create-home --home-dir /tmp/det-nobody --uid 65533 --gid 65533 --shell /bin/bash det-nobody
