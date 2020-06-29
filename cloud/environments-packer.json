@@ -2,8 +2,8 @@
   "variables": {
     "aws_access_key_id": "{{ env `AWS_ACCESS_KEY_ID` }}",
     "aws_secret_access_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
-    "aws_base_image": "ami-79873901",
-    "gcp_base_image": "ubuntu-1604-xenial-v20190628",
+    "aws_base_image": "ami-053bc2e89490c5ab7",
+    "gcp_base_image": "ubuntu-1804-bionic-v20200626",
     "image_description": "PEDL environments",
     "gpu_tf1_environment_name": "{{ env `GPU_TF1_ENVIRONMENT_NAME` }}",
     "cpu_tf1_environment_name": "{{ env `CPU_TF1_ENVIRONMENT_NAME` }}",
