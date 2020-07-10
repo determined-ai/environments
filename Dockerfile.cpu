@@ -95,3 +95,11 @@ ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config JUPYTER_DATA_DIR=/run/dete
 # solution for running workloads in unprivileged containers.
 RUN groupadd --gid 65533 det-nobody \
   && useradd --create-home --home-dir /tmp/det-nobody --uid 65533 --gid 65533 --shell /bin/bash det-nobody
+
+# Add a plugin to the user system that lets us extend the users available in
+# the container at runtime. This is critical for supporting non-root shell,
+# which in turn is critical for non-root distributed training.
+COPY libnss_determined /tmp/libnss_determined
+RUN make -C /tmp/libnss_determined libnss_determined.so.2 install \
+  && rm -rf /tmp/libnss_determined \
+  && sed -E -i -e 's/^((passwd|shadow|group):.*)/\1 determined/' /etc/nsswitch.conf
