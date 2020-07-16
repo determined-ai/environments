@@ -8,8 +8,8 @@ CUDA_100_PREFIX := determinedai/environments:cuda-10.0-
 CUDA_101_PREFIX := determinedai/environments:cuda-10.1-
 GPU_SUFFIX := -gpu
 
-export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.4-tf-1.14$(CPU_SUFFIX)
-export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_100_PREFIX)pytorch-1.4-tf-1.14$(GPU_SUFFIX)
+export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.4-tf-1.15$(CPU_SUFFIX)
+export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_100_PREFIX)pytorch-1.4-tf-1.15$(GPU_SUFFIX)
 export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.4-tf-2.2$(CPU_SUFFIX)
 export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_101_PREFIX)pytorch-1.4-tf-2.2$(GPU_SUFFIX)
 
@@ -20,7 +20,7 @@ export AWS_MAX_ATTEMPTS=360
 .PHONY: build-tf1-cpu
 build-tf1-cpu:
 	docker build -f Dockerfile.cpu \
-		--build-arg TENSORFLOW_PIP="tensorflow==1.14.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow==1.15.0" \
 		--build-arg TORCH_PIP="torch==1.4.0" \
 		--build-arg TORCHVISION_PIP="torchvision==0.5.0" \
 		--build-arg TENSORPACK_PIP="git+https://github.com/determined-ai/tensorpack.git@0cb4fe8e6e9b7de861c9a1e0d48ffff72b72138a" \
@@ -42,7 +42,7 @@ build-tf2-cpu:
 build-tf1-gpu:
 	docker build -f Dockerfile.gpu \
 		--build-arg CUDA="10.0" \
-		--build-arg TENSORFLOW_PIP="tensorflow-gpu==1.14.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow-gpu==1.15.0" \
 		--build-arg TORCH_PIP="torch==1.4.0+cu100 -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.5.0+cu100 -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TENSORPACK_PIP="git+https://github.com/determined-ai/tensorpack.git@0cb4fe8e6e9b7de861c9a1e0d48ffff72b72138a" \
