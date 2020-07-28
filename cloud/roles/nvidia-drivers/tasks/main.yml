@@ -23,7 +23,7 @@
 - name: Unarchive NVIDIA Persistence Daemon.
   become: yes
   unarchive:
-    src: /usr/share/doc/NVIDIA_GLX-1.0/sample/nvidia-persistenced-init.tar.bz2
+    src: /usr/share/doc/NVIDIA_GLX-1.0/samples/nvidia-persistenced-init.tar.bz2
     dest: /tmp
     remote_src: yes
 
