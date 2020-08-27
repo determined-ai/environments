@@ -7,6 +7,7 @@ CPU_SUFFIX := -cpu
 CUDA_100_PREFIX := determinedai/environments:cuda-10.0-
 CUDA_101_PREFIX := determinedai/environments:cuda-10.1-
 GPU_SUFFIX := -gpu
+ARTIFACTS_DIR := /tmp/artifacts
 
 export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.4-tf-1.15$(CPU_SUFFIX)
 export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_100_PREFIX)pytorch-1.4-tf-1.15$(GPU_SUFFIX)
@@ -67,24 +68,23 @@ build-tf2-gpu:
 
 .PHONY: publish-tf1-cpu
 publish-tf1-cpu:
-	docker push $(CPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
-	docker push $(CPU_TF1_ENVIRONMENT_NAME)-$(VERSION)
+	scripts/publish-docker.sh tf1-cpu $(CPU_TF1_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tf2-cpu
 publish-tf2-cpu:
-	docker push $(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
-	docker push $(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+	scripts/publish-docker.sh tf2-cpu $(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tf1-gpu
 publish-tf1-gpu:
-	docker push $(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
-	docker push $(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION)
+	scripts/publish-docker.sh tf1-gpu $(GPU_TF1_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tf2-gpu
 publish-tf2-gpu:
-	docker push $(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
-	docker push $(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+	scripts/publish-docker.sh tf2-gpu $(GPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
 publish-cloud-images:
-	cd cloud && packer build -var "image_suffix=-$(SHORT_GIT_HASH)" environments-packer.json
+	mkdir -p $(ARTIFACTS_DIR)
+	cd cloud \
+		&& packer build -machine-readable -var "image_suffix=-$(SHORT_GIT_HASH)" environments-packer.json \
+		| tee $(ARTIFACTS_DIR)/packer-log

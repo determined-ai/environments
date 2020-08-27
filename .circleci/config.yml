@@ -55,6 +55,8 @@ jobs:
       - docker-login
       - run: make build-<<parameters.image-type>>
       - run: make publish-<<parameters.image-type>>
+      - store_artifacts:
+          path: /tmp/artifacts
 
   publish-cloud-images:
     docker:
@@ -68,6 +70,8 @@ jobs:
       - run:
           no_output_timeout: 60m
           command: make publish-cloud-images
+      - store_artifacts:
+          path: /tmp/artifacts
 
 
 
