@@ -4,7 +4,7 @@ FROM nvidia/cuda:${CUDA}-cudnn7-devel-ubuntu18.04
 RUN rm -f /etc/apt/sources.list.d/*
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
-RUN mkdir -p /etc/pedl/conda.d
+RUN mkdir -p /etc/determined/conda.d
 RUN mkdir -p /var/run/sshd
 RUN apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -47,7 +47,7 @@ ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 
 RUN conda install python=3.6
 
-COPY profiler /opt/pedl/profiler
+COPY profiler /opt/determined/profiler
 # Stock pyflame writes stack traces only at the end of the sampling period.
 # Patch pyflame to have a new option that periodically dumps stack traces to
 # facilitate profiling long running programs.
@@ -55,8 +55,8 @@ RUN mkdir -p /build \
   && cd /build \
   && curl -fsSL https://github.com/uber/pyflame/archive/v1.6.7.tar.gz | tar xzvf - \
   && cd /build/pyflame-1.6.7 \
-  && patch -p1 < /opt/pedl/profiler/pyflame-add-output-rate.patch \
-  && patch -p1 < /opt/pedl/profiler/pyflame-fix-for-conda.patch \
+  && patch -p1 < /opt/determined/profiler/pyflame-add-output-rate.patch \
+  && patch -p1 < /opt/determined/profiler/pyflame-fix-for-conda.patch \
   && ./autogen.sh \
   && PY36_CFLAGS='-I/opt/conda/include/python3.6m' \
      PY36_LIBS='-L/opt/conda/lib -lpython3.6m' \
@@ -85,15 +85,15 @@ ARG HOROVOD_WITH_TENSORFLOW
 ARG HOROVOD_WITH_PYTORCH
 ARG HOROVOD_GPU_ALLREDUCE=NCCL
 ARG HOROVOD_WITHOUT_MPI=1
-ARG HOROVOD_NCCL_HOME=/tmp/pedl_nccl/build
+ARG HOROVOD_NCCL_HOME=/tmp/det_nccl/build
 ARG HOROVOD_NCCL_LINK=STATIC
-RUN git clone https://github.com/determined-ai/nccl.git /tmp/pedl_nccl\
- && (cd /tmp/pedl_nccl && git checkout -q 136b9edbaa8eb5af36db2e0d125fd3e83eec4017)\
- && make -C /tmp/pedl_nccl -j 4\
+RUN git clone https://github.com/determined-ai/nccl.git /tmp/det_nccl\
+ && (cd /tmp/det_nccl && git checkout -q 136b9edbaa8eb5af36db2e0d125fd3e83eec4017)\
+ && make -C /tmp/det_nccl -j 4\
  && ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs \
  && pip install --no-cache-dir git+https://github.com/determined-ai/horovod.git@9664367d2d8e9d1f065030107a595f9de692b6a3\
  && ldconfig\
- && rm -rf /tmp/pedl_nccl
+ && rm -rf /tmp/det_nccl
 
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install determined determined-cli
 

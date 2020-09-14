@@ -4,7 +4,7 @@
     "aws_secret_access_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
     "aws_base_image": "ami-060d1be0dd4526759",
     "gcp_base_image": "ubuntu-1604-xenial-v20200611",
-    "image_description": "PEDL environments",
+    "image_description": "Determined environments",
     "gpu_tf1_environment_name": "{{ env `GPU_TF1_ENVIRONMENT_NAME` }}",
     "cpu_tf1_environment_name": "{{ env `CPU_TF1_ENVIRONMENT_NAME` }}",
     "gpu_tf2_environment_name": "{{ env `GPU_TF2_ENVIRONMENT_NAME` }}",
@@ -53,7 +53,7 @@
         "-e image_suffix={{ user `image_suffix` }}"
       ],
       "user": "ubuntu",
-      "only": ["pedl-environments{{ user `image_suffix` }}"]
+      "only": ["det-environments{{ user `image_suffix` }}"]
     },
     {
       "type": "shell",
@@ -82,13 +82,13 @@
       "run_tags": {
         "managed-by": "packer"
       },
-      "ami_name": "pedl-environments{{ user `image_suffix` }}",
+      "ami_name": "det-environments{{ user `image_suffix` }}",
       "ami_description": "{{ user `image_description` }}",
       "ami_groups": ["all"]
     },
     {
       "type": "googlecompute",
-      "name": "pedl-environments{{ user `image_suffix` }}",
+      "name": "det-environments{{ user `image_suffix` }}",
       "project_id": "determined-ai",
       "source_image": "{{ user `gcp_base_image`}}",
       "ssh_username": "packer",
@@ -99,7 +99,7 @@
       "accelerator_type": "zones/us-west1-b/acceleratorTypes/nvidia-tesla-k80",
       "accelerator_count": 1,
       "state_timeout": "10m",
-      "image_name": "pedl-environments{{ user `image_suffix` }}",
+      "image_name": "det-environments{{ user `image_suffix` }}",
       "image_description": "{{ user `image_description` }}"
     }
   ],
