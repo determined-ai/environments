@@ -67,7 +67,17 @@
       "access_key": "{{ user `aws_access_key_id` }}",
       "secret_key": "{{ user `aws_secret_access_key` }}",
       "region": "us-west-2",
-      "ami_regions": ["us-east-1"],
+      "ami_regions": [
+          "ap-northeast-1",
+          "ap-northeast-2",
+          "ap-southeast-1",
+          "ap-southeast-2",
+          "eu-central-1",
+          "eu-west-1",
+          "eu-west-2",
+          "us-east-1",
+          "us-east-2"
+      ],
       "source_ami": "{{ user `aws_base_image`}}",
       "instance_type": "p2.xlarge",
       "ssh_username": "ubuntu",
