@@ -4,6 +4,11 @@ version: 2.1
 orbs:
   gcp-cli: circleci/gcp-cli@1.8.4
 
+any-upstream-branch: &any-upstream-branch
+  branches:
+    ignore:
+      - /pull\/.*/
+
 commands:
   docker-login:
     steps:
@@ -74,7 +79,6 @@ jobs:
           path: /tmp/artifacts
 
 
-
 workflows:
   publish:
     jobs:
@@ -83,14 +87,10 @@ workflows:
           matrix:
             parameters:
               image-type: ["tf1-cpu", "tf2-cpu", "tf1-gpu", "tf2-gpu"]
-          filters:
-            branches:
-              only: master
+          filters: *any-upstream-branch
 
       - publish-cloud-images:
           context: determined-production
           requires:
             - build-and-publish-docker
-          filters:
-            branches:
-              only: master
+          filters: *any-upstream-branch
