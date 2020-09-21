@@ -25,24 +25,6 @@
       "extra_arguments": [
         "--verbose",
         "-e ansible_python_interpreter=/usr/bin/python3",
-        "-e linux_kernel_suffix=aws",
-        "-e build_type={{ build_type }}",
-        "-e gpu_tf1_environment_name={{ user `gpu_tf1_environment_name` }}",
-        "-e cpu_tf1_environment_name={{ user `cpu_tf1_environment_name` }}",
-        "-e gpu_tf2_environment_name={{ user `gpu_tf2_environment_name` }}",
-        "-e cpu_tf2_environment_name={{ user `cpu_tf2_environment_name` }}",
-        "-e short_git_hash={{ user `short_git_hash` }}",
-        "-e image_suffix={{ user `image_suffix` }}"
-      ],
-      "user": "ubuntu",
-      "only": ["amazon-ebs"]
-    },
-    {
-      "type": "ansible",
-      "playbook_file": "environments-playbook.yml",
-      "extra_arguments": [
-        "--verbose",
-        "-e ansible_python_interpreter=/usr/bin/python3",
         "-e linux_kernel_suffix=gcp",
         "-e build_type={{ build_type }}",
         "-e gpu_tf1_environment_name={{ user `gpu_tf1_environment_name` }}",
@@ -62,40 +44,6 @@
     }
   ],
   "builders": [
-    {
-      "type": "amazon-ebs",
-      "access_key": "{{ user `aws_access_key_id` }}",
-      "secret_key": "{{ user `aws_secret_access_key` }}",
-      "region": "us-west-2",
-      "ami_regions": [
-          "ap-northeast-1",
-          "ap-northeast-2",
-          "ap-southeast-1",
-          "ap-southeast-2",
-          "eu-central-1",
-          "eu-west-1",
-          "eu-west-2",
-          "us-east-1",
-          "us-east-2"
-      ],
-      "source_ami": "{{ user `aws_base_image`}}",
-      "instance_type": "p2.xlarge",
-      "ssh_username": "ubuntu",
-      "launch_block_device_mappings": [
-        {
-          "device_name": "/dev/sda1",
-          "volume_size": 100,
-          "volume_type": "gp2",
-          "delete_on_termination": true
-        }
-      ],
-      "run_tags": {
-        "managed-by": "packer"
-      },
-      "ami_name": "det-environments{{ user `image_suffix` }}",
-      "ami_description": "{{ user `image_description` }}",
-      "ami_groups": ["all"]
-    },
     {
       "type": "googlecompute",
       "name": "det-environments{{ user `image_suffix` }}",

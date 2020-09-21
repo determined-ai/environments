@@ -82,15 +82,6 @@ jobs:
 workflows:
   publish:
     jobs:
-      - build-and-publish-docker:
-          context: determined-production
-          matrix:
-            parameters:
-              image-type: ["tf1-cpu", "tf2-cpu", "tf1-gpu", "tf2-gpu"]
-          filters: *any-upstream-branch
-
       - publish-cloud-images:
           context: determined-production
-          requires:
-            - build-and-publish-docker
           filters: *any-upstream-branch
