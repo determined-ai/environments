@@ -1,0 +1,61 @@
+---
+- name: Add a repo for kernel debug symbols.
+  become: yes
+  apt_repository:
+    repo: deb http://ddebs.ubuntu.com xenial main restricted universe multiverse
+    state: present
+
+- name: Add a second repo for kernel debug symbols.
+  become: yes
+  apt_repository:
+    repo: deb http://ddebs.ubuntu.com xenial-updates main restricted universe multiverse
+    state: present
+
+- name: Add a third repo for kernel debug symbols.
+  become: yes
+  apt_repository:
+    repo: deb http://ddebs.ubuntu.com xenial-proposed main restricted universe multiverse
+    state: present
+
+- name: Update apt-get.
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: Pre-enable kexec.
+  become: yes
+  debconf:
+    name: kexec-tools
+    question: kexec-tools/load_kexec
+    value: 'true'
+    vtype: select
+
+- name: Pre-enable kdump.
+  become: yes
+  debconf:
+    name: kdump-tools
+    question: kdump-tools/use_kdump
+    value: 'true'
+    vtype: select
+
+- name: Install linux-crashdump and friends.
+  become: yes
+  apt:
+    name:
+    - linux-crashdump
+    state: present
+
+- name: Increase to maximum kdump memory size.
+  become: yes
+  lineinfile:
+    path: /etc/default/grub.d/kdump-tools.cfg
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT crashkernel=768M"'
+
+- name: Update grub.
+  become: yes
+  command: update-grub
+
+- name: Reboot to ensure that kdump is actually running.
+  become: yes
+  reboot:
