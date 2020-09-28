@@ -21,7 +21,7 @@ export AWS_MAX_ATTEMPTS=360
 .PHONY: build-tf1-cpu
 build-tf1-cpu:
 	docker build -f Dockerfile.cpu \
-		--build-arg TENSORFLOW_PIP="tensorflow==1.15.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow==1.15.4" \
 		--build-arg TORCH_PIP="torch==1.4.0" \
 		--build-arg TORCHVISION_PIP="torchvision==0.5.0" \
 		--build-arg TENSORPACK_PIP="git+https://github.com/determined-ai/tensorpack.git@0cb4fe8e6e9b7de861c9a1e0d48ffff72b72138a" \
@@ -32,7 +32,7 @@ build-tf1-cpu:
 .PHONY: build-tf2-cpu
 build-tf2-cpu:
 	docker build -f Dockerfile.cpu \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.2.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.2.1" \
 		--build-arg TORCH_PIP="torch==1.4.0" \
 		--build-arg TORCHVISION_PIP="torchvision==0.5.0" \
 		-t $(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -43,7 +43,7 @@ build-tf2-cpu:
 build-tf1-gpu:
 	docker build -f Dockerfile.gpu \
 		--build-arg CUDA="10.0" \
-		--build-arg TENSORFLOW_PIP="tensorflow-gpu==1.15.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow-gpu==1.15.4" \
 		--build-arg TORCH_PIP="torch==1.4.0+cu100 -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.5.0+cu100 -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TENSORPACK_PIP="git+https://github.com/determined-ai/tensorpack.git@0cb4fe8e6e9b7de861c9a1e0d48ffff72b72138a" \
@@ -57,7 +57,7 @@ build-tf1-gpu:
 build-tf2-gpu:
 	docker build -f Dockerfile.gpu \
 		--build-arg CUDA="10.1" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.2.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.2.1" \
 		--build-arg TORCH_PIP="torch==1.4.0" \
 		--build-arg TORCHVISION_PIP="torchvision==0.5.0" \
 		--build-arg HOROVOD_WITH_TENSORFLOW="1" \
