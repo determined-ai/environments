@@ -1,2 +1,2 @@
 ---
-gpumon_cloudwatch_metric_namespace: PEDL
+gpumon_cloudwatch_metric_namespace: determined
