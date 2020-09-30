@@ -81,8 +81,9 @@ RUN ${CONDA_DIR}/bin/python3.6 -m pip install GPUtil
 ARG TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5"
 RUN if [ "$TORCH_PIP" ]; then pip install --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" git+https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061; fi
 
-ARG HOROVOD_WITH_TENSORFLOW
-ARG HOROVOD_WITH_PYTORCH
+ARG HOROVOD_WITH_TENSORFLOW=1
+ARG HOROVOD_WITH_PYTORCH=1
+ARG HOROVOD_WITHOUT_MXNET=1
 ARG HOROVOD_GPU_ALLREDUCE=NCCL
 ARG HOROVOD_WITHOUT_MPI=1
 ARG HOROVOD_NCCL_HOME=/tmp/det_nccl/build
@@ -91,7 +92,7 @@ RUN git clone https://github.com/determined-ai/nccl.git /tmp/det_nccl\
  && (cd /tmp/det_nccl && git checkout -q 136b9edbaa8eb5af36db2e0d125fd3e83eec4017)\
  && make -C /tmp/det_nccl -j 4\
  && ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs \
- && pip install --no-cache-dir git+https://github.com/determined-ai/horovod.git@9664367d2d8e9d1f065030107a595f9de692b6a3\
+ && pip install --no-cache-dir git+https://github.com/determined-ai/horovod.git@b7155e2b8e731ee8ca82e46c2c2c0f7bc10ae51e\
  && ldconfig\
  && rm -rf /tmp/det_nccl
 
