@@ -18,6 +18,10 @@ export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_101_PREFIX)pytorch-1.4-tf-2.2$(GPU_SUF
 # waiting for AMI availablity. Bump to 360 attempts = 90 minutes.
 export AWS_MAX_ATTEMPTS=360
 
+.PHONY: deps
+deps:
+	sudo apt-get update -y && sudo apt-get install -y moreutils
+
 .PHONY: build-tf1-cpu
 build-tf1-cpu:
 	docker build -f Dockerfile.cpu \
@@ -37,7 +41,7 @@ build-tf2-cpu:
 		--build-arg TORCHVISION_PIP="torchvision==0.5.0" \
 		-t $(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
-		.
+		. | ts -s '%H:%M:%.S'
 
 .PHONY: build-tf1-gpu
 build-tf1-gpu:
@@ -64,7 +68,7 @@ build-tf2-gpu:
 		--build-arg HOROVOD_WITH_PYTORCH="1" \
 		-t $(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
-		.
+		. | ts -s '%H:%M:%.S'
 
 .PHONY: publish-tf1-cpu
 publish-tf1-cpu:

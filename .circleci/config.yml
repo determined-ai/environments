@@ -53,27 +53,8 @@ jobs:
       - checkout
       - install-docker
       - docker-login
+      - run: make deps
       - run: make build-<<parameters.image-type>>
-      - run: make publish-<<parameters.image-type>>
-      - store_artifacts:
-          path: /tmp/artifacts
-
-  publish-cloud-images:
-    docker:
-      - image: cimg/python:3.6
-    steps:
-      - checkout
-      - install-packer
-      - gcp-cli/install
-      - activate-service-account
-      - install-ansible
-      - run:
-          no_output_timeout: 60m
-          command: make publish-cloud-images
-      - store_artifacts:
-          path: /tmp/artifacts
-
-
 
 workflows:
   publish:
@@ -82,15 +63,4 @@ workflows:
           context: determined-production
           matrix:
             parameters:
-              image-type: ["tf1-cpu", "tf2-cpu", "tf1-gpu", "tf2-gpu"]
-          filters:
-            branches:
-              only: master
-
-      - publish-cloud-images:
-          context: determined-production
-          requires:
-            - build-and-publish-docker
-          filters:
-            branches:
-              only: master
+              image-type: ["tf2-cpu", "tf2-gpu"]
