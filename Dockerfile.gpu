@@ -2,7 +2,7 @@ ARG CUDA
 FROM nvidia/cuda:${CUDA}-cudnn7-devel-ubuntu18.04
 
 RUN rm -f /etc/apt/sources.list.d/*
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PIP_NO_CACHE_DIR=1
 
 RUN mkdir -p /etc/determined/conda.d
 RUN mkdir -p /var/run/sshd
@@ -82,7 +82,7 @@ RUN if [ "$TENSORPACK_PIP" ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TE
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install GPUtil
 
 ARG TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5"
-RUN if [ "$TORCH_PIP" ]; then pip install --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" git+https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061; fi
+RUN if [ "$TORCH_PIP" ]; then pip install --global-option="--cpp_ext" --global-option="--cuda_ext" git+https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061; fi
 
 ARG HOROVOD_WITH_TENSORFLOW=1
 ARG HOROVOD_WITH_PYTORCH=1
@@ -95,7 +95,7 @@ RUN git clone https://github.com/determined-ai/nccl.git /tmp/det_nccl\
  && (cd /tmp/det_nccl && git checkout -q 8768cb3f881ce198825294b62a435e3f3a804baf)\
  && make -C /tmp/det_nccl -j 4\
  && ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs \
- && pip install --no-cache-dir git+https://github.com/determined-ai/horovod.git@b04a363dd53a890d38c8a6762628e14822cc0362\
+ && pip install git+https://github.com/determined-ai/horovod.git@b04a363dd53a890d38c8a6762628e14822cc0362\
  && ldconfig\
  && rm -rf /tmp/det_nccl
 
