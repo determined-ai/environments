@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 
 RUN rm -f /etc/apt/sources.list.d/*
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PIP_NO_CACHE_DIR=1
 
 RUN mkdir -p /etc/determined/conda.d
 RUN mkdir -p /var/run/sshd
