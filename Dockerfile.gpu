@@ -22,7 +22,7 @@ RUN conda install python=3.6
 
 
 
-FROM base AS nccl
+FROM base AS horovod
 
 ARG TORCH_PIP
 RUN if [ "$TORCH_PIP" ]; then pip install $TORCH_PIP; fi
