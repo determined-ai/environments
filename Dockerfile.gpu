@@ -1,7 +1,6 @@
 ARG CUDA
 
 
-
 FROM nvidia/cuda:${CUDA}-cudnn7-devel-ubuntu18.04 AS base
 
 RUN rm -f /etc/apt/sources.list.d/*
@@ -19,7 +18,6 @@ ARG CONDA_URL="https://repo.continuum.io/miniconda"
 ENV CONDA_DIR="${CONDA_DIR}" PATH="${CONDA_DIR}/bin:${PATH}"
 RUN /tmp/install-conda.sh
 RUN conda install python=3.6
-
 
 
 FROM base AS horovod
@@ -48,7 +46,6 @@ RUN cd /tmp \
   && rm -rf /tmp/nccl
 
 
-
 FROM base AS apex
 
 ARG TORCH_PIP
@@ -62,11 +59,14 @@ RUN if [ "$TORCH_PIP" ]; \
   fi
 
 
-
 FROM nvidia/cuda:${CUDA}-cudnn7-devel-ubuntu18.04
 
 RUN rm -f /etc/apt/sources.list.d/*
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PIP_NO_CACHE_DIR=1
+
+# Freshness of packages matters more for the final image than the builder stages, so allow this
+# stage to be forcibly rebuilt.
+ARG DET_CACHE_BUSTER=none
 
 RUN mkdir -p /etc/determined/conda.d
 RUN mkdir -p /var/run/sshd

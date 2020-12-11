@@ -48,6 +48,7 @@ jobs:
         type: string
     machine:
       image: ubuntu-1604:201903-01
+      docker_layer_caching: true
     resource_class: large
     steps:
       - checkout
@@ -64,4 +65,4 @@ workflows:
           context: determined-production
           matrix:
             parameters:
-              image-type: ["tf2-gpu"]
+              image-type: ["tf2-cpu", "tf2-gpu"]
