@@ -1,4 +1,73 @@
 ARG CUDA
+
+
+
+FROM nvidia/cuda:${CUDA}-cudnn7-devel-ubuntu18.04 AS base
+
+RUN rm -f /etc/apt/sources.list.d/*
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+
+RUN apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates cmake curl git \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY files/install-conda.sh /tmp/install-conda.sh
+ARG CONDA_DIR="/opt/conda"
+ARG CONDA_INSTALLER="Miniconda3-4.7.10-Linux-x86_64.sh"
+ARG CONDA_MD5="1c945f2b3335c7b2b15130b1b2dc5cf4"
+ARG CONDA_URL="https://repo.continuum.io/miniconda"
+ENV CONDA_DIR="${CONDA_DIR}" PATH="${CONDA_DIR}/bin:${PATH}"
+RUN /tmp/install-conda.sh
+RUN conda install python=3.6
+
+
+
+FROM base AS nccl
+
+ARG TORCH_PIP
+RUN if [ "$TORCH_PIP" ]; then pip install $TORCH_PIP; fi
+ARG TENSORFLOW_PIP
+RUN if [ "$TENSORFLOW_PIP" ]; then pip install $TENSORFLOW_PIP; fi
+
+ARG HOROVOD_WITH_TENSORFLOW=1
+ARG HOROVOD_WITH_PYTORCH=1
+ARG HOROVOD_WITHOUT_MXNET=1
+ARG HOROVOD_GPU_ALLREDUCE=NCCL
+ARG HOROVOD_WITHOUT_MPI=1
+ARG HOROVOD_NCCL_HOME=/tmp/nccl/build
+ARG HOROVOD_NCCL_LINK=STATIC
+RUN cd /tmp \
+  && git clone https://github.com/determined-ai/nccl.git \
+  && git -C nccl checkout -q 8768cb3f881ce198825294b62a435e3f3a804baf \
+  && make -C nccl -j 4
+
+RUN cd /tmp \
+  && ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs \
+  && MAKEFLAGS=-j1 pip wheel git+https://github.com/determined-ai/horovod.git@b04a363dd53a890d38c8a6762628e14822cc0362 \
+  && ldconfig \
+  && rm -rf /tmp/nccl \
+  && ls -l *.whl \
+  && mv horovod*.whl horovod.whl
+
+
+
+FROM base AS apex
+
+ARG TORCH_PIP
+ARG TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5"
+RUN if [ "$TORCH_PIP" ] \
+  then \
+    pip install numpy \
+    && pip install $TORCH_PIP \
+    && cd /tmp \
+    && pip wheel --global-option="--cpp_ext" --global-option="--cuda_ext" git+https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061 \
+    && mv apex*.whl apex.whl \
+  else \
+    touch apex.whl \
+  fi
+
+
+
 FROM nvidia/cuda:${CUDA}-cudnn7-devel-ubuntu18.04
 
 RUN rm -f /etc/apt/sources.list.d/*
@@ -33,18 +102,13 @@ RUN apt-get update \
 	&& rm /etc/ssh/ssh_host_ed25519_key \
 	&& rm /etc/ssh/ssh_host_rsa_key
 
+COPY files/install-conda.sh /tmp/install-conda.sh
 ARG CONDA_DIR="/opt/conda"
 ARG CONDA_INSTALLER="Miniconda3-4.7.10-Linux-x86_64.sh"
 ARG CONDA_MD5="1c945f2b3335c7b2b15130b1b2dc5cf4"
 ARG CONDA_URL="https://repo.continuum.io/miniconda"
 ENV CONDA_DIR="${CONDA_DIR}" PATH="${CONDA_DIR}/bin:${PATH}"
-
-RUN cd /tmp \
- && mkdir -p "${CONDA_DIR}" \
- && curl --retry 3 -fsSL -O "${CONDA_URL}/${CONDA_INSTALLER}" \
- && echo "${CONDA_MD5}  ${CONDA_INSTALLER}" | md5sum -c - \
- && bash "./${CONDA_INSTALLER}" -u -b -p "${CONDA_DIR}" \
- && rm -f "./${CONDA_INSTALLER}"
+RUN /tmp/install-conda.sh
 
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 
@@ -81,23 +145,11 @@ RUN if [ "$TORCHVISION_PIP" ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $T
 RUN if [ "$TENSORPACK_PIP" ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TENSORPACK_PIP; fi
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install GPUtil
 
-ARG TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5"
-RUN if [ "$TORCH_PIP" ]; then pip install --global-option="--cpp_ext" --global-option="--cuda_ext" git+https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061; fi
+COPY --from=apex /tmp/apex.whl /tmp/apex.whl
+RUN if [ "$TORCH_PIP" ]; then pip install /tmp/apex.whl; fi && rm /tmp/apex.whl
 
-ARG HOROVOD_WITH_TENSORFLOW=1
-ARG HOROVOD_WITH_PYTORCH=1
-ARG HOROVOD_WITHOUT_MXNET=1
-ARG HOROVOD_GPU_ALLREDUCE=NCCL
-ARG HOROVOD_WITHOUT_MPI=1
-ARG HOROVOD_NCCL_HOME=/tmp/det_nccl/build
-ARG HOROVOD_NCCL_LINK=STATIC
-RUN git clone https://github.com/determined-ai/nccl.git /tmp/det_nccl\
- && (cd /tmp/det_nccl && git checkout -q 8768cb3f881ce198825294b62a435e3f3a804baf)\
- && make -C /tmp/det_nccl -j 4\
- && ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs \
- && pip install git+https://github.com/determined-ai/horovod.git@b04a363dd53a890d38c8a6762628e14822cc0362\
- && ldconfig\
- && rm -rf /tmp/det_nccl
+COPY --from=horovod /tmp/horovod.whl /tmp/horovod.whl
+RUN pip install /tmp/horovod.whl
 
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install determined determined-cli
 
