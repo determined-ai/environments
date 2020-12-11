@@ -58,7 +58,7 @@ RUN if [ "$TORCH_PIP" ]; \
     pip install numpy \
     && pip install $TORCH_PIP \
     && cd /tmp \
-    && pip wheel -w wheels --global-option="--cpp_ext" --global-option="--cuda_ext" git+https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061 \
+    && pip wheel -w wheels --global-option="--cpp_ext" --global-option="--cuda_ext" git+https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061; \
   fi
 
 
