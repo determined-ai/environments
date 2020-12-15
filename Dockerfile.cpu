@@ -13,6 +13,7 @@ RUN apt-get update \
 		build-essential \
 		ca-certificates \
 		curl \
+		daemontools \
 		libkrb5-dev \
 		libssl-dev \
 		libtool \
