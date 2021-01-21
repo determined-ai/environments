@@ -1,5 +1,5 @@
-ARG CUDA
-FROM nvidia/cuda:${CUDA}-cudnn7-devel-ubuntu18.04
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 RUN rm -f /etc/apt/sources.list.d/*
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PIP_NO_CACHE_DIR=1
@@ -82,8 +82,9 @@ RUN if [ "$TORCHVISION_PIP" ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $T
 RUN if [ "$TENSORPACK_PIP" ]; then ${CONDA_DIR}/bin/python3.6 -m pip install $TENSORPACK_PIP; fi
 RUN ${CONDA_DIR}/bin/python3.6 -m pip install GPUtil
 
-ARG TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5"
-RUN if [ "$TORCH_PIP" ]; then pip install --global-option="--cpp_ext" --global-option="--cuda_ext" git+https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061; fi
+ARG TORCH_CUDA_ARCH_LIST
+ARG APEX_GIT
+RUN if [ "$APEX_GIT" ]; then pip install --global-option="--cpp_ext" --global-option="--cuda_ext" git+$APEX_GIT; fi
 
 ARG HOROVOD_WITH_TENSORFLOW=1
 ARG HOROVOD_WITH_PYTORCH=1
