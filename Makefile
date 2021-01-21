@@ -106,7 +106,7 @@ publish-tf2-gpu:
 
 .PHONY: publish-cuda-11
 publish-cuda-11:
-	scripts/publish-docker.sh cuda-11-tf2 $(CUDA_11_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh cuda-11 $(CUDA_11_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
 publish-cloud-images:
