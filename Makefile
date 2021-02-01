@@ -35,7 +35,7 @@ build-tf1-cpu:
 .PHONY: build-tf2-cpu
 build-tf2-cpu:
 	docker build -f Dockerfile.cpu \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.4.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.4.1" \
 		--build-arg TORCH_PIP="torch==1.7.1" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2" \
 		-t $(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -62,7 +62,7 @@ build-tf1-gpu:
 build-tf2-gpu:
 	docker build -f Dockerfile.gpu \
 		--build-arg BASE_IMAGE="nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.4.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.4.1" \
 		--build-arg TORCH_PIP="torch==1.7.1+cu101 -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2+cu101 -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5" \
@@ -77,7 +77,7 @@ build-tf2-gpu:
 build-cuda-11:
 	docker build -f Dockerfile.gpu \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.0-cudnn8-devel-ubuntu18.04" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.4.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.4.1" \
 		--build-arg TORCH_PIP="torch==1.7.1+cu110 -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2+cu110  -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
