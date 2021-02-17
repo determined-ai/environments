@@ -31,8 +31,11 @@ commands:
   install-ansible:
     steps:
       - run:
-          name: Install Ansible
+          name: Install Ansible CLI
           command: sudo apt-add-repository --yes --update ppa:ansible/ansible && sudo apt install ansible
+      - run:
+          name: Install Ansible library
+          command: CRYPTOGRAPHY_DONT_BUILD_RUST=1 pip install ansible
 
   install-docker:
     steps:
