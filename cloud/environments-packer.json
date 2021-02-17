@@ -101,6 +101,7 @@
     },
     {
       "type": "amazon-ebs",
+      "name": "amazon-ebs-gov",
       "access_key": "{{ user `gov_aws_access_key_id` }}",
       "secret_key": "{{ user `gov_aws_secret_access_key` }}",
       "region": "us-gov-west-1",
