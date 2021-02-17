@@ -3,6 +3,9 @@
     "aws_access_key_id": "{{ env `AWS_ACCESS_KEY_ID` }}",
     "aws_secret_access_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
     "aws_base_image": "ami-060d1be0dd4526759",
+    "gov_aws_access_key_id": "{{ env `GOV_AWS_ACCESS_KEY_ID` }}",
+    "gov_aws_secret_access_key": "{{ env `GOV_AWS_SECRET_ACCESS_KEY` }}",
+    "gov_aws_base_image": "ami-74536b15",
     "gcp_base_image": "ubuntu-1604-xenial-v20200611",
     "image_description": "Determined environments",
     "gpu_tf1_environment_name": "{{ env `GPU_TF1_ENVIRONMENT_NAME` }}",
@@ -79,6 +82,34 @@
           "us-east-2"
       ],
       "source_ami": "{{ user `aws_base_image`}}",
+      "instance_type": "p2.xlarge",
+      "ssh_username": "ubuntu",
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sda1",
+          "volume_size": 100,
+          "volume_type": "gp2",
+          "delete_on_termination": true
+        }
+      ],
+      "run_tags": {
+        "managed-by": "packer"
+      },
+      "ami_name": "det-environments{{ user `image_suffix` }}",
+      "ami_description": "{{ user `image_description` }}",
+      "ami_groups": ["all"]
+    },
+    {
+      "type": "amazon-ebs",
+      "name": "amazon-ebs-gov",
+      "access_key": "{{ user `gov_aws_access_key_id` }}",
+      "secret_key": "{{ user `gov_aws_secret_access_key` }}",
+      "region": "us-gov-west-1",
+      "ami_regions": [
+          "us-gov-east-1",
+          "us-gov-west-1"
+      ],
+      "source_ami": "{{ user `gov_aws_base_image`}}",
       "instance_type": "p2.xlarge",
       "ssh_username": "ubuntu",
       "launch_block_device_mappings": [
