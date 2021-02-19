@@ -31,8 +31,14 @@ commands:
   install-ansible:
     steps:
       - run:
-          name: Install Ansible
+          name: Install Rust compiler (required for Python cryptography)
+          command: sudo apt install -y rustc
+      - run:
+          name: Install Ansible CLI
           command: sudo apt-add-repository --yes --update ppa:ansible/ansible && sudo apt install ansible
+      - run:
+          name: Install Ansible library
+          command: pip install ansible
 
   install-docker:
     steps:
