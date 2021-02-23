@@ -5,9 +5,17 @@ orbs:
   gcp-cli: circleci/gcp-cli@1.8.4
 
 commands:
-  docker-login:
+  login-docker:
+    parameters:
+      repository:
+        type: string
+        default: ""
+      username:
+        type: string
+      password:
+        type: string
     steps:
-      - run: echo "${DOCKER_PASS}" | docker login --username ${DOCKER_USER} --password-stdin
+      - run: echo "<<parameters.password>>" | docker login <<parameters.repository>> -u "<<parameters.username>>" --password-stdin
   activate-service-account:
     steps:
       - run:
@@ -58,7 +66,13 @@ jobs:
     steps:
       - checkout
       - install-docker
-      - docker-login
+      - login-docker:
+          username: ${DOCKER_USER}
+          password: ${DOCKER_PASS}
+      - login-docker:
+          repository: nvcr.io
+          username: ${NGC_API_USERNAME}
+          password: ${NGC_API_KEY}
       - run: make build-<<parameters.image-type>>
       - run: make publish-<<parameters.image-type>>
       - store_artifacts:
