@@ -26,6 +26,7 @@ build-tf1-cpu:
 	docker build -f Dockerfile.cpu \
 		--build-arg TENSORFLOW_PIP="tensorflow==1.15.5" \
 		--build-arg TORCH_PIP="torch==1.7.1" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.2.0" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2" \
 		--build-arg TENSORPACK_PIP="git+https://github.com/determined-ai/tensorpack.git@0cb4fe8e6e9b7de861c9a1e0d48ffff72b72138a" \
 		-t $(CPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -37,6 +38,7 @@ build-tf2-cpu:
 	docker build -f Dockerfile.cpu \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.4.1" \
 		--build-arg TORCH_PIP="torch==1.7.1" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.2.0" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2" \
 		-t $(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
@@ -48,6 +50,7 @@ build-tf1-gpu:
 		--build-arg BASE_IMAGE="nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04" \
 		--build-arg TENSORFLOW_PIP="tensorflow-gpu==1.15.5" \
 		--build-arg TORCH_PIP="torch==1.7.1+cu101 -f https://download.pytorch.org/whl/torch_stable.html" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.2.0" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2+cu101 -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061" \
@@ -64,6 +67,7 @@ build-tf2-gpu:
 		--build-arg BASE_IMAGE="nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.4.1" \
 		--build-arg TORCH_PIP="torch==1.7.1+cu101 -f https://download.pytorch.org/whl/torch_stable.html" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.2.0" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2+cu101 -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061" \
@@ -79,6 +83,7 @@ build-cuda-11:
 		--build-arg BASE_IMAGE="nvidia/cuda:11.0-cudnn8-devel-ubuntu18.04" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.4.1" \
 		--build-arg TORCH_PIP="torch==1.7.1+cu110 -f https://download.pytorch.org/whl/torch_stable.html" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.2.0" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2+cu110  -f https://download.pytorch.org/whl/torch_stable.html" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@154c6336aa7aedd40d3b3583fb5e1328f9cdf387" \
