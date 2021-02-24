@@ -39,8 +39,8 @@ commands:
   install-ansible:
     steps:
       - run:
-          name: Install Rust compiler (required for Python cryptography)
-          command: sudo apt install -y rustc
+          name: Upgrade Pip # Required to get pre-compiled cryptography wheel
+          command: pip install --upgrade pip
       - run:
           name: Install Ansible CLI
           command: sudo apt-add-repository --yes --update ppa:ansible/ansible && sudo apt install ansible
