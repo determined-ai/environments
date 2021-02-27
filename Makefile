@@ -11,11 +11,11 @@ ARTIFACTS_DIR := /tmp/artifacts
 
 export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.7-tf-1.15$(CPU_SUFFIX)
 export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_101_PREFIX)pytorch-1.7-tf-1.15$(GPU_SUFFIX)
-export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.7-tf-2.4$(CPU_SUFFIX)
-export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_101_PREFIX)pytorch-1.7-tf-2.4$(GPU_SUFFIX)
+export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.7-lightning-1.2-tf-2.4$(CPU_SUFFIX)
+export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_101_PREFIX)pytorch-1.7-lightning-1.2-tf-2.4$(GPU_SUFFIX)
 
 export CUDA_11_NVIDIA_TF_ENVIRONMENT_NAME := $(CUDA_110_PREFIX)pytorch-1.7-tf-1.15$(GPU_SUFFIX)
-export CUDA_11_ENVIRONMENT_NAME := $(CUDA_110_PREFIX)pytorch-1.7-tf-2.4$(GPU_SUFFIX)
+export CUDA_11_ENVIRONMENT_NAME := $(CUDA_110_PREFIX)pytorch-1.7-lightning-1.2-tf-2.4$(GPU_SUFFIX)
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
 # waiting for AMI availablity. Bump to 360 attempts = 90 minutes.
