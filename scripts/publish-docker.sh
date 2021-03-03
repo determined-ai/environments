@@ -3,7 +3,7 @@
 set -e
 set -x
 
-if [ "$#" -ne 5 ] ; then
+if [ "$#" -lt 4 ] || [ "$#" -gt 5 ] ; then
     echo "usage: $0 LOG_NAME BASE_TAG HASH VERSION ARTIFACTS_DIR" >&2
     exit 1
 fi
@@ -19,7 +19,7 @@ underscore_name="$(echo -n "$log_name" | tr - _)"
 docker push "$base_tag-$hash"
 docker push "$base_tag-$version"
 
-if [ -z "$artifacts" ]; then
+if [ -n "$artifacts" ]; then
     mkdir -p "$artifacts"
 
     log_file="$artifacts/publish-$log_name"
