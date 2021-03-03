@@ -3,7 +3,7 @@ VERSION_DASHES := $(subst .,-,$(VERSION))
 SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
 
 NGC_REGISTRY := nvcr.io/isv-ngc-partner/determined
-DOCKERHUB_REGISTRY := determinedai
+export DOCKERHUB_REGISTRY := determinedai
 
 CPU_PREFIX := environments:py-3.6.9-
 CPU_SUFFIX := -cpu
@@ -107,27 +107,27 @@ build-cuda-11:
 .PHONY: publish-tf1-cpu
 publish-tf1-cpu:
 	scripts/publish-docker.sh tf1-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh tf1-cpu $(NGC_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf1-cpu $(NGC_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 
 .PHONY: publish-tf2-cpu
 publish-tf2-cpu:
 	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh tf2-cpu $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf2-cpu $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 
 .PHONY: publish-tf1-gpu
 publish-tf1-gpu:
 	scripts/publish-docker.sh tf1-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh tf1-gpu $(NGC_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf1-gpu $(NGC_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 
 .PHONY: publish-tf2-gpu
 publish-tf2-gpu:
 	scripts/publish-docker.sh tf2-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh tf2-gpu $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf2-gpu $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 
 .PHONY: publish-cuda-11
 publish-cuda-11:
 	scripts/publish-docker.sh cuda-11 $(DOCKERHUB_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh cuda-11 $(NGC_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh cuda-11 $(NGC_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 
 .PHONY: publish-cloud-images
 publish-cloud-images:

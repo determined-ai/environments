@@ -19,10 +19,12 @@ underscore_name="$(echo -n "$log_name" | tr - _)"
 docker push "$base_tag-$hash"
 docker push "$base_tag-$version"
 
-mkdir -p "$artifacts"
+if [ -z "$artifacts" ]; then
+    mkdir -p "$artifacts"
 
-log_file="$artifacts/publish-$log_name"
-(
-    echo "${underscore_name}_hashed: $base_tag-$hash"
-    echo "${underscore_name}_versioned: $base_tag-$version"
-) > "$log_file"
+    log_file="$artifacts/publish-$log_name"
+    (
+        echo "${underscore_name}_hashed: $base_tag-$hash"
+        echo "${underscore_name}_versioned: $base_tag-$version"
+    ) > "$log_file"
+fi

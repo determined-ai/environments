@@ -13,7 +13,8 @@
     "gpu_tf2_environment_name": "{{ env `GPU_TF2_ENVIRONMENT_NAME` }}",
     "cpu_tf2_environment_name": "{{ env `CPU_TF2_ENVIRONMENT_NAME` }}",
     "short_git_hash": "{{ env `short_git_hash` }}",
-    "image_suffix": ""
+    "image_suffix": "",
+    "docker_registry": "{{ env `DOCKERHUB_REGISTRY` }}"
   },
   "provisioners": [
     {
@@ -30,10 +31,10 @@
         "-e ansible_python_interpreter=/usr/bin/python3",
         "-e linux_kernel_suffix=aws",
         "-e build_type={{ build_type }}",
-        "-e gpu_tf1_environment_name={{ user `gpu_tf1_environment_name` }}",
-        "-e cpu_tf1_environment_name={{ user `cpu_tf1_environment_name` }}",
-        "-e gpu_tf2_environment_name={{ user `gpu_tf2_environment_name` }}",
-        "-e cpu_tf2_environment_name={{ user `cpu_tf2_environment_name` }}",
+        "-e gpu_tf1_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf1_environment_name` }}",
+        "-e cpu_tf1_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf1_environment_name` }}",
+        "-e gpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf2_environment_name` }}",
+        "-e cpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf2_environment_name` }}",
         "-e short_git_hash={{ user `short_git_hash` }}",
         "-e image_suffix={{ user `image_suffix` }}"
       ],
@@ -48,10 +49,10 @@
         "-e ansible_python_interpreter=/usr/bin/python3",
         "-e linux_kernel_suffix=gcp",
         "-e build_type={{ build_type }}",
-        "-e gpu_tf1_environment_name={{ user `gpu_tf1_environment_name` }}",
-        "-e cpu_tf1_environment_name={{ user `cpu_tf1_environment_name` }}",
-        "-e gpu_tf2_environment_name={{ user `gpu_tf2_environment_name` }}",
-        "-e cpu_tf2_environment_name={{ user `cpu_tf2_environment_name` }}",
+        "-e gpu_tf1_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf1_environment_name` }}",
+        "-e cpu_tf1_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf1_environment_name` }}",
+        "-e gpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf2_environment_name` }}",
+        "-e cpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf2_environment_name` }}",
         "-e short_git_hash={{ user `short_git_hash` }}",
         "-e image_suffix={{ user `image_suffix` }}"
       ],
