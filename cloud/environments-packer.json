@@ -39,7 +39,7 @@
         "-e image_suffix={{ user `image_suffix` }}"
       ],
       "user": "ubuntu",
-      "only": ["amazon-ebs"]
+      "only": ["amazon-ebs", "amazon-ebs-gov"]
     },
     {
       "type": "ansible",
