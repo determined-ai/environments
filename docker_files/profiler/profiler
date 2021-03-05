@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-BASE=$(cd $(dirname $0); pwd)
-
-exec "$BASE/pyflame" \
-  --output=${PROFILER_OUTPUT:-/tmp/profiler} \
-  --output-rate=${PROFILER_OUTPUT_RATE:-5} \
-  -t "$@"

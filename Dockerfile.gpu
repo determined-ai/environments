@@ -38,17 +38,13 @@ ENV PYTHON_INCLUDE=/opt/conda/include
 ENV PYTHON_LIB=/opt/conda/lib
 RUN /tmp/det_docker_files/install_python.sh ${PYTHON_VERSION}
 
-RUN /tmp/det_docker_files/install_pyflame.sh
-
 ARG TENSORFLOW_PIP
 ARG TORCH_PIP
 ARG TORCHVISION_PIP
-ARG TENSORPACK_PIP
 ARG LIGHTNING_PIP
 RUN if [ "$TENSORFLOW_PIP" ]; then python -m pip install $TENSORFLOW_PIP; fi
 RUN if [ "$TORCH_PIP" ]; then python -m pip install $TORCH_PIP; fi
 RUN if [ "$TORCHVISION_PIP" ]; then python -m pip install $TORCHVISION_PIP; fi
-RUN if [ "$TENSORPACK_PIP" ]; then python -m pip install $TENSORPACK_PIP; fi
 RUN if [ "$LIGHTNING_PIP" ]; then python -m pip install $LIGHTNING_PIP; fi
 RUN python -m pip install GPUtil
 
