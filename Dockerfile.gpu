@@ -37,7 +37,7 @@ RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 
 ENV PATH="/opt/conda/bin:${PATH}"
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
-ARG PYTHON_VERSION=3.6
+ARG PYTHON_VERSION
 RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION}
 
 ARG TENSORFLOW_PIP
