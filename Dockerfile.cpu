@@ -24,44 +24,43 @@ RUN apt-get update \
 		openssh-client \
 		openssh-server \
 		pkg-config \
-		wget
+		wget \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& rm /etc/ssh/ssh_host_ecdsa_key \
+	&& rm /etc/ssh/ssh_host_ed25519_key \
+	&& rm /etc/ssh/ssh_host_rsa_key
 
-COPY docker_files /tmp/det_docker_files
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
-RUN /tmp/det_docker_files/install_google_cloud_sdk.sh
+RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 
 ENV PATH="/opt/conda/bin:${PATH}"
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 ARG PYTHON_VERSION=3.6
-ENV PYTHON_INCLUDE=/opt/conda/include
-ENV PYTHON_LIB=/opt/conda/lib
-RUN /tmp/det_docker_files/install_python.sh ${PYTHON_VERSION}
+RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION}
 
 ARG TENSORFLOW_PIP
 ARG TORCH_PIP
 ARG TORCHVISION_PIP
 ARG LIGHTNING_PIP
-RUN if [ "$TENSORFLOW_PIP" ]; then python -m pip install $TENSORFLOW_PIP; fi
-RUN if [ "$TORCH_PIP" ]; then python -m pip install $TORCH_PIP; fi
-RUN if [ "$TORCHVISION_PIP" ]; then python -m pip install $TORCHVISION_PIP; fi
-RUN if [ "$LIGHTNING_PIP" ]; then python -m pip install $LIGHTNING_PIP; fi
+RUN if [ "$TENSORFLOW_PIP" ]; then pip install $TENSORFLOW_PIP; fi
+RUN if [ "$TORCH_PIP" ]; then pip install $TORCH_PIP; fi
+RUN if [ "$TORCHVISION_PIP" ]; then pip install $TORCHVISION_PIP; fi
+RUN if [ "$LIGHTNING_PIP" ]; then pip install $LIGHTNING_PIP; fi
 
 # We uninstall these packages after installing. This ensures that we can
 # successfully install these packages into containers running as non-root.
 # `pip` does not uninstall dependencies, so we still have all the dependencies
 # installed.
-RUN python -m pip install determined determined-cli
-RUN python -m pip uninstall -y determined determined-cli determined-common
+RUN pip install determined determined-cli && pip uninstall -y determined determined-cli determined-common
 
-RUN python -m pip install -r /tmp/det_docker_files/notebook-requirements.txt
+RUN pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
 ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
 ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
 ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
 
-RUN python -m pip install -r /tmp/det_docker_files/additional-requirements.txt
+RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
 
-RUN /tmp/det_docker_files/add_det_nobody_user.sh
+RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
 
-RUN /tmp/det_docker_files/install_libnss_determined.sh
-
-RUN /tmp/det_docker_files/cleanup.sh
+RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh

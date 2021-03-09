@@ -25,18 +25,20 @@ RUN apt-get update \
 		openssh-client \
 		openssh-server \
 		pkg-config \
-		wget
+		wget \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& rm /etc/ssh/ssh_host_ecdsa_key \
+	&& rm /etc/ssh/ssh_host_ed25519_key \
+	&& rm /etc/ssh/ssh_host_rsa_key
 
-COPY docker_files /tmp/det_docker_files
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
-RUN /tmp/det_docker_files/install_google_cloud_sdk.sh
+RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 
 ENV PATH="/opt/conda/bin:${PATH}"
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 ARG PYTHON_VERSION=3.6
-ENV PYTHON_INCLUDE=/opt/conda/include
-ENV PYTHON_LIB=/opt/conda/lib
-RUN /tmp/det_docker_files/install_python.sh ${PYTHON_VERSION}
+RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION}
 
 ARG TENSORFLOW_PIP
 ARG TORCH_PIP
@@ -50,7 +52,7 @@ RUN python -m pip install GPUtil
 
 ARG TORCH_CUDA_ARCH_LIST
 ARG APEX_GIT
-RUN /tmp/det_docker_files/install_apex.sh
+RUN /tmp/det_dockerfile_scripts/install_apex.sh
 
 ARG HOROVOD_WITH_TENSORFLOW=1
 ARG HOROVOD_WITH_PYTORCH=1
@@ -59,7 +61,7 @@ ARG HOROVOD_GPU_ALLREDUCE=NCCL
 ARG HOROVOD_WITHOUT_MPI=1
 ARG HOROVOD_NCCL_HOME=/tmp/det_nccl/build
 ARG HOROVOD_NCCL_LINK=STATIC
-RUN /tmp/det_docker_files/install_nccl_and_horovod.sh
+RUN /tmp/det_dockerfile_scripts/install_nccl_and_horovod.sh
 
 # We uninstall these packages after installing. This ensures that we can
 # successfully install these packages into containers running as non-root.
@@ -68,15 +70,13 @@ RUN /tmp/det_docker_files/install_nccl_and_horovod.sh
 RUN python -m pip install determined determined-cli
 RUN python -m pip uninstall -y determined determined-cli determined-common
 
-RUN python -m pip install -r /tmp/det_docker_files/notebook-requirements.txt
+RUN python -m pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
 ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
 ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
 ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
 
-RUN python -m pip install -r /tmp/det_docker_files/additional-requirements.txt
+RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
 
-RUN /tmp/det_docker_files/add_det_nobody_user.sh
+RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
 
-RUN /tmp/det_docker_files/install_libnss_determined.sh
-
-RUN /tmp/det_docker_files/cleanup.sh
+RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
