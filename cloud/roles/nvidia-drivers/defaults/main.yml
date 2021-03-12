@@ -1,5 +1,5 @@
 ---
 # NVIDIA Driver Settings
-driver_version: "450.51.05"
+driver_version: "460.56"
 driver_script_name: "NVIDIA-Linux-x86_64-{{ driver_version }}.run"
-driver_url: "https://us.download.nvidia.com/tesla/{{ driver_version }}/{{ driver_script_name }}"
+driver_url: "https://us.download.nvidia.com/XFree86/Linux-x86_64/{{ driver_version }}/{{ driver_script_name }}"
