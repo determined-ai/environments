@@ -42,3 +42,9 @@
   docker_image:
     name: "{{ cpu_tf2_environment_name }}{{ image_suffix }}"
     source: pull
+
+- name: Pull CUDA 11 environment
+  become: yes
+  docker_image:
+    name: "{{ cuda_11_environment_name }}{{ image_suffix }}"
+    source: pull
