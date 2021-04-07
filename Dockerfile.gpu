@@ -48,7 +48,7 @@ RUN if [ "$TENSORFLOW_PIP" ]; then python -m pip install $TENSORFLOW_PIP; fi
 RUN if [ "$TORCH_PIP" ]; then python -m pip install $TORCH_PIP; fi
 RUN if [ "$TORCHVISION_PIP" ]; then python -m pip install $TORCHVISION_PIP; fi
 RUN if [ "$LIGHTNING_PIP" ]; then python -m pip install $LIGHTNING_PIP; fi
-RUN python -m pip install GPUtil
+RUN python -m pip install GPUtil pynvml
 
 ARG TORCH_CUDA_ARCH_LIST
 ARG APEX_GIT
