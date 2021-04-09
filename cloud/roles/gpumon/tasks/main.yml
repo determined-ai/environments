@@ -1,9 +1,9 @@
 ---
-- name: Install boto3 for Python2.
+- name: Install boto3 for Python.
   become: yes
   apt:
     name:
-    - python-boto3
+    - python3-boto3
     state: present
 
 - name: Install gpumon.
