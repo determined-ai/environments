@@ -4,7 +4,7 @@ import argparse
 import boto3
 import os
 import subprocess
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 # Storage resolution (between 1-60). 60 is for a low-resolution metric, which
 # is stored per minute.
@@ -12,10 +12,10 @@ RESOLUTION = 60
 
 # Instance information
 BASE_URL = "http://169.254.169.254/latest/meta-data/"
-INSTANCE_ID = urllib2.urlopen(BASE_URL + "instance-id").read()
-IMAGE_ID = urllib2.urlopen(BASE_URL + "ami-id").read()
-INSTANCE_TYPE = urllib2.urlopen(BASE_URL + "instance-type").read()
-INSTANCE_AZ = urllib2.urlopen(BASE_URL + "placement/availability-zone").read()
+INSTANCE_ID = urllib.request.urlopen(BASE_URL + "instance-id").read()
+IMAGE_ID = urllib.request.urlopen(BASE_URL + "ami-id").read()
+INSTANCE_TYPE = urllib.request.urlopen(BASE_URL + "instance-type").read()
+INSTANCE_AZ = urllib.request.urlopen(BASE_URL + "placement/availability-zone").read()
 EC2_REGION = INSTANCE_AZ[:-1]
 
 

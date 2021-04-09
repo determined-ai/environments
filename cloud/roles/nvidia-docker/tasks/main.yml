@@ -14,9 +14,9 @@
     state: present
     update_cache: yes
   with_items:
-    - deb https://nvidia.github.io/libnvidia-container/ubuntu16.04/amd64 /
-    - deb https://nvidia.github.io/nvidia-container-runtime/ubuntu16.04/amd64 /
-    - deb https://nvidia.github.io/nvidia-docker/ubuntu16.04/amd64 /
+    - deb https://nvidia.github.io/libnvidia-container/ubuntu20.04/amd64 /
+    - deb https://nvidia.github.io/nvidia-container-runtime/ubuntu20.04/amd64 /
+    - deb https://nvidia.github.io/nvidia-docker/ubuntu20.04/amd64 /
 
 - name: Install Nvidia Docker Runtime.
   become: yes
