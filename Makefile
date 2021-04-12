@@ -39,7 +39,7 @@ build-tf1-cpu:
 build-tf2-cpu:
 	docker build -f Dockerfile.cpu \
 		--build-arg PYTHON_VERSION="3.7" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.4.1" \
+		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.4.1" \
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.2.0" \
