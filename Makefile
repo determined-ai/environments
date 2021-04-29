@@ -25,7 +25,7 @@ export AWS_MAX_ATTEMPTS=360
 .PHONY: build-tf1-cpu
 build-tf1-cpu:
 	docker build -f Dockerfile.cpu \
-		--build-arg PYTHON_VERSION="3.7" \
+		--build-arg PYTHON_VERSION="3.7.10" \
 		--build-arg TENSORFLOW_PIP="tensorflow==1.15.5" \
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
@@ -38,7 +38,7 @@ build-tf1-cpu:
 .PHONY: build-tf2-cpu
 build-tf2-cpu:
 	docker build -f Dockerfile.cpu \
-		--build-arg PYTHON_VERSION="3.7" \
+		--build-arg PYTHON_VERSION="3.7.10" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.4.1" \
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
@@ -52,7 +52,7 @@ build-tf2-cpu:
 .PHONY: build-tf1-gpu
 build-tf1-gpu:
 	docker build -f Dockerfile.gpu \
-		--build-arg PYTHON_VERSION="3.7" \
+		--build-arg PYTHON_VERSION="3.7.10" \
 		--build-arg BASE_IMAGE="nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04" \
 		--build-arg TENSORFLOW_PIP="tensorflow-gpu==1.15.5" \
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cu102/torch_stable.html" \
@@ -89,7 +89,7 @@ build-tf2-gpu:
 .PHONY: build-cuda-11
 build-cuda-11:
 	docker build -f Dockerfile.gpu \
-		--build-arg PYTHON_VERSION="3.7" \
+		--build-arg PYTHON_VERSION="3.7.10" \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.0.3-cudnn8-devel-ubuntu18.04" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.4.1" \
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cu110/torch_stable.html" \
