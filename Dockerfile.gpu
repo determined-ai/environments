@@ -54,7 +54,6 @@ ARG TORCH_CUDA_ARCH_LIST
 ARG APEX_GIT
 RUN /tmp/det_dockerfile_scripts/install_apex.sh
 
-ARG NCCL_VERSION
 ARG HOROVOD_PIP=horovod
 ARG HOROVOD_WITH_TENSORFLOW=1
 ARG HOROVOD_WITH_PYTORCH=1
@@ -62,7 +61,9 @@ ARG HOROVOD_WITHOUT_MXNET=1
 ARG HOROVOD_GPU_ALLREDUCE=NCCL
 ARG HOROVOD_WITHOUT_MPI=1
 ARG HOROVOD_NCCL_LINK=STATIC
-RUN /tmp/det_dockerfile_scripts/install_nccl_and_horovod.sh
+RUN ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs && \
+    pip install "$HOROVOD_PIP" && \
+    ldconfig
 
 # We uninstall these packages after installing. This ensures that we can
 # successfully install these packages into containers running as non-root.
