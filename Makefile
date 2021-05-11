@@ -57,7 +57,7 @@ build-tf1-gpu:
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cu102/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cu102/torch_stable.html" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5" \
-		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061" \
+		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
 		--build-arg HOROVOD_WITH_TENSORFLOW="1" \
 		--build-arg HOROVOD_WITH_PYTORCH="1" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -76,7 +76,7 @@ build-cuda-11:
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cu110/torch_stable.html" \
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.2.0" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
-		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@154c6336aa7aedd40d3b3583fb5e1328f9cdf387" \
+		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
 		--build-arg HOROVOD_WITH_TENSORFLOW="1" \
 		--build-arg HOROVOD_WITH_PYTORCH="1" \
 		-t $(DOCKERHUB_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
