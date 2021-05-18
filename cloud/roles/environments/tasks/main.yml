@@ -42,3 +42,9 @@
   docker_image:
     name: "{{ cuda_11_environment_name }}{{ image_suffix }}"
     source: pull
+
+- name: Pull TF25 GPU environment
+  become: yes
+  docker_image:
+    name: "{{ gpu_tf25_environment_name }}{{ image_suffix }}"
+    source: pull

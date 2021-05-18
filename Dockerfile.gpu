@@ -52,6 +52,7 @@ RUN python -m pip install GPUtil pynvml
 
 ARG TORCH_CUDA_ARCH_LIST
 ARG APEX_GIT
+ARG APEX_PATCH
 RUN /tmp/det_dockerfile_scripts/install_apex.sh
 
 ARG HOROVOD_PIP=horovod
