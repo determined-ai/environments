@@ -60,6 +60,7 @@ build-tf1-gpu:
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@37cdaf4ad57ab4e7dd9ef13dbed7b29aa939d061" \
 		--build-arg HOROVOD_WITH_TENSORFLOW="1" \
 		--build-arg HOROVOD_WITH_PYTORCH="1" \
+		--build-arg HOROVOD_PIP="horovod==0.22.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -79,6 +80,7 @@ build-cuda-11:
 		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@154c6336aa7aedd40d3b3583fb5e1328f9cdf387" \
 		--build-arg HOROVOD_WITH_TENSORFLOW="1" \
 		--build-arg HOROVOD_WITH_PYTORCH="1" \
+		--build-arg HOROVOD_PIP="horovod==0.22.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
