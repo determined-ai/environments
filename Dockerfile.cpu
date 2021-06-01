@@ -48,6 +48,14 @@ RUN if [ "$TORCH_PIP" ]; then pip install $TORCH_PIP; fi
 RUN if [ "$TORCHVISION_PIP" ]; then pip install $TORCHVISION_PIP; fi
 RUN if [ "$LIGHTNING_PIP" ]; then pip install $LIGHTNING_PIP; fi
 
+ARG HOROVOD_PIP=horovod
+ARG HOROVOD_WITH_TENSORFLOW=1
+ARG HOROVOD_WITH_PYTORCH=1
+ARG HOROVOD_WITHOUT_MXNET=1
+ARG HOROVOD_WITHOUT_MPI=1
+ARG HOROVOD_CPU_OPERATIONS=GLOO
+RUN pip install "$HOROVOD_PIP"
+
 # We uninstall these packages after installing. This ensures that we can
 # successfully install these packages into containers running as non-root.
 # `pip` does not uninstall dependencies, so we still have all the dependencies
