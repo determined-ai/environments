@@ -1,0 +1,13 @@
+diff --git a/setup.py b/setup.py
+index e9cf39b..7ca2ace 100644
+--- a/setup.py
++++ b/setup.py
+@@ -98,6 +98,8 @@ def check_cuda_torch_binary_vs_bare_metal(cuda_dir):
+     print("\nCompiling cuda extensions with")
+     print(raw_output + "from " + cuda_dir + "/bin\n")
+ 
++    return
++
+     if (bare_metal_major != torch_binary_major) or (bare_metal_minor != torch_binary_minor):
+         raise RuntimeError("Cuda extensions are being compiled with a version of Cuda that does " +
+                            "not match the version used to compile Pytorch binaries.  " +
