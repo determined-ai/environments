@@ -1,0 +1,27 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+
+RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
+
+ARG TENSORFLOW_PIP
+ARG TORCH_PIP
+ARG TORCHVISION_PIP
+ARG LIGHTNING_PIP
+ARG TORCH_PROFILER_GIT
+RUN if [ "$TENSORFLOW_PIP" ]; then pip install $TENSORFLOW_PIP; fi
+RUN if [ "$TORCH_PIP" ]; then pip install $TORCH_PIP; fi
+RUN if [ "$TORCHVISION_PIP" ]; then pip install $TORCHVISION_PIP; fi
+RUN if [ "$LIGHTNING_PIP" ]; then pip install $LIGHTNING_PIP; fi
+
+RUN if [ "$TORCH_PROFILER_GIT" ]; then /tmp/det_dockerfile_scripts/torch-tb-profiler-patch.sh; fi
+ARG HOROVOD_PIP=horovod
+ARG HOROVOD_WITH_TENSORFLOW=1
+ARG HOROVOD_WITH_PYTORCH=1
+ARG HOROVOD_WITHOUT_MXNET=1
+ARG HOROVOD_WITHOUT_MPI=1
+ARG HOROVOD_CPU_OPERATIONS=GLOO
+RUN pip install "$HOROVOD_PIP"
+
+RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt

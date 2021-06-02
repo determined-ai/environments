@@ -1,4 +1,5 @@
-FROM ubuntu:18.04
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 RUN rm -f /etc/apt/sources.list.d/*
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PIP_NO_CACHE_DIR=1
@@ -32,43 +33,22 @@ RUN apt-get update \
 
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
-RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
-
 ENV PATH="/opt/conda/bin:${PATH}"
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 ARG PYTHON_VERSION
 RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION}
 
-ARG TENSORFLOW_PIP
-ARG TORCH_PIP
-ARG TORCHVISION_PIP
-ARG LIGHTNING_PIP
-ARG TORCH_PROFILER_GIT
-RUN if [ "$TENSORFLOW_PIP" ]; then pip install $TENSORFLOW_PIP; fi
-RUN if [ "$TORCH_PIP" ]; then pip install $TORCH_PIP; fi
-RUN if [ "$TORCHVISION_PIP" ]; then pip install $TORCHVISION_PIP; fi
-RUN if [ "$LIGHTNING_PIP" ]; then pip install $LIGHTNING_PIP; fi
-RUN if [ "$TORCH_PROFILER_GIT" ]; then /tmp/det_dockerfile_scripts/torch-tb-profiler-patch.sh; fi
-ARG HOROVOD_PIP=horovod
-ARG HOROVOD_WITH_TENSORFLOW=1
-ARG HOROVOD_WITH_PYTORCH=1
-ARG HOROVOD_WITHOUT_MXNET=1
-ARG HOROVOD_WITHOUT_MPI=1
-ARG HOROVOD_CPU_OPERATIONS=GLOO
-RUN pip install "$HOROVOD_PIP"
-
 # We uninstall these packages after installing. This ensures that we can
 # successfully install these packages into containers running as non-root.
 # `pip` does not uninstall dependencies, so we still have all the dependencies
 # installed.
-RUN pip install determined determined-cli && pip uninstall -y determined determined-cli determined-common
+RUN python -m pip install determined determined-cli
+RUN python -m pip uninstall -y determined determined-cli determined-common
 
-RUN pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
+RUN python -m pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
 ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
 ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
 ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
-
-RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
 
 RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
 
