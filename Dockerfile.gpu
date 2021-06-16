@@ -44,7 +44,11 @@ ARG TENSORFLOW_PIP
 ARG TORCH_PIP
 ARG TORCHVISION_PIP
 ARG LIGHTNING_PIP
+ARG TF_CUDA_SYM
+
 RUN if [ "$TENSORFLOW_PIP" ]; then python -m pip install $TENSORFLOW_PIP; fi
+RUN if [ "$TF_CUDA_SYM" ]; then /tmp/det_dockerfile_scripts/tf2.4-cuda11.1-symlink.sh; fi
+
 RUN if [ "$TORCH_PIP" ]; then python -m pip install $TORCH_PIP; fi
 RUN if [ "$TORCHVISION_PIP" ]; then python -m pip install $TORCHVISION_PIP; fi
 RUN if [ "$LIGHTNING_PIP" ]; then python -m pip install $LIGHTNING_PIP; fi

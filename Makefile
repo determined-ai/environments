@@ -3,20 +3,21 @@ VERSION_DASHES := $(subst .,-,$(VERSION))
 SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
 
 NGC_REGISTRY := nvcr.io/isv-ngc-partner/determined
-export DOCKERHUB_REGISTRY := determinedai
+export DOCKERHUB_REGISTRY := andazhou
 
 CPU_PREFIX := environments:py-3.7-
 CPU_SUFFIX := -cpu
 CUDA_102_PREFIX := environments:cuda-10.2-
 CUDA_110_PREFIX := environments:cuda-11.0-
+CUDA_111_PREFIX := environments:cuda-11.1-
 CUDA_112_PREFIX := environments:cuda-11.2-
 GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
 
 export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.7-tf-1.15$(CPU_SUFFIX)
 export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_102_PREFIX)pytorch-1.7-tf-1.15$(GPU_SUFFIX)
-export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.7-lightning-1.2-tf-2.4$(CPU_SUFFIX)
-export CUDA_11_ENVIRONMENT_NAME := $(CUDA_110_PREFIX)pytorch-1.7-lightning-1.2-tf-2.4$(GPU_SUFFIX)
+export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4$(CPU_SUFFIX)
+export CUDA_11_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4$(GPU_SUFFIX)
 export GPU_TF25_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)pytorch-1.7-lightning-1.2-tf-2.5$(GPU_SUFFIX)
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
@@ -41,15 +42,13 @@ build-tf1-cpu:
 build-tf2-cpu:
 	docker build -f Dockerfile.cpu \
 		--build-arg PYTHON_VERSION="3.7.10" \
-		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.4.1" \
-		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
-		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
-		--build-arg LIGHTNING_PIP="pytorch_lightning==1.2.0" \
-		--build-arg HOROVOD_PIP="horovod==0.22.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.4.2" \
+		--build-arg TORCH_PIP="torch==1.9.0 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+		--build-arg TORCHVISION_PIP="torchvision==0.10.0 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.3.5" \
+		--build-arg HOROVOD_PIP="horovod==0.22.1" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
-		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
 .PHONY: build-tf1-gpu
@@ -73,18 +72,17 @@ build-tf1-gpu:
 build-cuda-11:
 	docker build -f Dockerfile.gpu \
 		--build-arg PYTHON_VERSION="3.7.10" \
-		--build-arg BASE_IMAGE="nvidia/cuda:11.0.3-cudnn8-devel-ubuntu18.04" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.4.1" \
-		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cu110/torch_stable.html" \
-		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cu110/torch_stable.html" \
-		--build-arg LIGHTNING_PIP="pytorch_lightning==1.2.0" \
+		--build-arg BASE_IMAGE="nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04" \
+		--build-arg TF_CUDA_SYM="1" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.4.2" \
+		--build-arg TORCH_PIP="torch==1.9.0 -f https://download.pytorch.org/whl/cu111/torch_stable.html" \
+		--build-arg TORCHVISION_PIP="torchvision==0.10.0 -f https://download.pytorch.org/whl/cu111/torch_stable.html" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.3.5" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
-		--build-arg HOROVOD_PIP="horovod==0.22.0" \
+		--build-arg HOROVOD_PIP="horovod==0.22.1" \
 		-t $(DOCKERHUB_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME)-$(VERSION) \
-		-t $(NGC_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
 .PHONY: build-tf25-gpu
