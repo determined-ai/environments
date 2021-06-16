@@ -3,7 +3,7 @@ VERSION_DASHES := $(subst .,-,$(VERSION))
 SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
 
 NGC_REGISTRY := nvcr.io/isv-ngc-partner/determined
-export DOCKERHUB_REGISTRY := andazhou
+export DOCKERHUB_REGISTRY := determinedai
 
 CPU_PREFIX := environments:py-3.7-
 CPU_SUFFIX := -cpu
@@ -49,6 +49,8 @@ build-tf2-cpu:
 		--build-arg HOROVOD_PIP="horovod==0.22.1" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
 .PHONY: build-tf1-gpu
@@ -83,6 +85,8 @@ build-cuda-11:
 		--build-arg HOROVOD_PIP="horovod==0.22.1" \
 		-t $(DOCKERHUB_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(NGC_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+        -t $(NGC_REGISTRY)/$(CUDA_11_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
 .PHONY: build-tf25-gpu

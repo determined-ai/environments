@@ -1,517 +1,0 @@
-#1 [internal] load build definition from Dockerfile.gpu
-#1 sha256:86f19334bf7f76e0be6612e85b002a522b0b5f79ac7c5c132f18bd4e5667bf4f
-#1 transferring dockerfile: 41B 0.0s done
-#1 DONE 0.0s
-
-#2 [internal] load .dockerignore
-#2 sha256:a8001af81ef6f06f382d8242ad21efa0031010862391fb00cc749f0b3c67bfc3
-#2 transferring context: 2B done
-#2 DONE 0.0s
-
-#3 [internal] load metadata for docker.io/nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04
-#3 sha256:a8afa84d4eebc26ac484b3afb6d18f25632edf906ae0a96635e96bb0c92821ae
-#3 ...
-
-#4 [auth] nvidia/cuda:pull token for registry-1.docker.io
-#4 sha256:88cd8a3fb0fb06fc64cc31fb2ed672435a7772a13fb8ba783107cbd0ccaf4a69
-#4 DONE 0.0s
-
-#3 [internal] load metadata for docker.io/nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04
-#3 sha256:a8afa84d4eebc26ac484b3afb6d18f25632edf906ae0a96635e96bb0c92821ae
-#3 DONE 1.4s
-
-#5 [ 1/21] FROM docker.io/nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04@sha256:eaf9028c8becaaee2f0ad926fcd5edb80c7f937d58d6c5d069731f8f9afc2152
-#5 sha256:c068f97f57bae427fcc5817fa70aa82f88f6b6147867dc9c9ce0f57cc888fb34
-#5 DONE 0.0s
-
-#9 [internal] load build context
-#9 sha256:dffc6d012d467cdb309383ecbc7681c05d10ee47d24485dbae70d7f5748ce2c7
-#9 transferring context: 1.90kB done
-#9 DONE 0.0s
-
-#6 [ 2/21] RUN rm -f /etc/apt/sources.list.d/*
-#6 sha256:c7442ab07d379eaf51a02a817e57bad0097515382cbf45c6ff5c20ee7622f7cf
-#6 CACHED
-
-#7 [ 3/21] RUN mkdir -p /var/run/sshd
-#7 sha256:732b108723cb06d8bfd95ffffd7207f5efc6e7b740f9df3aa8b2f13e0a0d8e66
-#7 CACHED
-
-#8 [ 4/21] RUN apt-get update 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends 		autoconf 		automake 		autotools-dev 		build-essential 		ca-certificates 		curl 		daemontools 		libkrb5-dev 		libssl-dev 		libtool 		git 		krb5-user 		cmake 		g++-4.8 		make 		openssh-client 		openssh-server 		pkg-config 		wget 	&& rm -rf /var/lib/apt/lists/* 	&& rm /etc/ssh/ssh_host_ecdsa_key 	&& rm /etc/ssh/ssh_host_ed25519_key 	&& rm /etc/ssh/ssh_host_rsa_key
-#8 sha256:2b149e6f71c831e74c994c3cab894c2960e52497ffd988901283632b2244a09c
-#8 CACHED
-
-#10 [ 5/21] COPY dockerfile_scripts /tmp/det_dockerfile_scripts
-#10 sha256:556167f77dfdd69f4c359790a9fd62488c6ea63fb3ad8626b5b27e54e35af55b
-#10 DONE 0.1s
-
-#11 [ 6/21] RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
-#11 sha256:b455db823c4cfd2a3bd4a0cd275df9a5641ea7798220e5fa7fb05629e43a0eb3
-#11 0.966 Get:1 http://security.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
-#11 1.091 Get:2 http://archive.ubuntu.com/ubuntu bionic InRelease [242 kB]
-#11 1.485 Get:3 http://security.ubuntu.com/ubuntu bionic-security/main amd64 Packages [2185 kB]
-#11 1.885 Get:4 http://archive.ubuntu.com/ubuntu bionic-updates InRelease [88.7 kB]
-#11 2.058 Get:5 http://archive.ubuntu.com/ubuntu bionic-backports InRelease [74.6 kB]
-#11 2.139 Get:6 http://security.ubuntu.com/ubuntu bionic-security/restricted amd64 Packages [450 kB]
-#11 2.179 Get:7 http://security.ubuntu.com/ubuntu bionic-security/universe amd64 Packages [1415 kB]
-#11 2.289 Get:8 http://archive.ubuntu.com/ubuntu bionic/main amd64 Packages [1344 kB]
-#11 2.308 Get:9 http://security.ubuntu.com/ubuntu bionic-security/multiverse amd64 Packages [24.7 kB]
-#11 2.901 Get:10 http://archive.ubuntu.com/ubuntu bionic/universe amd64 Packages [11.3 MB]
-#11 4.297 Get:11 http://archive.ubuntu.com/ubuntu bionic/restricted amd64 Packages [13.5 kB]
-#11 4.299 Get:12 http://archive.ubuntu.com/ubuntu bionic/multiverse amd64 Packages [186 kB]
-#11 4.307 Get:13 http://archive.ubuntu.com/ubuntu bionic-updates/multiverse amd64 Packages [33.5 kB]
-#11 4.311 Get:14 http://archive.ubuntu.com/ubuntu bionic-updates/restricted amd64 Packages [481 kB]
-#11 4.359 Get:15 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 Packages [2619 kB]
-#11 4.589 Get:16 http://archive.ubuntu.com/ubuntu bionic-updates/universe amd64 Packages [2185 kB]
-#11 4.792 Get:17 http://archive.ubuntu.com/ubuntu bionic-backports/main amd64 Packages [11.3 kB]
-#11 4.792 Get:18 http://archive.ubuntu.com/ubuntu bionic-backports/universe amd64 Packages [11.4 kB]
-#11 5.821 Fetched 22.8 MB in 5s (4447 kB/s)
-#11 5.821 Reading package lists...
-#11 7.195 deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main
-#11 7.244 Reading package lists...
-#11 8.633 Building dependency tree...
-#11 9.078 Reading state information...
-#11 9.380 ca-certificates is already the newest version (20210119~18.04.1).
-#11 9.380 The following additional packages will be installed:
-#11 9.380   dirmngr gnupg-l10n gnupg-utils gpg gpg-agent gpg-wks-client gpg-wks-server
-#11 9.381   gpgconf gpgsm gpgv
-#11 9.383 Suggested packages:
-#11 9.383   dbus-user-session libpam-systemd pinentry-gnome3 tor parcimonie xloadimage
-#11 9.383   scdaemon
-#11 9.435 The following NEW packages will be installed:
-#11 9.436   apt-transport-https
-#11 9.437 The following packages will be upgraded:
-#11 9.437   dirmngr gnupg gnupg-l10n gnupg-utils gpg gpg-agent gpg-wks-client
-#11 9.440   gpg-wks-server gpgconf gpgsm gpgv
-#11 9.796 11 upgraded, 1 newly installed, 0 to remove and 33 not upgraded.
-#11 9.796 Need to get 2152 kB of archives.
-#11 9.796 After this operation, 154 kB of additional disk space will be used.
-#11 9.796 Get:1 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gpg-wks-client amd64 2.2.4-1ubuntu1.4 [91.8 kB]
-#11 10.38 Get:2 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 dirmngr amd64 2.2.4-1ubuntu1.4 [316 kB]
-#11 10.70 Get:3 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gpg-wks-server amd64 2.2.4-1ubuntu1.4 [85.0 kB]
-#11 10.78 Get:4 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gnupg-utils amd64 2.2.4-1ubuntu1.4 [128 kB]
-#11 10.83 Get:5 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gpg-agent amd64 2.2.4-1ubuntu1.4 [227 kB]
-#11 10.97 Get:6 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gpg amd64 2.2.4-1ubuntu1.4 [467 kB]
-#11 11.12 Get:7 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gpgconf amd64 2.2.4-1ubuntu1.4 [123 kB]
-#11 11.15 Get:8 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gnupg-l10n all 2.2.4-1ubuntu1.4 [49.8 kB]
-#11 11.16 Get:9 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gnupg amd64 2.2.4-1ubuntu1.4 [249 kB]
-#11 11.25 Get:10 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gpgsm amd64 2.2.4-1ubuntu1.4 [215 kB]
-#11 11.28 Get:11 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 gpgv amd64 2.2.4-1ubuntu1.4 [198 kB]
-#11 11.30 Get:12 http://archive.ubuntu.com/ubuntu bionic-updates/universe amd64 apt-transport-https all 1.6.13 [1692 B]
-#11 11.58 debconf: delaying package configuration, since apt-utils is not installed
-#11 11.62 Fetched 2152 kB in 2s (1176 kB/s)
-#11 11.70 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 17656 files and directories currently installed.)
-#11 11.77 Preparing to unpack .../00-gpg-wks-client_2.2.4-1ubuntu1.4_amd64.deb ...
-#11 11.78 Unpacking gpg-wks-client (2.2.4-1ubuntu1.4) over (2.2.4-1ubuntu1.3) ...
-#11 11.85 Preparing to unpack .../01-dirmngr_2.2.4-1ubuntu1.4_amd64.deb ...
-#11 11.91 Unpacking dirmngr (2.2.4-1ubuntu1.4) over (2.2.4-1ubuntu1.3) ...
-#11 12.02 Preparing to unpack .../02-gpg-wks-server_2.2.4-1ubuntu1.4_amd64.deb ...
-#11 12.02 Unpacking gpg-wks-server (2.2.4-1ubuntu1.4) over (2.2.4-1ubuntu1.3) ...
-#11 12.07 Preparing to unpack .../03-gnupg-utils_2.2.4-1ubuntu1.4_amd64.deb ...
-#11 12.08 Unpacking gnupg-utils (2.2.4-1ubuntu1.4) over (2.2.4-1ubuntu1.3) ...
-#11 12.16 Preparing to unpack .../04-gpg-agent_2.2.4-1ubuntu1.4_amd64.deb ...
-#11 12.17 Unpacking gpg-agent (2.2.4-1ubuntu1.4) over (2.2.4-1ubuntu1.3) ...
-#11 12.27 Preparing to unpack .../05-gpg_2.2.4-1ubuntu1.4_amd64.deb ...
-#11 12.28 Unpacking gpg (2.2.4-1ubuntu1.4) over (2.2.4-1ubuntu1.3) ...
-#11 12.37 Preparing to unpack .../06-gpgconf_2.2.4-1ubuntu1.4_amd64.deb ...
-#11 12.38 Unpacking gpgconf (2.2.4-1ubuntu1.4) over (2.2.4-1ubuntu1.3) ...
-#11 12.44 Preparing to unpack .../07-gnupg-l10n_2.2.4-1ubuntu1.4_all.deb ...
-#11 12.45 Unpacking gnupg-l10n (2.2.4-1ubuntu1.4) over (2.2.4-1ubuntu1.3) ...
-#11 12.57 Preparing to unpack .../08-gnupg_2.2.4-1ubuntu1.4_amd64.deb ...
-#11 12.58 Unpacking gnupg (2.2.4-1ubuntu1.4) over (2.2.4-1ubuntu1.3) ...
-#11 12.65 Preparing to unpack .../09-gpgsm_2.2.4-1ubuntu1.4_amd64.deb ...
-#11 12.65 Unpacking gpgsm (2.2.4-1ubuntu1.4) over (2.2.4-1ubuntu1.3) ...
-#11 12.71 Preparing to unpack .../10-gpgv_2.2.4-1ubuntu1.4_amd64.deb ...
-#11 12.72 Unpacking gpgv (2.2.4-1ubuntu1.4) over (2.2.4-1ubuntu1.3) ...
-#11 12.80 Setting up gpgv (2.2.4-1ubuntu1.4) ...
-#11 12.85 Selecting previously unselected package apt-transport-https.
-#11 12.85 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 17656 files and directories currently installed.)
-#11 12.86 Preparing to unpack .../apt-transport-https_1.6.13_all.deb ...
-#11 12.86 Unpacking apt-transport-https (1.6.13) ...
-#11 12.90 Setting up apt-transport-https (1.6.13) ...
-#11 12.91 Setting up gpgconf (2.2.4-1ubuntu1.4) ...
-#11 12.91 Setting up gpg-agent (2.2.4-1ubuntu1.4) ...
-#11 12.93 Setting up gnupg-l10n (2.2.4-1ubuntu1.4) ...
-#11 12.94 Setting up gpgsm (2.2.4-1ubuntu1.4) ...
-#11 12.95 Setting up gnupg-utils (2.2.4-1ubuntu1.4) ...
-#11 12.96 Setting up dirmngr (2.2.4-1ubuntu1.4) ...
-#11 12.99 Setting up gpg (2.2.4-1ubuntu1.4) ...
-#11 13.00 Setting up gpg-wks-server (2.2.4-1ubuntu1.4) ...
-#11 13.01 Setting up gpg-wks-client (2.2.4-1ubuntu1.4) ...
-#11 13.02 Setting up gnupg (2.2.4-1ubuntu1.4) ...
-#11 13.08   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-#11 13.08                                  Dload  Upload   Total   Spent    Left  Speed
-#11 13.08   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0Warning: apt-key output should not be parsed (stdout is not a terminal)
-#11 13.29 100  2537  100  2537    0     0  12138      0 --:--:-- --:--:-- --:--:-- 12256
-#11 13.32 OK
-#11 13.62 Hit:1 http://security.ubuntu.com/ubuntu bionic-security InRelease
-#11 13.68 Get:2 https://packages.cloud.google.com/apt cloud-sdk InRelease [6739 B]
-#11 13.72 Hit:3 http://archive.ubuntu.com/ubuntu bionic InRelease
-#11 13.87 Get:4 https://packages.cloud.google.com/apt cloud-sdk/main amd64 Packages [170 kB]
-#11 13.88 Hit:5 http://archive.ubuntu.com/ubuntu bionic-updates InRelease
-#11 14.04 Hit:6 http://archive.ubuntu.com/ubuntu bionic-backports InRelease
-#11 14.23 Fetched 177 kB in 1s (217 kB/s)
-#11 14.23 Reading package lists...
-#11 15.69 Reading package lists...
-#11 17.23 Building dependency tree...
-#11 17.63 Reading state information...
-#11 17.83 The following additional packages will be installed:
-#11 17.83   libmpdec2 libpython3-stdlib libpython3.6-minimal libpython3.6-stdlib
-#11 17.84   mime-support python3 python3-crcmod python3-minimal python3.6
-#11 17.84   python3.6-minimal
-#11 17.84 Suggested packages:
-#11 17.84   google-cloud-sdk-app-engine-java google-cloud-sdk-app-engine-python
-#11 17.84   google-cloud-sdk-pubsub-emulator google-cloud-sdk-bigtable-emulator
-#11 17.84   google-cloud-sdk-datastore-emulator kubectl python3-doc python3-tk
-#11 17.84   python3-venv python3.6-venv python3.6-doc binfmt-support
-#11 17.95 The following NEW packages will be installed:
-#11 17.95   google-cloud-sdk libmpdec2 libpython3-stdlib libpython3.6-minimal
-#11 17.96   libpython3.6-stdlib mime-support python3 python3-crcmod python3-minimal
-#11 17.96   python3.6 python3.6-minimal
-#11 18.19 0 upgraded, 11 newly installed, 0 to remove and 33 not upgraded.
-#11 18.19 Need to get 75.2 MB of archives.
-#11 18.19 After this operation, 462 MB of additional disk space will be used.
-#11 18.19 Get:1 https://packages.cloud.google.com/apt cloud-sdk/main amd64 google-cloud-sdk all 345.0.0-0 [71.0 MB]
-#11 18.30 Get:2 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libpython3.6-minimal amd64 3.6.9-1~18.04ubuntu1.4 [534 kB]
-#11 19.49 Get:3 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 python3.6-minimal amd64 3.6.9-1~18.04ubuntu1.4 [1610 kB]
-#11 20.29 Get:4 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 python3-minimal amd64 3.6.7-1~18.04 [23.7 kB]
-#11 20.29 Get:5 http://archive.ubuntu.com/ubuntu bionic/main amd64 mime-support all 3.60ubuntu1 [30.1 kB]
-#11 20.29 Get:6 http://archive.ubuntu.com/ubuntu bionic/main amd64 libmpdec2 amd64 2.4.2-1ubuntu1 [84.1 kB]
-#11 20.30 Get:7 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libpython3.6-stdlib amd64 3.6.9-1~18.04ubuntu1.4 [1712 kB]
-#11 20.64 Get:8 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 python3.6 amd64 3.6.9-1~18.04ubuntu1.4 [203 kB]
-#11 20.66 Get:9 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libpython3-stdlib amd64 3.6.7-1~18.04 [7240 B]
-#11 20.66 Get:10 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 python3 amd64 3.6.7-1~18.04 [47.2 kB]
-#11 20.67 Get:11 http://archive.ubuntu.com/ubuntu bionic/universe amd64 python3-crcmod amd64 1.7-2build4 [18.4 kB]
-#11 25.41 debconf: delaying package configuration, since apt-utils is not installed
-#11 25.44 Fetched 75.2 MB in 7s (10.3 MB/s)
-#11 25.47 Selecting previously unselected package libpython3.6-minimal:amd64.
-#11 25.47 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 17660 files and directories currently installed.)
-#11 25.49 Preparing to unpack .../libpython3.6-minimal_3.6.9-1~18.04ubuntu1.4_amd64.deb ...
-#11 25.49 Unpacking libpython3.6-minimal:amd64 (3.6.9-1~18.04ubuntu1.4) ...
-#11 25.62 Selecting previously unselected package python3.6-minimal.
-#11 25.62 Preparing to unpack .../python3.6-minimal_3.6.9-1~18.04ubuntu1.4_amd64.deb ...
-#11 25.63 Unpacking python3.6-minimal (3.6.9-1~18.04ubuntu1.4) ...
-#11 25.83 Setting up libpython3.6-minimal:amd64 (3.6.9-1~18.04ubuntu1.4) ...
-#11 25.85 Setting up python3.6-minimal (3.6.9-1~18.04ubuntu1.4) ...
-#11 26.45 Selecting previously unselected package python3-minimal.
-#11 26.45 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 17899 files and directories currently installed.)
-#11 26.47 Preparing to unpack .../0-python3-minimal_3.6.7-1~18.04_amd64.deb ...
-#11 26.47 Unpacking python3-minimal (3.6.7-1~18.04) ...
-#11 26.52 Selecting previously unselected package mime-support.
-#11 26.52 Preparing to unpack .../1-mime-support_3.60ubuntu1_all.deb ...
-#11 26.52 Unpacking mime-support (3.60ubuntu1) ...
-#11 26.57 Selecting previously unselected package libmpdec2:amd64.
-#11 26.57 Preparing to unpack .../2-libmpdec2_2.4.2-1ubuntu1_amd64.deb ...
-#11 26.58 Unpacking libmpdec2:amd64 (2.4.2-1ubuntu1) ...
-#11 26.62 Selecting previously unselected package libpython3.6-stdlib:amd64.
-#11 26.62 Preparing to unpack .../3-libpython3.6-stdlib_3.6.9-1~18.04ubuntu1.4_amd64.deb ...
-#11 26.62 Unpacking libpython3.6-stdlib:amd64 (3.6.9-1~18.04ubuntu1.4) ...
-#11 26.84 Selecting previously unselected package python3.6.
-#11 26.85 Preparing to unpack .../4-python3.6_3.6.9-1~18.04ubuntu1.4_amd64.deb ...
-#11 26.85 Unpacking python3.6 (3.6.9-1~18.04ubuntu1.4) ...
-#11 26.89 Selecting previously unselected package libpython3-stdlib:amd64.
-#11 26.90 Preparing to unpack .../5-libpython3-stdlib_3.6.7-1~18.04_amd64.deb ...
-#11 26.90 Unpacking libpython3-stdlib:amd64 (3.6.7-1~18.04) ...
-#11 26.94 Setting up python3-minimal (3.6.7-1~18.04) ...
-#11 27.15 Selecting previously unselected package python3.
-#11 27.15 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18329 files and directories currently installed.)
-#11 27.17 Preparing to unpack .../python3_3.6.7-1~18.04_amd64.deb ...
-#11 27.18 Unpacking python3 (3.6.7-1~18.04) ...
-#11 27.22 Selecting previously unselected package python3-crcmod.
-#11 27.22 Preparing to unpack .../python3-crcmod_1.7-2build4_amd64.deb ...
-#11 27.22 Unpacking python3-crcmod (1.7-2build4) ...
-#11 27.28 Selecting previously unselected package google-cloud-sdk.
-#11 27.28 Preparing to unpack .../google-cloud-sdk_345.0.0-0_all.deb ...
-#11 27.28 Unpacking google-cloud-sdk (345.0.0-0) ...
-#11 37.10 Setting up mime-support (3.60ubuntu1) ...
-#11 37.13 Setting up libmpdec2:amd64 (2.4.2-1ubuntu1) ...
-#11 37.14 Setting up libpython3.6-stdlib:amd64 (3.6.9-1~18.04ubuntu1.4) ...
-#11 37.15 Setting up python3.6 (3.6.9-1~18.04ubuntu1.4) ...
-#11 37.83 Setting up libpython3-stdlib:amd64 (3.6.7-1~18.04) ...
-#11 37.84 Setting up python3 (3.6.7-1~18.04) ...
-#11 37.85 running python rtupdate hooks for python3.6...
-#11 37.85 running python post-rtupdate hooks for python3.6...
-#11 37.96 Setting up python3-crcmod (1.7-2build4) ...
-#11 38.12 Setting up google-cloud-sdk (345.0.0-0) ...
-#11 55.67 Processing triggers for libc-bin (2.27-3ubuntu1.3) ...
-#11 DONE 57.4s
-
-#12 [ 7/21] RUN /tmp/det_dockerfile_scripts/install_python.sh 3.7.10
-#12 sha256:57d7baebba36588e219d1c69821c6a84c2fee3216642eb0128361f23a07b8d42
-#12 6.394 Miniconda3-py39_4.9.2-Linux-x86_64.sh: OK
-#12 6.410 PREFIX=/opt/conda
-#12 6.602 Unpacking payload ...
-#12 15.65   0%|          | 0/37 [00:00<?, ?it/s]Extracting : ncurses-6.2-he6710b0_1.conda:   0%|          | 0/37 [00:00<?, ?it/s]Extracting : ncurses-6.2-he6710b0_1.conda:   3%|▎         | 1/37 [00:00<00:31,  1.15it/s]Extracting : chardet-3.0.4-py39h06a4308_1003.conda:   3%|▎         | 1/37 [00:00<00:31,  1.15it/s]Extracting : six-1.15.0-py39h06a4308_0.conda:   5%|▌         | 2/37 [00:00<00:30,  1.15it/s]      Extracting : idna-2.10-py_0.conda:   8%|▊         | 3/37 [00:00<00:29,  1.15it/s]           Extracting : ld_impl_linux-64-2.33.1-h53a641e_7.conda:  11%|█         | 4/37 [00:00<00:28,  1.15it/s]Extracting : urllib3-1.25.11-py_0.conda:  14%|█▎        | 5/37 [00:00<00:27,  1.15it/s]              Extracting : setuptools-51.0.0-py39h06a4308_2.conda:  16%|█▌        | 6/37 [00:00<00:27,  1.15it/s]Extracting : tzdata-2020d-h14c3975_0.conda:  19%|█▉        | 7/37 [00:00<00:26,  1.15it/s]         Extracting : pycparser-2.20-py_2.conda:  22%|██▏       | 8/37 [00:00<00:25,  1.15it/s]    Extracting : requests-2.25.0-pyhd3eb1b0_0.conda:  24%|██▍       | 9/37 [00:00<00:24,  1.15it/s]Extracting : libgcc-ng-9.1.0-hdf63c60_0.conda:  27%|██▋       | 10/37 [00:00<00:23,  1.15it/s] Extracting : tk-8.6.10-hbc83047_0.conda:  30%|██▉       | 11/37 [00:00<00:22,  1.15it/s]      Extracting : conda-package-handling-1.7.2-py39h27cfd23_1.conda:  32%|███▏      | 12/37 [00:00<00:21,  1.15it/s]Extracting : yaml-0.2.5-h7b6447c_0.conda:  35%|███▌      | 13/37 [00:00<00:20,  1.15it/s]                      Extracting : cryptography-3.3.1-py39h3c74f83_0.conda:  38%|███▊      | 14/37 [00:00<00:20,  1.15it/s]Extracting : python-3.9.1-hdb3f193_2.conda:  41%|████      | 15/37 [00:02<00:19,  1.15it/s]          Extracting : python-3.9.1-hdb3f193_2.conda:  43%|████▎     | 16/37 [00:02<00:13,  1.56it/s]Extracting : conda-4.9.2-py39h06a4308_0.conda:  43%|████▎     | 16/37 [00:02<00:13,  1.56it/s]Extracting : certifi-2020.12.5-py39h06a4308_0.conda:  46%|████▌     | 17/37 [00:02<00:12,  1.56it/s]Extracting : pycosat-0.6.3-py39h27cfd23_0.conda:  49%|████▊     | 18/37 [00:02<00:12,  1.56it/s]    Extracting : pyopenssl-20.0.0-pyhd3eb1b0_1.conda:  51%|█████▏    | 19/37 [00:02<00:11,  1.56it/s]Extracting : libffi-3.3-he6710b0_2.conda:  54%|█████▍    | 20/37 [00:02<00:10,  1.56it/s]        Extracting : wheel-0.36.1-pyhd3eb1b0_0.conda:  57%|█████▋    | 21/37 [00:02<00:10,  1.56it/s]Extracting : brotlipy-0.7.0-py39h27cfd23_1003.conda:  59%|█████▉    | 22/37 [00:02<00:09,  1.56it/s]Extracting : _libgcc_mutex-0.1-main.conda:  62%|██████▏   | 23/37 [00:02<00:08,  1.56it/s]          Extracting : libstdcxx-ng-9.1.0-hdf63c60_0.conda:  65%|██████▍   | 24/37 [00:02<00:08,  1.56it/s]Extracting : cffi-1.14.4-py39h261ae71_0.conda:  68%|██████▊   | 25/37 [00:02<00:07,  1.56it/s]   Extracting : libedit-3.1.20191231-h14c3975_1.conda:  70%|███████   | 26/37 [00:02<00:07,  1.56it/s]Extracting : openssl-1.1.1i-h27cfd23_0.conda:  73%|███████▎  | 27/37 [00:02<00:06,  1.56it/s]      Extracting : sqlite-3.33.0-h62c20be_0.conda:  76%|███████▌  | 28/37 [00:02<00:05,  1.56it/s] Extracting : xz-5.2.5-h7b6447c_0.conda:  78%|███████▊  | 29/37 [00:02<00:05,  1.56it/s]     Extracting : pip-20.3.1-py39h06a4308_0.conda:  81%|████████  | 30/37 [00:02<00:04,  1.56it/s]Extracting : ruamel_yaml-0.15.80-py39h27cfd23_0.conda:  84%|████████▍ | 31/37 [00:02<00:03,  1.56it/s]Extracting : ca-certificates-2020.12.8-h06a4308_0.conda:  86%|████████▋ | 32/37 [00:02<00:03,  1.56it/s]Extracting : zlib-1.2.11-h7b6447c_3.conda:  89%|████████▉ | 33/37 [00:02<00:02,  1.56it/s]              Extracting : readline-8.0-h7b6447c_0.conda:  92%|█████████▏| 34/37 [00:02<00:01,  1.56it/s]Extracting : tqdm-4.54.1-pyhd3eb1b0_0.conda:  95%|█████████▍| 35/37 [00:02<00:01,  1.56it/s]Extracting : pysocks-1.7.1-py39h06a4308_0.conda:  97%|█████████▋| 36/37 [00:02<00:00,  1.56it/s]                                                                                                Collecting package metadata (current_repodata.json): ...working... done
-#12 19.15 Solving environment: ...working... done
-#12 19.42 
-#12 19.42 ## Package Plan ##
-#12 19.42 
-#12 19.42   environment location: /opt/conda
-#12 19.42 
-#12 19.42   added / updated specs:
-#12 19.42     - _libgcc_mutex==0.1=main
-#12 19.42     - brotlipy==0.7.0=py39h27cfd23_1003
-#12 19.42     - ca-certificates==2020.12.8=h06a4308_0
-#12 19.42     - certifi==2020.12.5=py39h06a4308_0
-#12 19.42     - cffi==1.14.4=py39h261ae71_0
-#12 19.42     - chardet==3.0.4=py39h06a4308_1003
-#12 19.42     - conda-package-handling==1.7.2=py39h27cfd23_1
-#12 19.42     - conda==4.9.2=py39h06a4308_0
-#12 19.42     - cryptography==3.3.1=py39h3c74f83_0
-#12 19.42     - idna==2.10=py_0
-#12 19.42     - ld_impl_linux-64==2.33.1=h53a641e_7
-#12 19.42     - libedit==3.1.20191231=h14c3975_1
-#12 19.42     - libffi==3.3=he6710b0_2
-#12 19.42     - libgcc-ng==9.1.0=hdf63c60_0
-#12 19.42     - libstdcxx-ng==9.1.0=hdf63c60_0
-#12 19.42     - ncurses==6.2=he6710b0_1
-#12 19.42     - openssl==1.1.1i=h27cfd23_0
-#12 19.42     - pip==20.3.1=py39h06a4308_0
-#12 19.42     - pycosat==0.6.3=py39h27cfd23_0
-#12 19.42     - pycparser==2.20=py_2
-#12 19.42     - pyopenssl==20.0.0=pyhd3eb1b0_1
-#12 19.42     - pysocks==1.7.1=py39h06a4308_0
-#12 19.42     - python==3.9.1=hdb3f193_2
-#12 19.42     - readline==8.0=h7b6447c_0
-#12 19.42     - requests==2.25.0=pyhd3eb1b0_0
-#12 19.42     - ruamel_yaml==0.15.80=py39h27cfd23_0
-#12 19.42     - setuptools==51.0.0=py39h06a4308_2
-#12 19.42     - six==1.15.0=py39h06a4308_0
-#12 19.42     - sqlite==3.33.0=h62c20be_0
-#12 19.42     - tk==8.6.10=hbc83047_0
-#12 19.42     - tqdm==4.54.1=pyhd3eb1b0_0
-#12 19.42     - tzdata==2020d=h14c3975_0
-#12 19.42     - urllib3==1.25.11=py_0
-#12 19.42     - wheel==0.36.1=pyhd3eb1b0_0
-#12 19.42     - xz==5.2.5=h7b6447c_0
-#12 19.42     - yaml==0.2.5=h7b6447c_0
-#12 19.42     - zlib==1.2.11=h7b6447c_3
-#12 19.42 
-#12 19.42 
-#12 19.42 The following NEW packages will be INSTALLED:
-#12 19.42 
-#12 19.42   _libgcc_mutex      pkgs/main/linux-64::_libgcc_mutex-0.1-main
-#12 19.42   brotlipy           pkgs/main/linux-64::brotlipy-0.7.0-py39h27cfd23_1003
-#12 19.42   ca-certificates    pkgs/main/linux-64::ca-certificates-2020.12.8-h06a4308_0
-#12 19.42   certifi            pkgs/main/linux-64::certifi-2020.12.5-py39h06a4308_0
-#12 19.42   cffi               pkgs/main/linux-64::cffi-1.14.4-py39h261ae71_0
-#12 19.42   chardet            pkgs/main/linux-64::chardet-3.0.4-py39h06a4308_1003
-#12 19.42   conda              pkgs/main/linux-64::conda-4.9.2-py39h06a4308_0
-#12 19.42   conda-package-han~ pkgs/main/linux-64::conda-package-handling-1.7.2-py39h27cfd23_1
-#12 19.42   cryptography       pkgs/main/linux-64::cryptography-3.3.1-py39h3c74f83_0
-#12 19.42   idna               pkgs/main/noarch::idna-2.10-py_0
-#12 19.42   ld_impl_linux-64   pkgs/main/linux-64::ld_impl_linux-64-2.33.1-h53a641e_7
-#12 19.42   libedit            pkgs/main/linux-64::libedit-3.1.20191231-h14c3975_1
-#12 19.42   libffi             pkgs/main/linux-64::libffi-3.3-he6710b0_2
-#12 19.42   libgcc-ng          pkgs/main/linux-64::libgcc-ng-9.1.0-hdf63c60_0
-#12 19.42   libstdcxx-ng       pkgs/main/linux-64::libstdcxx-ng-9.1.0-hdf63c60_0
-#12 19.42   ncurses            pkgs/main/linux-64::ncurses-6.2-he6710b0_1
-#12 19.42   openssl            pkgs/main/linux-64::openssl-1.1.1i-h27cfd23_0
-#12 19.42   pip                pkgs/main/linux-64::pip-20.3.1-py39h06a4308_0
-#12 19.42   pycosat            pkgs/main/linux-64::pycosat-0.6.3-py39h27cfd23_0
-#12 19.42   pycparser          pkgs/main/noarch::pycparser-2.20-py_2
-#12 19.42   pyopenssl          pkgs/main/noarch::pyopenssl-20.0.0-pyhd3eb1b0_1
-#12 19.42   pysocks            pkgs/main/linux-64::pysocks-1.7.1-py39h06a4308_0
-#12 19.42   python             pkgs/main/linux-64::python-3.9.1-hdb3f193_2
-#12 19.42   readline           pkgs/main/linux-64::readline-8.0-h7b6447c_0
-#12 19.42   requests           pkgs/main/noarch::requests-2.25.0-pyhd3eb1b0_0
-#12 19.42   ruamel_yaml        pkgs/main/linux-64::ruamel_yaml-0.15.80-py39h27cfd23_0
-#12 19.42   setuptools         pkgs/main/linux-64::setuptools-51.0.0-py39h06a4308_2
-#12 19.42   six                pkgs/main/linux-64::six-1.15.0-py39h06a4308_0
-#12 19.42   sqlite             pkgs/main/linux-64::sqlite-3.33.0-h62c20be_0
-#12 19.42   tk                 pkgs/main/linux-64::tk-8.6.10-hbc83047_0
-#12 19.42   tqdm               pkgs/main/noarch::tqdm-4.54.1-pyhd3eb1b0_0
-#12 19.42   tzdata             pkgs/main/noarch::tzdata-2020d-h14c3975_0
-#12 19.42   urllib3            pkgs/main/noarch::urllib3-1.25.11-py_0
-#12 19.42   wheel              pkgs/main/noarch::wheel-0.36.1-pyhd3eb1b0_0
-#12 19.42   xz                 pkgs/main/linux-64::xz-5.2.5-h7b6447c_0
-#12 19.42   yaml               pkgs/main/linux-64::yaml-0.2.5-h7b6447c_0
-#12 19.42   zlib               pkgs/main/linux-64::zlib-1.2.11-h7b6447c_3
-#12 19.42 
-#12 19.42 
-#12 19.42 Preparing transaction: ...working... done
-#12 19.75 Executing transaction: ...working... done
-#12 21.79 installation finished.
-#12 22.14 Collecting package metadata (current_repodata.json): ...working... done
-#12 23.94 Solving environment: ...working... done
-#12 24.50 
-#12 24.50 ## Package Plan ##
-#12 24.50 
-#12 24.50   environment location: /opt/conda
-#12 24.50 
-#12 24.50   added / updated specs:
-#12 24.50     - python=3.7.10
-#12 24.50 
-#12 24.50 
-#12 24.50 The following packages will be downloaded:
-#12 24.50 
-#12 24.50     package                    |            build
-#12 24.50     ---------------------------|-----------------
-#12 24.50     brotlipy-0.7.0             |py37h27cfd23_1003         320 KB
-#12 24.50     ca-certificates-2021.5.25  |       h06a4308_1         112 KB
-#12 24.50     certifi-2021.5.30          |   py37h06a4308_0         139 KB
-#12 24.50     cffi-1.14.5                |   py37h261ae71_0         224 KB
-#12 24.50     chardet-3.0.4              |py37h06a4308_1003         175 KB
-#12 24.50     conda-4.10.1               |   py37h06a4308_1         2.9 MB
-#12 24.50     conda-package-handling-1.7.3|   py37h27cfd23_1         881 KB
-#12 24.50     cryptography-3.4.7         |   py37hd23ed53_0         904 KB
-#12 24.50     openssl-1.1.1k             |       h27cfd23_0         2.5 MB
-#12 24.50     pip-21.1.2                 |   py37h06a4308_0         1.8 MB
-#12 24.50     pycosat-0.6.3              |   py37h27cfd23_0          81 KB
-#12 24.50     pysocks-1.7.1              |           py37_1          27 KB
-#12 24.50     python-3.7.10              |       hdb3f193_0        45.2 MB
-#12 24.50     ruamel_yaml-0.15.100       |   py37h27cfd23_0         253 KB
-#12 24.50     setuptools-52.0.0          |   py37h06a4308_0         710 KB
-#12 24.50     six-1.16.0                 |     pyhd3eb1b0_0          18 KB
-#12 24.50     ------------------------------------------------------------
-#12 24.50                                            Total:        56.1 MB
-#12 24.50 
-#12 24.50 The following packages will be UPDATED:
-#12 24.50 
-#12 24.50   ca-certificates                      2020.12.8-h06a4308_0 --> 2021.5.25-h06a4308_1
-#12 24.50   certifi                          2020.12.5-py39h06a4308_0 --> 2021.5.30-py37h06a4308_0
-#12 24.50   cffi                                1.14.4-py39h261ae71_0 --> 1.14.5-py37h261ae71_0
-#12 24.50   conda                                4.9.2-py39h06a4308_0 --> 4.10.1-py37h06a4308_1
-#12 24.50   conda-package-han~                   1.7.2-py39h27cfd23_1 --> 1.7.3-py37h27cfd23_1
-#12 24.50   cryptography                         3.3.1-py39h3c74f83_0 --> 3.4.7-py37hd23ed53_0
-#12 24.50   openssl                                 1.1.1i-h27cfd23_0 --> 1.1.1k-h27cfd23_0
-#12 24.50   pip                                 20.3.1-py39h06a4308_0 --> 21.1.2-py37h06a4308_0
-#12 24.50   pysocks                              1.7.1-py39h06a4308_0 --> 1.7.1-py37_1
-#12 24.50   ruamel_yaml                        0.15.80-py39h27cfd23_0 --> 0.15.100-py37h27cfd23_0
-#12 24.50   setuptools                          51.0.0-py39h06a4308_2 --> 52.0.0-py37h06a4308_0
-#12 24.50   six                pkgs/main/linux-64::six-1.15.0-py39h0~ --> pkgs/main/noarch::six-1.16.0-pyhd3eb1b0_0
-#12 24.50 
-#12 24.50 The following packages will be DOWNGRADED:
-#12 24.50 
-#12 24.50   brotlipy                          0.7.0-py39h27cfd23_1003 --> 0.7.0-py37h27cfd23_1003
-#12 24.50   chardet                           3.0.4-py39h06a4308_1003 --> 3.0.4-py37h06a4308_1003
-#12 24.50   pycosat                              0.6.3-py39h27cfd23_0 --> 0.6.3-py37h27cfd23_0
-#12 24.50   python                                   3.9.1-hdb3f193_2 --> 3.7.10-hdb3f193_0
-#12 24.50 
-#12 24.50 
-#12 24.50 Proceed ([y]/n)? 
-#12 24.50 
-#12 24.50 Downloading and Extracting Packages
-#12 24.51 chardet-3.0.4        | 175 KB    |            |   0% chardet-3.0.4        | 175 KB    | 9          |   9% chardet-3.0.4        | 175 KB    | ########## | 100% chardet-3.0.4        | 175 KB    | ########## | 100% 
-#12 24.76 python-3.7.10        | 45.2 MB   |            |   0% python-3.7.10        | 45.2 MB   | 1          |   2% python-3.7.10        | 45.2 MB   | 4          |   4% python-3.7.10        | 45.2 MB   | 6          |   7% python-3.7.10        | 45.2 MB   | 8          |   9% python-3.7.10        | 45.2 MB   | #1         |  11% python-3.7.10        | 45.2 MB   | #3         |  14% python-3.7.10        | 45.2 MB   | #6         |  16% python-3.7.10        | 45.2 MB   | #8         |  18% python-3.7.10        | 45.2 MB   | ##         |  21% python-3.7.10        | 45.2 MB   | ##3        |  23% python-3.7.10        | 45.2 MB   | ##5        |  25% python-3.7.10        | 45.2 MB   | ##7        |  28% python-3.7.10        | 45.2 MB   | ###        |  30% python-3.7.10        | 45.2 MB   | ###2       |  33% python-3.7.10        | 45.2 MB   | ###4       |  35% python-3.7.10        | 45.2 MB   | ###7       |  37% python-3.7.10        | 45.2 MB   | ###9       |  40% python-3.7.10        | 45.2 MB   | ####2      |  42% python-3.7.10        | 45.2 MB   | ####4      |  45% python-3.7.10        | 45.2 MB   | ####6      |  47% python-3.7.10        | 45.2 MB   | ####9      |  49% python-3.7.10        | 45.2 MB   | #####1     |  52% python-3.7.10        | 45.2 MB   | #####4     |  54% python-3.7.10        | 45.2 MB   | #####6     |  57% python-3.7.10        | 45.2 MB   | #####9     |  59% python-3.7.10        | 45.2 MB   | ######1    |  62% python-3.7.10        | 45.2 MB   | ######3    |  64% python-3.7.10        | 45.2 MB   | ######6    |  66% python-3.7.10        | 45.2 MB   | ######8    |  69% python-3.7.10        | 45.2 MB   | #######1   |  71% python-3.7.10        | 45.2 MB   | #######3   |  74% python-3.7.10        | 45.2 MB   | #######5   |  76% python-3.7.10        | 45.2 MB   | #######8   |  78% python-3.7.10        | 45.2 MB   | ########   |  81% python-3.7.10        | 45.2 MB   | ########3  |  83% python-3.7.10        | 45.2 MB   | ########5  |  86% python-3.7.10        | 45.2 MB   | ########7  |  88% python-3.7.10        | 45.2 MB   | #########  |  90% python-3.7.10        | 45.2 MB   | #########2 |  93% python-3.7.10        | 45.2 MB   | #########5 |  95% python-3.7.10        | 45.2 MB   | #########7 |  98% python-3.7.10        | 45.2 MB   | ########## | 100% python-3.7.10        | 45.2 MB   | ########## | 100% 
-#12 30.12 certifi-2021.5.30    | 139 KB    |            |   0% certifi-2021.5.30    | 139 KB    | ########## | 100% 
-#12 30.20 cffi-1.14.5          | 224 KB    |            |   0% cffi-1.14.5          | 224 KB    | ########## | 100% 
-#12 30.26 cryptography-3.4.7   | 904 KB    |            |   0% cryptography-3.4.7   | 904 KB    | ########6  |  87% cryptography-3.4.7   | 904 KB    | ########## | 100% 
-#12 30.43 conda-package-handli | 881 KB    |            |   0% conda-package-handli | 881 KB    | ######1    |  62% conda-package-handli | 881 KB    | ########## | 100% 
-#12 30.58 pycosat-0.6.3        | 81 KB     |            |   0% pycosat-0.6.3        | 81 KB     | ########## | 100% 
-#12 30.62 brotlipy-0.7.0       | 320 KB    |            |   0% brotlipy-0.7.0       | 320 KB    | ########## | 100% 
-#12 30.70 pysocks-1.7.1        | 27 KB     |            |   0% pysocks-1.7.1        | 27 KB     | ########## | 100% 
-#12 30.75 ca-certificates-2021 | 112 KB    |            |   0% ca-certificates-2021 | 112 KB    | ########## | 100% 
-#12 30.80 pip-21.1.2           | 1.8 MB    |            |   0% pip-21.1.2           | 1.8 MB    | ####4      |  45% pip-21.1.2           | 1.8 MB    | ########## | 100% pip-21.1.2           | 1.8 MB    | ########## | 100% 
-#12 31.12 setuptools-52.0.0    | 710 KB    |            |   0% setuptools-52.0.0    | 710 KB    | #########6 |  97% setuptools-52.0.0    | 710 KB    | ########## | 100% 
-#12 31.27 conda-4.10.1         | 2.9 MB    |            |   0% conda-4.10.1         | 2.9 MB    | ###        |  31% conda-4.10.1         | 2.9 MB    | ######7    |  67% conda-4.10.1         | 2.9 MB    | ########## | 100% conda-4.10.1         | 2.9 MB    | ########## | 100% 
-#12 31.68 openssl-1.1.1k       | 2.5 MB    |            |   0% openssl-1.1.1k       | 2.5 MB    | ##8        |  28% openssl-1.1.1k       | 2.5 MB    | #######2   |  73% openssl-1.1.1k       | 2.5 MB    | ########## | 100% openssl-1.1.1k       | 2.5 MB    | ########## | 100% 
-#12 32.02 six-1.16.0           | 18 KB     |            |   0% six-1.16.0           | 18 KB     | ########## | 100% 
-#12 32.07 ruamel_yaml-0.15.100 | 253 KB    |            |   0% ruamel_yaml-0.15.100 | 253 KB    | ########## | 100% 
-#12 32.14 Preparing transaction: ...working... done
-#12 32.32 Verifying transaction: ...working... done
-#12 32.92 Executing transaction: ...working... done
-#12 DONE 35.9s
-
-#13 [ 8/21] RUN if [ "tensorflow==2.4.2" ]; then python -m pip install tensorflow==2.4.2; fi
-#13 sha256:a9313e3f89a2f4213d53a133828b5107f4a48ecce2083cb17842c7e861feabcd
-#13 1.241 Collecting tensorflow==2.4.2
-#13 1.395   Downloading tensorflow-2.4.2-cp37-cp37m-manylinux2010_x86_64.whl (394.5 MB)
-#13 40.12 Collecting google-pasta~=0.2
-#13 40.20   Downloading google_pasta-0.2.0-py3-none-any.whl (57 kB)
-#13 40.27 Collecting tensorboard~=2.4
-#13 40.29   Downloading tensorboard-2.5.0-py3-none-any.whl (6.0 MB)
-#13 41.39 Collecting numpy~=1.19.2
-#13 41.41   Downloading numpy-1.19.5-cp37-cp37m-manylinux2010_x86_64.whl (14.8 MB)
-#13 42.87 Collecting six~=1.15.0
-#13 42.93   Downloading six-1.15.0-py2.py3-none-any.whl (10 kB)
-#13 42.96 Collecting opt-einsum~=3.3.0
-#13 43.07   Downloading opt_einsum-3.3.0-py3-none-any.whl (65 kB)
-#13 43.77 Collecting typing-extensions~=3.7.4
-#13 43.80   Downloading typing_extensions-3.7.4.3-py3-none-any.whl (22 kB)
-#13 43.85 Collecting termcolor~=1.1.0
-#13 43.88   Downloading termcolor-1.1.0.tar.gz (3.9 kB)
-#13 44.14 Requirement already satisfied: wheel~=0.35 in /opt/conda/lib/python3.7/site-packages (from tensorflow==2.4.2) (0.36.1)
-#13 44.25 Collecting h5py~=2.10.0
-#13 44.27   Downloading h5py-2.10.0-cp37-cp37m-manylinux1_x86_64.whl (2.9 MB)
-#13 44.57 Collecting tensorflow-estimator<2.5.0,>=2.4.0
-#13 44.60   Downloading tensorflow_estimator-2.4.0-py2.py3-none-any.whl (462 kB)
-#13 45.04 Collecting protobuf>=3.9.2
-#13 45.06   Downloading protobuf-3.17.3-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl (1.0 MB)
-#13 46.23 Collecting grpcio~=1.32.0
-#13 46.34   Downloading grpcio-1.32.0-cp37-cp37m-manylinux2014_x86_64.whl (3.8 MB)
-#13 46.68 Collecting astunparse~=1.6.3
-#13 46.70   Downloading astunparse-1.6.3-py2.py3-none-any.whl (12 kB)
-#13 46.73 Collecting wrapt~=1.12.1
-#13 46.76   Downloading wrapt-1.12.1.tar.gz (27 kB)
-#13 47.02 Collecting absl-py~=0.10
-#13 47.04   Downloading absl_py-0.13.0-py3-none-any.whl (132 kB)
-#13 47.08 Collecting gast==0.3.3
-#13 47.10   Downloading gast-0.3.3-py2.py3-none-any.whl (9.7 kB)
-#13 47.13 Collecting flatbuffers~=1.12.0
-#13 47.16   Downloading flatbuffers-1.12-py2.py3-none-any.whl (15 kB)
-#13 47.20 Collecting keras-preprocessing~=1.1.2
-#13 47.22   Downloading Keras_Preprocessing-1.1.2-py2.py3-none-any.whl (42 kB)
-#13 47.57 Collecting google-auth-oauthlib<0.5,>=0.4.1
-#13 47.59   Downloading google_auth_oauthlib-0.4.4-py2.py3-none-any.whl (18 kB)
-#13 47.60 Requirement already satisfied: requests<3,>=2.21.0 in /opt/conda/lib/python3.7/site-packages (from tensorboard~=2.4->tensorflow==2.4.2) (2.25.0)
-#13 47.64 Collecting tensorboard-plugin-wit>=1.6.0
-#13 47.67   Downloading tensorboard_plugin_wit-1.8.0-py3-none-any.whl (781 kB)
-#13 47.84 Collecting markdown>=2.6.8
-#13 47.85   Downloading Markdown-3.3.4-py3-none-any.whl (97 kB)
-#13 47.92 Collecting tensorboard-data-server<0.7.0,>=0.6.0
-#13 47.94   Downloading tensorboard_data_server-0.6.1-py3-none-manylinux2010_x86_64.whl (4.9 MB)
-#13 48.46 Requirement already satisfied: setuptools>=41.0.0 in /opt/conda/lib/python3.7/site-packages (from tensorboard~=2.4->tensorflow==2.4.2) (52.0.0.post20210125)
-#13 48.56 Collecting werkzeug>=0.11.15
-#13 48.58   Downloading Werkzeug-2.0.1-py3-none-any.whl (288 kB)
-#13 48.82 Collecting google-auth<2,>=1.6.3
-#13 48.84   Downloading google_auth-1.31.0-py2.py3-none-any.whl (147 kB)
-#13 48.95 Collecting rsa<5,>=3.1.4
-#13 48.97   Downloading rsa-4.7.2-py3-none-any.whl (34 kB)
-#13 49.04 Collecting cachetools<5.0,>=2.0.0
-#13 49.06   Downloading cachetools-4.2.2-py3-none-any.whl (11 kB)
-#13 49.18 Collecting pyasn1-modules>=0.2.1
-#13 49.20   Downloading pyasn1_modules-0.2.8-py2.py3-none-any.whl (155 kB)
-#13 49.34 Collecting requests-oauthlib>=0.7.0
-#13 49.35   Downloading requests_oauthlib-1.3.0-py2.py3-none-any.whl (23 kB)
-#13 49.52 Collecting importlib-metadata
-#13 49.54   Downloading importlib_metadata-4.5.0-py3-none-any.whl (17 kB)
-#13 49.67 Collecting pyasn1<0.5.0,>=0.4.6
-#13 49.69   Downloading pyasn1-0.4.8-py2.py3-none-any.whl (77 kB)
-#13 49.73 Requirement already satisfied: certifi>=2017.4.17 in /opt/conda/lib/python3.7/site-packages (from requests<3,>=2.21.0->tensorboard~=2.4->tensorflow==2.4.2) (2021.5.30)
-#13 49.74 Requirement already satisfied: idna<3,>=2.5 in /opt/conda/lib/python3.7/site-packages (from requests<3,>=2.21.0->tensorboard~=2.4->tensorflow==2.4.2) (2.10)
-#13 49.74 Requirement already satisfied: urllib3<1.27,>=1.21.1 in /opt/conda/lib/python3.7/site-packages (from requests<3,>=2.21.0->tensorboard~=2.4->tensorflow==2.4.2) (1.25.11)
-#13 49.74 Requirement already satisfied: chardet<4,>=3.0.2 in /opt/conda/lib/python3.7/site-packages (from requests<3,>=2.21.0->tensorboard~=2.4->tensorflow==2.4.2) (3.0.4)
-#13 49.82 Collecting oauthlib>=3.0.0
-#13 49.84   Downloading oauthlib-3.1.1-py2.py3-none-any.whl (146 kB)
-#13 50.07 Collecting zipp>=0.5
-#13 50.09   Downloading zipp-3.4.1-py3-none-any.whl (5.2 kB)
-#13 50.14 Building wheels for collected packages: termcolor, wrapt
-#13 50.15   Building wheel for termcolor (setup.py): started
-#13 50.47   Building wheel for termcolor (setup.py): finished with status 'done'
-#13 50.47   Created wheel for termcolor: filename=termcolor-1.1.0-py3-none-any.whl size=4832 sha256=2881b056caf7b61cba954b0ad491a8f1d1f30e2d6ba406359328f7046d67b7c8
-#13 50.47   Stored in directory: /tmp/pip-ephem-wheel-cache-gm_lk0_1/wheels/3f/e3/ec/8a8336ff196023622fbcb36de0c5a5c218cbb24111d1d4c7f2
-#13 50.48   Building wheel for wrapt (setup.py): started
-#13 51.66   Building wheel for wrapt (setup.py): finished with status 'done'
-#13 51.66   Created wheel for wrapt: filename=wrapt-1.12.1-cp37-cp37m-linux_x86_64.whl size=70970 sha256=cfb676878722688ccddc6d4cb8cf06443053e14498dd05519ec89e45e1caf7c3
-#13 51.66   Stored in directory: /tmp/pip-ephem-wheel-cache-gm_lk0_1/wheels/62/76/4c/aa25851149f3f6d9785f6c869387ad82b3fd37582fa8147ac6
-#13 51.66 Successfully built termcolor wrapt
-#13 51.96 Installing collected packages: pyasn1, zipp, typing-extensions, six, rsa, pyasn1-modules, oauthlib, cachetools, requests-oauthlib, importlib-metadata, google-auth, werkzeug, tensorboard-plugin-wit, tensorboard-data-server, protobuf, numpy, markdown, grpcio, google-auth-oauthlib, absl-py, wrapt, termcolor, tensorflow-estimator, tensorboard, opt-einsum, keras-preprocessing, h5py, google-pasta, gast, flatbuffers, astunparse, tensorflow
-#13 52.14   Attempting uninstall: six
-#13 52.14     Found existing installation: six 1.16.0
-#13 52.14     Uninstalling six-1.16.0:
-#13 52.21       Successfully uninstalled six-1.16.0
-#13 75.86 Successfully installed absl-py-0.13.0 astunparse-1.6.3 cachetools-4.2.2 flatbuffers-1.12 gast-0.3.3 google-auth-1.31.0 google-auth-oauthlib-0.4.4 google-pasta-0.2.0 grpcio-1.32.0 h5py-2.10.0 importlib-metadata-4.5.0 keras-preprocessing-1.1.2 markdown-3.3.4 numpy-1.19.5 oauthlib-3.1.1 opt-einsum-3.3.0 protobuf-3.17.3 pyasn1-0.4.8 pyasn1-modules-0.2.8 requests-oauthlib-1.3.0 rsa-4.7.2 six-1.15.0 tensorboard-2.5.0 tensorboard-data-server-0.6.1 tensorboard-plugin-wit-1.8.0 tensorflow-2.4.2 tensorflow-estimator-2.4.0 termcolor-1.1.0 typing-extensions-3.7.4.3 werkzeug-2.0.1 wrapt-1.12.1 zipp-3.4.1
-#13 75.86 WARNING: Running pip as root will break packages and permissions. You should install packages reliably by using venv: https://pip.pypa.io/warnings/venv
-#13 DONE 77.0s
-
-#14 [ 9/21] RUN if [ "1" ]; then /tmp/det_dockerfile_scripts/tf2.4-cuda11.1-symlink.sh; fi
-#14 sha256:8b6f4911a5707d59f74abaa3d7b13117d0f29ee8ed4c24026629fe44529f6dda
-#14 0.393 /opt/conda/bin/python
-#14 DONE 0.4s
-
-#15 [10/21] RUN if [ "torch==1.9.0 -f https://download.pytorch.org/whl/cu111/torch_stable.html" ]; then python -m pip install torch==1.9.0 -f https://download.pytorch.org/whl/cu111/torch_stable.html; fi
-#15 sha256:486c23cfb8b030e2f91eedac743cbce34e99d72584895ba3c5b690052e08b75e
-#15 0.767 Looking in links: https://download.pytorch.org/whl/cu111/torch_stable.html
-#15 1.688 Collecting torch==1.9.0
-#15 1.738   Downloading https://download.pytorch.org/whl/cu111/torch-1.9.0%2Bcu111-cp37-cp37m-linux_x86_64.whl (2041.3 MB)
