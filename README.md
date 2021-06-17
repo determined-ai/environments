@@ -22,5 +22,5 @@ To build a custom image:
 
 To publish an image:
 - Add a `publish` target or modify an existing recipe
-- Change registry info (`DOCKERHUB_REGISTRY` and `NGC_REGISTRY`) in `Makefile`
-- run `make {publish-target}`
+- Change registry info (`DOCKERHUB_REGISTRY` and `NGC_REGISTRY`) in `Makefile` or specify make args
+- run `make {publish-target} DOCKERHUB_REGISTRY={registry}`

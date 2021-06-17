@@ -8,7 +8,6 @@ export DOCKERHUB_REGISTRY := determinedai
 CPU_PREFIX := environments:py-3.7-
 CPU_SUFFIX := -cpu
 CUDA_102_PREFIX := environments:cuda-10.2-
-CUDA_110_PREFIX := environments:cuda-11.0-
 CUDA_111_PREFIX := environments:cuda-11.1-
 CUDA_112_PREFIX := environments:cuda-11.2-
 GPU_SUFFIX := -gpu
