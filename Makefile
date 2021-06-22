@@ -45,6 +45,7 @@ build-tf2-cpu:
 		--build-arg TORCH_PIP="torch==1.9.0 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.10.0 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.3.5" \
+		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git" \
 		--build-arg HOROVOD_PIP="horovod==0.22.1" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
