@@ -5,4 +5,4 @@ Keras-Preprocessing[image]
 # TODO(DET-4259) Remove this when we fix the circular dependency with the main repo.
 petname
 cloudpickle==1.6.0
-yogadl==0.1.4
+azure-storage-blob
