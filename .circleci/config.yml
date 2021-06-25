@@ -102,7 +102,7 @@ workflows:
           context: determined-production
           matrix:
             parameters:
-              image-type: ["tf1-cpu", "tf2-cpu", "tf1-gpu", "cuda-11", "tf25-gpu"]
+              image-type: ["tf1-cpu", "tf2-cpu", "tf1-gpu", "tf2-gpu", "tf25-gpu"]
           filters:
             branches:
               only: master

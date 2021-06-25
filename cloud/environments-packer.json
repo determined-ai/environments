@@ -11,7 +11,7 @@
     "gpu_tf1_environment_name": "{{ env `GPU_TF1_ENVIRONMENT_NAME` }}",
     "cpu_tf1_environment_name": "{{ env `CPU_TF1_ENVIRONMENT_NAME` }}",
     "cpu_tf2_environment_name": "{{ env `CPU_TF2_ENVIRONMENT_NAME` }}",
-    "cuda_11_environment_name": "{{ env `CUDA_11_ENVIRONMENT_NAME` }}",
+    "gpu_tf2_environment_name": "{{ env `GPU_TF2_ENVIRONMENT_NAME` }}",
     "gpu_tf25_environment_name": "{{ env `GPU_TF25_ENVIRONMENT_NAME` }}",
     "short_git_hash": "{{ env `short_git_hash` }}",
     "image_suffix": "",
@@ -35,7 +35,7 @@
         "-e gpu_tf1_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf1_environment_name` }}",
         "-e cpu_tf1_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf1_environment_name` }}",
         "-e cpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf2_environment_name` }}",
-        "-e cuda_11_environment_name={{ user `docker_registry` }}/{{ user `cuda_11_environment_name` }}",
+        "-e gpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf2_environment_name` }}",
         "-e gpu_tf25_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf25_environment_name` }}",
         "-e short_git_hash={{ user `short_git_hash` }}",
         "-e image_suffix={{ user `image_suffix` }}"
@@ -54,7 +54,7 @@
         "-e gpu_tf1_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf1_environment_name` }}",
         "-e cpu_tf1_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf1_environment_name` }}",
         "-e cpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf2_environment_name` }}",
-        "-e cuda_11_environment_name={{ user `docker_registry` }}/{{ user `cuda_11_environment_name` }}",
+        "-e gpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf2_environment_name` }}",
         "-e gpu_tf25_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf25_environment_name` }}",
         "-e short_git_hash={{ user `short_git_hash` }}",
         "-e image_suffix={{ user `image_suffix` }}"
