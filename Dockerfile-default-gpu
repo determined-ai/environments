@@ -24,7 +24,6 @@ RUN if [ "$TORCH_PROFILER_GIT" ]; then /tmp/det_dockerfile_scripts/torch-tb-prof
 
 RUN python -m pip install GPUtil pynvml
 
-
 ARG TORCH_CUDA_ARCH_LIST
 ARG APEX_GIT
 ARG APEX_PATCH
