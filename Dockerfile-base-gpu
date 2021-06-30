@@ -26,6 +26,8 @@ RUN apt-get update \
 		openssh-server \
 		pkg-config \
 		wget \
+		unattended-upgrades \
+	&& unattended-upgrade \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& rm /etc/ssh/ssh_host_ecdsa_key \
 	&& rm /etc/ssh/ssh_host_ed25519_key \
