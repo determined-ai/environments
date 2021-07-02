@@ -25,3 +25,5 @@ ARG HOROVOD_CPU_OPERATIONS=GLOO
 RUN pip install "$HOROVOD_PIP"
 
 RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
+
+RUN rm -r /tmp/*
