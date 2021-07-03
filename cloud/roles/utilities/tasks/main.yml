@@ -21,4 +21,5 @@
     - unzip
     - wget
     - zip
+    - nfs-common
     state: present
