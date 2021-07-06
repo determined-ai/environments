@@ -5,3 +5,4 @@ Keras-Preprocessing[image]
 # TODO(DET-4259) Remove this when we fix the circular dependency with the main repo.
 petname
 azure-storage-blob
+Pillow<=8.2.0 # https://github.com/python-pillow/Pillow/issues/5571
