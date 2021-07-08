@@ -29,15 +29,20 @@ ARG APEX_GIT
 ARG APEX_PATCH
 RUN /tmp/det_dockerfile_scripts/install_apex.sh
 
+RUN /tmp/det_dockerfile_scripts/build_nccl.sh
+ARG HOROVOD_NCCL_LINK=STATIC
+ARG HOROVOD_NCCL_HOME=/tmp/det_nccl/build
+
 ARG HOROVOD_PIP=horovod
 ARG HOROVOD_WITH_TENSORFLOW=1
 ARG HOROVOD_WITH_PYTORCH=1
 ARG HOROVOD_WITHOUT_MXNET=1
 ARG HOROVOD_GPU_OPERATIONS=NCCL
 ARG HOROVOD_WITHOUT_MPI=1
-ARG HOROVOD_NCCL_LINK=STATIC
 RUN ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs && \
     pip install "$HOROVOD_PIP" && \
     ldconfig
 
 RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
+
+RUN rm -r /tmp/*
