@@ -48,3 +48,9 @@
   docker_image:
     name: "{{ gpu_tf25_environment_name }}{{ image_suffix }}"
     source: pull
+
+- name: Pull TF26 GPU environment
+  become: yes
+  docker_image:
+    name: "{{ gpu_tf26_environment_name }}{{ image_suffix }}"
+    source: pull
