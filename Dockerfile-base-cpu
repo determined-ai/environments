@@ -45,7 +45,7 @@ RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION}
 # successfully install these packages into containers running as non-root.
 # `pip` does not uninstall dependencies, so we still have all the dependencies
 # installed.
-RUN pip install determined determined-cli && pip uninstall -y determined determined-cli determined-common
+RUN pip install determined && pip uninstall -y determined
 
 RUN pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
 ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
