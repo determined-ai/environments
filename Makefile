@@ -28,7 +28,7 @@ export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4
 export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4$(GPU_SUFFIX)
 export CPU_TF25_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.7-lightning-1.2-tf-2.5$(CPU_SUFFIX)
 export GPU_TF25_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)pytorch-1.7-lightning-1.2-tf-2.5$(GPU_SUFFIX)
-export CPU_TF26_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.7-lightning-1.2-tf-2.5$(CPU_SUFFIX)
+export CPU_TF26_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.7-lightning-1.2-tf-2.6$(CPU_SUFFIX)
 export GPU_TF26_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)pytorch-1.7-lightning-1.2-tf-2.6$(GPU_SUFFIX)
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
