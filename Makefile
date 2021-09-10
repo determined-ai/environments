@@ -14,8 +14,10 @@ GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
 
 export CPU_TF1_BASE_NAME := $(CPU_PREFIX)base$(CPU_SUFFIX)
-export GPU_TF1_BASE_NAME := $(CUDA_102_PREFIX)base$(GPU_SUFFIX)
 export CPU_TF2_BASE_NAME := $(CPU_PREFIX)base$(CPU_SUFFIX)
+export CPU_TF25_BASE_NAME := $(CPU_PREFIX)base$(CPU_SUFFIX)
+export CPU_TF26_BASE_NAME := $(CPU_PREFIX)base$(CPU_SUFFIX)
+export GPU_TF1_BASE_NAME := $(CUDA_102_PREFIX)base$(GPU_SUFFIX)
 export GPU_TF2_BASE_NAME := $(CUDA_111_PREFIX)base$(GPU_SUFFIX)
 export GPU_TF25_BASE_NAME := $(CUDA_112_PREFIX)base$(GPU_SUFFIX)
 export GPU_TF26_BASE_NAME := $(CUDA_112_PREFIX)base$(GPU_SUFFIX)
@@ -24,7 +26,9 @@ export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.7-tf-1.15$(CPU_SUFFIX)
 export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_102_PREFIX)pytorch-1.7-tf-1.15$(GPU_SUFFIX)
 export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4$(CPU_SUFFIX)
 export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4$(GPU_SUFFIX)
+export CPU_TF25_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.7-lightning-1.2-tf-2.5$(CPU_SUFFIX)
 export GPU_TF25_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)pytorch-1.7-lightning-1.2-tf-2.5$(GPU_SUFFIX)
+export CPU_TF26_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.7-lightning-1.2-tf-2.5$(CPU_SUFFIX)
 export GPU_TF26_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)pytorch-1.7-lightning-1.2-tf-2.6$(GPU_SUFFIX)
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
@@ -71,6 +75,48 @@ build-tf2-cpu:
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
+		.
+
+.PHONY: build-tf25-cpu
+build-tf25-cpu:
+	docker build -f Dockerfile-base-cpu \
+		--build-arg BASE_IMAGE="ubuntu:18.04" \
+		--build-arg PYTHON_VERSION="3.7.10" \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF25_BASE_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF25_BASE_NAME)-$(VERSION) \
+		.
+	docker build -f Dockerfile-default-cpu \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_TF25_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.5.1" \
+		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.2.0" \
+		--build-arg HOROVOD_PIP="horovod==0.22.1" \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(NGC_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME)-$(VERSION) \
+		.
+
+.PHONY: build-tf26-cpu
+build-tf26-cpu:
+	docker build -f Dockerfile-base-cpu \
+		--build-arg BASE_IMAGE="ubuntu:18.04" \
+		--build-arg PYTHON_VERSION="3.7.10" \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF26_BASE_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF26_BASE_NAME)-$(VERSION) \
+		.
+	docker build -f Dockerfile-default-cpu \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_TF26_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.6.0" \
+		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.2.0" \
+		--build-arg HOROVOD_PIP="horovod==0.22.1" \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(NGC_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
 .PHONY: build-tf1-gpu
@@ -179,6 +225,18 @@ publish-tf2-cpu:
 	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF2_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf2-cpu $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+
+.PHONY: publish-tf25-cpu
+publish-tf25-cpu:
+	scripts/publish-docker.sh tf25-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF25_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf25-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf25-cpu $(NGC_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+
+.PHONY: publish-tf26-cpu
+publish-tf26-cpu:
+	scripts/publish-docker.sh tf26-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF26_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf26-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf26-cpu $(NGC_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 
 .PHONY: publish-tf1-gpu
 publish-tf1-gpu:
