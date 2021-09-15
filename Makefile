@@ -1,3 +1,4 @@
+SHELL := /bin/bash -o pipefail
 VERSION := $(shell cat VERSION)
 VERSION_DASHES := $(subst .,-,$(VERSION))
 SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
