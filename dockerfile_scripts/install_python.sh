@@ -5,8 +5,8 @@ set -e
 PYTHON_VERSION=${1}
 
 CONDA_DIR="/opt/conda"
-CONDA_INSTALLER="Miniconda3-py39_4.9.2-Linux-x86_64.sh"
-CONDA_MD5="b4e46fcc8029e2cfa731b788f25b1d36"
+CONDA_INSTALLER="Miniconda3-py37_4.10.3-Linux-x86_64.sh"
+CONDA_MD5="9f186c1d86c266acc47dbc1603f0e2ed"
 CONDA_URL="https://repo.anaconda.com/miniconda"
 
 mkdir -p /etc/determined/conda.d
@@ -19,3 +19,5 @@ bash "./${CONDA_INSTALLER}" -u -b -p "${CONDA_DIR}"
 rm -f "./${CONDA_INSTALLER}"
 
 conda install python=${PYTHON_VERSION}
+conda update --prefix ${CONDA_DIR} --all -y
+conda clean --all -y
