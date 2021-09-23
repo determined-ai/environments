@@ -6,15 +6,18 @@ SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
 NGC_REGISTRY := nvcr.io/isv-ngc-partner/determined
 export DOCKERHUB_REGISTRY := determinedai
 
-CPU_PREFIX := environments:py-3.7-
+CPU_PREFIX := environments:py-3.8-
+CPU_PREFIX_37 := environments:py-3.7-
 CPU_SUFFIX := -cpu
 CUDA_102_PREFIX := environments:cuda-10.2-
 CUDA_111_PREFIX := environments:cuda-11.1-
 CUDA_112_PREFIX := environments:cuda-11.2-
 GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
+PYTHON_VERSION := 3.8.11
+PYTHON_VERSION_37 := 3.7.11
 
-export CPU_TF1_BASE_NAME := $(CPU_PREFIX)base$(CPU_SUFFIX)
+export CPU_TF1_BASE_NAME := $(CPU_PREFIX_37)base$(CPU_SUFFIX)
 export GPU_TF1_BASE_NAME := $(CUDA_102_PREFIX)base$(GPU_SUFFIX)
 export CPU_TF2_BASE_NAME := $(CPU_PREFIX)base$(CPU_SUFFIX)
 export GPU_TF2_BASE_NAME := $(CUDA_111_PREFIX)base$(GPU_SUFFIX)
@@ -23,7 +26,7 @@ export GPU_TF25_BASE_NAME := $(CUDA_112_PREFIX)base$(GPU_SUFFIX)
 export CPU_TF26_BASE_NAME := $(CPU_PREFIX)base$(CPU_SUFFIX)
 export GPU_TF26_BASE_NAME := $(CUDA_112_PREFIX)base$(GPU_SUFFIX)
 
-export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.7-tf-1.15$(CPU_SUFFIX)
+export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX_37)pytorch-1.7-tf-1.15$(CPU_SUFFIX)
 export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_102_PREFIX)pytorch-1.7-tf-1.15$(GPU_SUFFIX)
 export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4$(CPU_SUFFIX)
 export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4$(GPU_SUFFIX)
@@ -40,7 +43,7 @@ export AWS_MAX_ATTEMPTS=360
 build-tf1-cpu:
 	docker build -f Dockerfile-base-cpu \
 		--build-arg BASE_IMAGE="ubuntu:18.04" \
-		--build-arg PYTHON_VERSION="3.7.10" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_37)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF1_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF1_BASE_NAME)-$(VERSION) \
 		.
@@ -60,7 +63,7 @@ build-tf1-cpu:
 build-tf1-gpu:
 	docker build -f Dockerfile-base-gpu \
 		--build-arg BASE_IMAGE="nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04" \
-		--build-arg PYTHON_VERSION="3.7.10" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_37)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_BASE_NAME)-$(VERSION) \
 		.
@@ -82,7 +85,7 @@ build-tf1-gpu:
 build-tf2-cpu:
 	docker build -f Dockerfile-base-cpu \
 		--build-arg BASE_IMAGE="ubuntu:18.04" \
-		--build-arg PYTHON_VERSION="3.7.10" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_BASE_NAME)-$(VERSION) \
 		.
@@ -104,7 +107,7 @@ build-tf2-cpu:
 build-tf2-gpu:
 	docker build -f Dockerfile-base-gpu \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04" \
-		--build-arg PYTHON_VERSION="3.7.10" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME)-$(VERSION) \
 		.
@@ -130,7 +133,7 @@ build-tf2-gpu:
 build-tf25-cpu:
 	docker build -f Dockerfile-base-cpu \
 		--build-arg BASE_IMAGE="ubuntu:18.04" \
-		--build-arg PYTHON_VERSION="3.7.10" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF25_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF25_BASE_NAME)-$(VERSION) \
 		.
@@ -149,7 +152,7 @@ build-tf25-cpu:
 build-tf25-gpu:
 	docker build -f Dockerfile-base-gpu \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.2.2-cudnn8-devel-ubuntu18.04" \
-		--build-arg PYTHON_VERSION="3.7.10" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF25_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF25_BASE_NAME)-$(VERSION) \
 		.
@@ -168,7 +171,7 @@ build-tf25-gpu:
 build-tf26-cpu:
 	docker build -f Dockerfile-base-cpu \
 		--build-arg BASE_IMAGE="ubuntu:18.04" \
-		--build-arg PYTHON_VERSION="3.7.10" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF26_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF26_BASE_NAME)-$(VERSION) \
 		.
@@ -187,7 +190,7 @@ build-tf26-cpu:
 build-tf26-gpu:
 	docker build -f Dockerfile-base-gpu \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.2.2-cudnn8-devel-ubuntu18.04" \
-		--build-arg PYTHON_VERSION="3.7.10" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF26_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF26_BASE_NAME)-$(VERSION) \
 		.
