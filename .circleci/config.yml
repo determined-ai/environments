@@ -89,7 +89,7 @@ jobs:
       - install-ansible
       - run:
           no_output_timeout: 90m
-          command: make publish-cloud-images
+          command: make publish-cloud-images PACKER_FLAGS="-force"
       - store_artifacts:
           path: /tmp/artifacts
 
