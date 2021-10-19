@@ -18,21 +18,8 @@
     - deb https://nvidia.github.io/nvidia-container-runtime/ubuntu20.04/amd64 /
     - deb https://nvidia.github.io/nvidia-docker/ubuntu20.04/amd64 /
 
-- name: Install Nvidia Docker Runtime.
+- name: Install Nvidia Container Toolkit..
   become: yes
   apt:
-    name: nvidia-docker2
+    name: nvidia-container-toolkit
     state: present
-
-- name: Update Docker daemon configuration.
-  become: yes
-  template:
-    src: daemon.json
-    dest: /etc/docker/daemon.json
-
-- name: Ensure Docker daemon is restarted and enabled.
-  become: yes
-  systemd:
-    name: docker
-    state: restarted
-    enabled: yes
