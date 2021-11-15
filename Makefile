@@ -56,7 +56,7 @@ build-tf1-cpu:
 		--build-arg TENSORFLOW_PIP="tensorflow==1.15.5" \
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
-		--build-arg HOROVOD_PIP="horovod==0.22.1" \
+		--build-arg HOROVOD_PIP="horovod==0.23.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -78,7 +78,7 @@ build-tf1-gpu:
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cu102/torch_stable.html" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5" \
 		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
-		--build-arg HOROVOD_PIP="horovod==0.22.1" \
+		--build-arg HOROVOD_PIP="horovod==0.23.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -100,7 +100,7 @@ build-tf2-cpu:
 		--build-arg TORCHVISION_PIP="torchvision==0.10.0 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.3.5" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
-		--build-arg HOROVOD_PIP="horovod==0.22.1" \
+		--build-arg HOROVOD_PIP="horovod==0.23.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -125,7 +125,7 @@ build-tf2-gpu:
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
-		--build-arg HOROVOD_PIP="horovod==0.22.1" \
+		--build-arg HOROVOD_PIP="horovod==0.23.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -144,7 +144,7 @@ build-tf25-cpu:
 	docker build -f Dockerfile-default-cpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_TF25_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.5.2" \
-		--build-arg HOROVOD_PIP="horovod==0.22.1" \
+		--build-arg HOROVOD_PIP="horovod==0.23.0" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME)-$(VERSION) \
@@ -163,7 +163,7 @@ build-tf25-gpu:
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_TF25_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.5.2" \
-		--build-arg HOROVOD_PIP="horovod==0.22.1" \
+		--build-arg HOROVOD_PIP="horovod==0.23.0" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF25_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF25_ENVIRONMENT_NAME)-$(VERSION) \
@@ -182,7 +182,7 @@ build-tf26-cpu:
 	docker build -f Dockerfile-default-cpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_TF26_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.6.2" \
-		--build-arg HOROVOD_PIP="horovod==0.22.1" \
+		--build-arg HOROVOD_PIP="horovod==0.23.0" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME)-$(VERSION) \
@@ -201,7 +201,7 @@ build-tf26-gpu:
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_TF26_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.6.2" \
-		--build-arg HOROVOD_PIP="horovod==0.22.1" \
+		--build-arg HOROVOD_PIP="horovod==0.23.0" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF26_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF26_ENVIRONMENT_NAME)-$(VERSION) \
@@ -221,7 +221,7 @@ build-tf27-cpu:
 	docker build -f Dockerfile-default-cpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_TF27_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.7.0" \
-		--build-arg HOROVOD_PIP="horovod==0.22.1" \
+		--build-arg HOROVOD_PIP="horovod==0.23.0" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
@@ -240,7 +240,7 @@ build-tf27-gpu:
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_TF27_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.7.0" \
-		--build-arg HOROVOD_PIP="horovod==0.22.1" \
+		--build-arg HOROVOD_PIP="horovod==0.23.0" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
