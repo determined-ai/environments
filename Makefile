@@ -98,7 +98,7 @@ build-tf2-cpu:
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.4.4" \
 		--build-arg TORCH_PIP="torch==1.9.0 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.10.0 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
-		--build-arg LIGHTNING_PIP="pytorch_lightning==1.3.5" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.3.5 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg HOROVOD_PIP="horovod==0.23.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -121,7 +121,7 @@ build-tf2-gpu:
 		--build-arg TENSORFLOW_PIP="tensorflow==2.4.4" \
 		--build-arg TORCH_PIP="torch==1.9.0 -f https://download.pytorch.org/whl/cu111/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.10.0 -f https://download.pytorch.org/whl/cu111/torch_stable.html" \
-		--build-arg LIGHTNING_PIP="pytorch_lightning==1.3.5" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.3.5 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
