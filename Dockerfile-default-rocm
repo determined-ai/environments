@@ -1,0 +1,5 @@
+FROM amdih/pytorch:rocm4.2_ubuntu18.04_py3.6_pytorch_1.9.0
+
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
+
