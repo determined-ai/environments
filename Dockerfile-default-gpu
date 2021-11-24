@@ -22,8 +22,6 @@ RUN if [ "$TF_CUDA_SYM" ]; then ln -s /usr/local/cuda/lib64/libcusolver.so.11 /o
 ARG TORCH_PROFILER_GIT
 RUN if [ "$TORCH_PROFILER_GIT" ]; then /tmp/det_dockerfile_scripts/torch-tb-profiler-patch.sh; fi
 
-RUN python -m pip install GPUtil pynvml
-
 ARG TORCH_CUDA_ARCH_LIST
 ARG APEX_GIT
 ARG APEX_PATCH
