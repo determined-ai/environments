@@ -1,5 +1,48 @@
 FROM amdih/pytorch:rocm4.2_ubuntu18.04_py3.6_pytorch_1.9.0
 
-COPY dockerfile_scripts /tmp/det_dockerfile_scripts
-RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
+RUN mkdir -p /var/run/sshd
+RUN apt-get update \
+	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+		autoconf \
+		automake \
+		autotools-dev \
+		build-essential \
+		ca-certificates \
+		curl \
+		daemontools \
+		libkrb5-dev \
+		libssl-dev \
+		libtool \
+		git \
+		krb5-user \
+		cmake \
+		g++-4.8 \
+		make \
+		openssh-client \
+		openssh-server \
+		pkg-config \
+		wget \
+		nfs-common \
+		unattended-upgrades \
+	&& unattended-upgrade \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& rm /etc/ssh/ssh_host_ecdsa_key \
+	&& rm /etc/ssh/ssh_host_ed25519_key \
+	&& rm /etc/ssh/ssh_host_rsa_key
 
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+
+RUN pip install determined && pip uninstall -y determined
+
+RUN pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
+ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
+ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
+ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
+
+RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
+RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
+#RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
+
+RUN rm -r /tmp/*
+# Reset entrypoint.
+ENTRYPOINT []

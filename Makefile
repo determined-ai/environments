@@ -12,6 +12,7 @@ CPU_SUFFIX := -cpu
 CUDA_102_PREFIX := environments:cuda-10.2-
 CUDA_111_PREFIX := environments:cuda-11.1-
 CUDA_112_PREFIX := environments:cuda-11.2-
+ROCM_42_PREFIX := environments:rocm-4.2-
 GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
 PYTHON_VERSION := 3.8.11
@@ -38,6 +39,7 @@ export CPU_TF26_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.6$(CPU_SUFFIX)
 export GPU_TF26_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.6$(GPU_SUFFIX)
 export CPU_TF27_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.7$(CPU_SUFFIX)
 export GPU_TF27_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.7$(GPU_SUFFIX)
+export ROCM_TORCH_ENVIRONMENT_NAME := $(ROCM_42_PREFIX)pytorch-1.9-rocm
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
 # waiting for AMI availablity. Bump to 360 attempts = 90 minutes.
@@ -246,6 +248,13 @@ build-tf27-gpu:
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
+		.
+
+.PHONY: build-pytorch19-rocm
+build-pytorch19-rocm:
+	docker build -f Dockerfile-default-rocm \
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
 # tf1 images are not published to NGC due to tf-1.15 vulnerabilities.
