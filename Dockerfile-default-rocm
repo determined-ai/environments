@@ -43,6 +43,19 @@ RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
 RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
 #RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 
+#ARG HOROVOD_NCCL_LINK=STATIC
+#ARG HOROVOD_NCCL_LINK=SHARED
+ARG HOROVOD_NCCL_HOME=/opt/rocm/rccl
+
+ARG HOROVOD_PIP=horovod
+ARG HOROVOD_WITH_TENSORFLOW=0
+ARG HOROVOD_WITH_PYTORCH=1
+ARG HOROVOD_WITHOUT_MXNET=1
+ARG HOROVOD_GPU_OPERATIONS=NCCL
+ARG HOROVOD_WITHOUT_MPI=1
+ARG HOROVOD_GPU=ROCM
+RUN pip install "${HOROVOD_PIP}"
+
 RUN rm -r /tmp/*
 # Reset entrypoint.
 ENTRYPOINT []
