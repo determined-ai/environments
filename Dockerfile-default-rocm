@@ -1,4 +1,5 @@
-FROM amdih/pytorch:rocm4.2_ubuntu18.04_py3.6_pytorch_1.9.0
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 RUN mkdir -p /var/run/sshd
 RUN apt-get update \
@@ -47,8 +48,8 @@ RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
 #ARG HOROVOD_NCCL_LINK=SHARED
 ARG HOROVOD_NCCL_HOME=/opt/rocm/rccl
 
-ARG HOROVOD_PIP=horovod
-ARG HOROVOD_WITH_TENSORFLOW=0
+ARG HOROVOD_PIP=git+https://github.com/determined-ai/horovod.git@rocm-impl
+ARG HOROVOD_WITH_TENSORFLOW=1
 ARG HOROVOD_WITH_PYTORCH=1
 ARG HOROVOD_WITHOUT_MXNET=1
 ARG HOROVOD_GPU_OPERATIONS=NCCL
