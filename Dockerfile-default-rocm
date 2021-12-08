@@ -1,0 +1,69 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+RUN mkdir -p /var/run/sshd
+RUN rm /etc/apt/sources.list.d/rocm.list
+RUN apt-get update \
+	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+		autoconf \
+		automake \
+		autotools-dev \
+		build-essential \
+		ca-certificates \
+		curl \
+		daemontools \
+		libkrb5-dev \
+		libssl-dev \
+		libtool \
+		git \
+		krb5-user \
+		cmake \
+		g++-4.8 \
+		make \
+		openssh-client \
+		openssh-server \
+		pkg-config \
+		wget \
+		nfs-common \
+		unattended-upgrades \
+	&& unattended-upgrade \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& rm /etc/ssh/ssh_host_ecdsa_key \
+	&& rm /etc/ssh/ssh_host_ed25519_key \
+	&& rm /etc/ssh/ssh_host_rsa_key
+
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+
+RUN pip install determined && pip uninstall -y determined
+
+RUN pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
+ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
+ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
+ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
+
+RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
+RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
+RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
+
+ARG TENSORFLOW_PIP
+RUN if [ "$TENSORFLOW_PIP" ]; then python -m pip install $TENSORFLOW_PIP; fi
+
+# Reset these because we set GPU_OPERATIONS later.
+ENV HOROVOD_GPU_BROADCAST=
+ENV HOROVOD_GPU_ALLREDUCE=
+
+ARG HOROVOD_PIP=git+https://github.com/determined-ai/horovod.git@rocm-impl-tf
+ARG HOROVOD_NCCL_HOME=/opt/rocm/rccl
+ARG HOROVOD_WITH_TENSORFLOW=1
+ARG HOROVOD_WITH_PYTORCH=1
+ARG HOROVOD_WITHOUT_MXNET=1
+ARG HOROVOD_GPU_OPERATIONS=NCCL
+ARG HOROVOD_WITHOUT_MPI=1
+ARG HOROVOD_GPU=ROCM
+ARG HOROVOD_WITHOUT_MPI=1
+RUN if [ "$HOROVOD_PIP" != "0" ]; then pip install "${HOROVOD_PIP}" ; fi
+
+RUN rm -r /tmp/*
+# Reset entrypoint.
+ENTRYPOINT []
+USER root
