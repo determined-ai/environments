@@ -257,7 +257,7 @@ build-pytorch19-tf25-rocm:
 	docker build -f Dockerfile-default-rocm \
 		--build-arg BASE_IMAGE="amdih/pytorch:rocm4.2_ubuntu18.04_py3.6_pytorch_1.9.0" \
 		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.5.0" \
-		--build-arg HOROVOD_PIP="git+https://github.com/determined-ai/horovod.git@rocm-impl-tf" \
+		--build-arg HOROVOD_PIP="git+https://github.com/determined-ai/horovod.git@rocm-impl-2" \
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
 		.
