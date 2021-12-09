@@ -102,7 +102,18 @@ workflows:
           context: determined-production
           matrix:
             parameters:
-              image-type: ["tf1-cpu", "tf2-cpu", "tf25-cpu", "tf26-cpu", "tf27-cpu", "tf1-gpu", "tf2-gpu", "tf25-gpu", "tf26-gpu", "tf27-gpu"]
+              image-type:
+                - tf1-cpu
+                - tf2-cpu
+                - tf25-cpu
+                - tf26-cpu
+                - tf27-cpu
+                - tf1-gpu
+                - tf2-gpu
+                - tf25-gpu
+                - tf26-gpu
+                - tf27-gpu
+                - pytorch19-tf25-rocm
           filters:
             branches:
               only: master
