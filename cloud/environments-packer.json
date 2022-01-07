@@ -2,10 +2,10 @@
   "variables": {
     "aws_access_key_id": "{{ env `AWS_ACCESS_KEY_ID` }}",
     "aws_secret_access_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
-    "aws_base_image": "ami-0a62a78cfedc09d76",
+    "aws_base_image": "ami-0ac79214f93af0a57",
     "gov_aws_access_key_id": "{{ env `GOV_AWS_ACCESS_KEY_ID` }}",
     "gov_aws_secret_access_key": "{{ env `GOV_AWS_SECRET_ACCESS_KEY` }}",
-    "gov_aws_base_image": "ami-84556de5",
+    "gov_aws_base_image": "ami-066189aeb91baa0ab",
     "gcp_base_image": "ubuntu-2004-focal-v20210325",
     "image_description": "Determined environments",
     "cpu_tf2_environment_name": "{{ env `CPU_TF2_ENVIRONMENT_NAME` }}",
@@ -35,7 +35,10 @@
         "-e image_suffix={{ user `image_suffix` }}"
       ],
       "user": "ubuntu",
-      "only": ["amazon-ebs", "amazon-ebs-gov"]
+      "only": [
+        "amazon-ebs",
+        "amazon-ebs-gov"
+      ]
     },
     {
       "type": "ansible",
@@ -51,12 +54,16 @@
         "-e image_suffix={{ user `image_suffix` }}"
       ],
       "user": "ubuntu",
-      "only": ["det-environments{{ user `image_suffix` }}"]
+      "only": [
+        "det-environments{{ user `image_suffix` }}"
+      ]
     },
     {
       "type": "shell",
       "expect_disconnect": true,
-      "inline": ["sudo reboot"]
+      "inline": [
+        "sudo reboot"
+      ]
     }
   ],
   "builders": [
@@ -66,15 +73,15 @@
       "secret_key": "{{ user `aws_secret_access_key` }}",
       "region": "us-west-2",
       "ami_regions": [
-          "ap-northeast-1",
-          "ap-northeast-2",
-          "ap-southeast-1",
-          "ap-southeast-2",
-          "eu-central-1",
-          "eu-west-1",
-          "eu-west-2",
-          "us-east-1",
-          "us-east-2"
+        "ap-northeast-1",
+        "ap-northeast-2",
+        "ap-southeast-1",
+        "ap-southeast-2",
+        "eu-central-1",
+        "eu-west-1",
+        "eu-west-2",
+        "us-east-1",
+        "us-east-2"
       ],
       "source_ami": "{{ user `aws_base_image`}}",
       "instance_type": "p2.xlarge",
@@ -92,7 +99,9 @@
       },
       "ami_name": "det-environments{{ user `image_suffix` }}",
       "ami_description": "{{ user `image_description` }}",
-      "ami_groups": ["all"]
+      "ami_groups": [
+        "all"
+      ]
     },
     {
       "type": "amazon-ebs",
@@ -101,8 +110,8 @@
       "secret_key": "{{ user `gov_aws_secret_access_key` }}",
       "region": "us-gov-west-1",
       "ami_regions": [
-          "us-gov-east-1",
-          "us-gov-west-1"
+        "us-gov-east-1",
+        "us-gov-west-1"
       ],
       "source_ami": "{{ user `gov_aws_base_image`}}",
       "instance_type": "p2.xlarge",
@@ -120,7 +129,9 @@
       },
       "ami_name": "det-environments{{ user `image_suffix` }}",
       "ami_description": "{{ user `image_description` }}",
-      "ami_groups": ["all"]
+      "ami_groups": [
+        "all"
+      ]
     },
     {
       "type": "googlecompute",
@@ -142,7 +153,9 @@
   "post-processors": [
     {
       "type": "shell-local",
-      "scripts": ["./post-process.sh"]
+      "scripts": [
+        "./post-process.sh"
+      ]
     }
   ]
 }
