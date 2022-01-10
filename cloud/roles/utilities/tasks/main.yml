@@ -3,7 +3,7 @@
   become: yes
   apt:
     update_cache: yes
-    upgrade
+    upgrade: yes
 
 - name: Install utility packages.
   become: yes
