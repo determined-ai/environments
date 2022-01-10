@@ -1,8 +1,9 @@
 ---
-- name: Update apt-get.
+- name: apt-get update, apt-get upgrade.
   become: yes
   apt:
     update_cache: yes
+    upgrade: yes
 
 - name: Install utility packages.
   become: yes
