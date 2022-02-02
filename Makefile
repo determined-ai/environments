@@ -34,6 +34,7 @@ export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_102_PREFIX)pytorch-1.7-tf-1.15$(GPU_SU
 export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4$(CPU_SUFFIX)
 export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4$(GPU_SUFFIX)
 export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4-deepspeed-0.5.10$(GPU_SUFFIX)
+export GPU_DEEPERSPEED_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4-deeperspeed$(GPU_SUFFIX)
 export CPU_TF25_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.5$(CPU_SUFFIX)
 export GPU_TF25_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.5$(GPU_SUFFIX)
 export CPU_TF26_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.6$(CPU_SUFFIX)
@@ -135,6 +136,7 @@ build-tf2-gpu:
 		-t $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
+# This builds deepspeed environment off of upstream microsoft/DeepSpeed.
 .PHONY: build-deepspeed-gpu
 build-deepspeed-gpu:
 	# Same base image is used for deepspeed as that for the tf2-gpu image.
@@ -163,6 +165,38 @@ build-deepspeed-gpu:
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		.
+
+# This builds deepspeed environment off of a patched version of EleutherAI's fork of DeepSpeed 
+# that we need for gpt-neox support.
+.PHONY: build-deeperspeed-gpu
+build-deeperspeed-gpu:
+	# Same base image is used for deepspeed as that for the tf2-gpu image.
+	docker build -f Dockerfile-base-gpu \
+		--build-arg BASE_IMAGE="nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME)-$(VERSION) \
+		.
+	# We should consider building without tensorflow in the future.  Going to keep tensorflow for
+	# now since we want to have tensorboard support.  It should be possible to install tensorboard
+	# without tensorflow though.
+	docker build -f Dockerfile-default-gpu \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg TF_CUDA_SYM="1" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.4.4" \
+		--build-arg TORCH_PIP="torch==1.9.0 -f https://download.pytorch.org/whl/cu111/torch_stable.html" \
+		--build-arg TORCHVISION_PIP="torchvision==0.10.0 -f https://download.pytorch.org/whl/cu111/torch_stable.html" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.3.5 torchmetrics==0.5.1" \
+		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
+		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
+		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
+		--build-arg HOROVOD_PIP="horovod==0.23.0" \
+		--build-arg DEEPSPEED_PIP="git+git://github.com/determined-ai/deepspeed.git@eleuther_dai" \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPERSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPERSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(NGC_REGISTRY)/$(GPU_DEEPERSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(GPU_DEEPERSPEED_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
 # TF 2.5 and TF 2.6 images do not have pytorch because their CUDA version doesn't work well with pytorch 1.9.

@@ -44,6 +44,6 @@ RUN ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs && \
 RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
 
 ARG DEEPSPEED_PIP
-RUN /tmp/det_dockerfile_scripts/install_deepspeed.sh
+RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed.sh; fi
 
 RUN rm -r /tmp/*
