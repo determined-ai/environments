@@ -114,6 +114,8 @@ workflows:
                 - tf26-gpu
                 - tf27-gpu
                 - pytorch19-tf25-rocm
+                - deepspeed-gpu
+                - gpt-neox-deepspeed-gpu
           filters:
             branches:
               only: master
