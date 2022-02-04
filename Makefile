@@ -34,7 +34,7 @@ export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_102_PREFIX)pytorch-1.7-tf-1.15$(GPU_SU
 export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4$(CPU_SUFFIX)
 export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4$(GPU_SUFFIX)
 export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4-deepspeed-0.5.10$(GPU_SUFFIX)
-export GPU_DEEPERSPEED_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4-deeperspeed$(GPU_SUFFIX)
+export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.3-tf-2.4-gpt-neox-deepspeed$(GPU_SUFFIX)
 export CPU_TF25_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.5$(CPU_SUFFIX)
 export GPU_TF25_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.5$(GPU_SUFFIX)
 export CPU_TF26_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.6$(CPU_SUFFIX)
@@ -169,8 +169,8 @@ build-deepspeed-gpu:
 
 # This builds deepspeed environment off of a patched version of EleutherAI's fork of DeepSpeed 
 # that we need for gpt-neox support.
-.PHONY: build-deeperspeed-gpu
-build-deeperspeed-gpu:
+.PHONY: build-gpt-neox-deepspeed-gpu
+build-gpt-neox-deepspeed-gpu:
 	# Same base image is used for deepspeed as that for the tf2-gpu image.
 	docker build -f Dockerfile-base-gpu \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04" \
@@ -193,10 +193,10 @@ build-deeperspeed-gpu:
 		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
 		--build-arg HOROVOD_PIP="horovod==0.23.0" \
 		--build-arg DEEPSPEED_PIP="git+git://github.com/determined-ai/deepspeed.git@eleuther_dai" \
-		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPERSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPERSPEED_ENVIRONMENT_NAME)-$(VERSION) \
-		-t $(NGC_REGISTRY)/$(GPU_DEEPERSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(GPU_DEEPERSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(NGC_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
 # TF 2.5 and TF 2.6 images do not have pytorch because their CUDA version doesn't work well with pytorch 1.9.
@@ -355,6 +355,12 @@ publish-deepspeed-gpu:
 	scripts/publish-docker.sh deepspeed-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh deepspeed-gpu $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh deepspeed-gpu $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+
+.PHONY: publish-gpt-neox-deepspeed-gpu
+publish-deepspeed-gpu:
+	scripts/publish-docker.sh gpt-neox-deepspeed-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh gpt-neox-deepspeed-gpu $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh gpt-neox-deepspeed-gpu $(NGC_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 
 .PHONY: publish-tf25-cpu
 publish-tf25-cpu:
