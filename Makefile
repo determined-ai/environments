@@ -357,7 +357,7 @@ publish-deepspeed-gpu:
 	scripts/publish-docker.sh deepspeed-gpu $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 
 .PHONY: publish-gpt-neox-deepspeed-gpu
-publish-deepspeed-gpu:
+publish-gpt-neox-deepspeed-gpu:
 	scripts/publish-docker.sh gpt-neox-deepspeed-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh gpt-neox-deepspeed-gpu $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh gpt-neox-deepspeed-gpu $(NGC_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
