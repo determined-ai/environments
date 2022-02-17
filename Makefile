@@ -4,15 +4,17 @@ VERSION_DASHES := $(subst .,-,$(VERSION))
 SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
 
 NGC_REGISTRY := nvcr.io/isv-ngc-partner/determined
+NGC_PUBLISH := 1
 export DOCKERHUB_REGISTRY := determinedai
+export REGISTRY_REPO := environments
 
-CPU_PREFIX := environments:py-3.8-
-CPU_PREFIX_37 := environments:py-3.7-
+CPU_PREFIX := $(REGISTRY_REPO):py-3.8-
+CPU_PREFIX_37 := $(REGISTRY_REPO):py-3.7-
+CUDA_102_PREFIX := $(REGISTRY_REPO):cuda-10.2-
+CUDA_111_PREFIX := $(REGISTRY_REPO):cuda-11.1-
+CUDA_112_PREFIX := $(REGISTRY_REPO):cuda-11.2-
+ROCM_42_PREFIX := $(REGISTRY_REPO):rocm-4.2-
 CPU_SUFFIX := -cpu
-CUDA_102_PREFIX := environments:cuda-10.2-
-CUDA_111_PREFIX := environments:cuda-11.1-
-CUDA_112_PREFIX := environments:cuda-11.2-
-ROCM_42_PREFIX := environments:rocm-4.2-
 GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
 PYTHON_VERSION := 3.8.11
@@ -342,61 +344,81 @@ publish-tf1-gpu:
 publish-tf2-cpu:
 	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF2_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf2-cpu $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
 
 .PHONY: publish-tf2-gpu
 publish-tf2-gpu:
 	scripts/publish-docker.sh tf2-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf2-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf2-gpu $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
 
 .PHONY: publish-deepspeed-gpu
 publish-deepspeed-gpu:
 	scripts/publish-docker.sh deepspeed-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh deepspeed-gpu $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh deepspeed-gpu $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
 
 .PHONY: publish-gpt-neox-deepspeed-gpu
 publish-gpt-neox-deepspeed-gpu:
 	scripts/publish-docker.sh gpt-neox-deepspeed-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh gpt-neox-deepspeed-gpu $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh gpt-neox-deepspeed-gpu $(NGC_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
 
 .PHONY: publish-tf25-cpu
 publish-tf25-cpu:
 	scripts/publish-docker.sh tf25-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF25_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf25-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf25-cpu $(NGC_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
 
 .PHONY: publish-tf25-gpu
 publish-tf25-gpu:
 	scripts/publish-docker.sh tf25-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF25_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf25-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF25_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf25-gpu $(NGC_REGISTRY)/$(GPU_TF25_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
 
 .PHONY: publish-tf26-cpu
 publish-tf26-cpu:
 	scripts/publish-docker.sh tf26-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF26_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf26-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf26-cpu $(NGC_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
 
 .PHONY: publish-tf26-gpu
 publish-tf26-gpu:
 	scripts/publish-docker.sh tf26-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF26_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf26-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF26_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf26-gpu $(NGC_REGISTRY)/$(GPU_TF26_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
 
 .PHONY: publish-tf27-cpu
 publish-tf27-cpu:
 	scripts/publish-docker.sh tf27-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF27_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf27-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf27-cpu $(NGC_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
 
 .PHONY: publish-tf27-gpu
 publish-tf27-gpu:
 	scripts/publish-docker.sh tf27-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF27_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf27-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf27-gpu $(NGC_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
 
 
 .PHONY: publish-pytorch19-tf25-rocm
