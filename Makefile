@@ -13,6 +13,7 @@ CPU_PREFIX_37 := $(REGISTRY_REPO):py-3.7-
 CUDA_102_PREFIX := $(REGISTRY_REPO):cuda-10.2-
 CUDA_111_PREFIX := $(REGISTRY_REPO):cuda-11.1-
 CUDA_112_PREFIX := $(REGISTRY_REPO):cuda-11.2-
+CUDA_113_PREFIX := $(REGISTRY_REPO):cuda-11.3-
 ROCM_42_PREFIX := $(REGISTRY_REPO):rocm-4.2-
 CPU_SUFFIX := -cpu
 GPU_SUFFIX := -gpu
@@ -33,8 +34,8 @@ export GPU_TF27_BASE_NAME := $(CUDA_112_PREFIX)base$(GPU_SUFFIX)
 
 export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX_37)pytorch-1.7-tf-1.15$(CPU_SUFFIX)
 export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_102_PREFIX)pytorch-1.7-tf-1.15$(GPU_SUFFIX)
-export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.9-lightning-1.5-tf-2.4$(CPU_SUFFIX)
-export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.5-tf-2.4$(GPU_SUFFIX)
+export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.10-lightning-1.5-tf-2.8$(CPU_SUFFIX)
+export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-lightning-1.5-tf-2.8$(GPU_SUFFIX)
 export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.5-tf-2.4-deepspeed-0.5.10$(GPU_SUFFIX)
 export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-lightning-1.5-tf-2.4-gpt-neox-deepspeed$(GPU_SUFFIX)
 export CPU_TF25_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.5$(CPU_SUFFIX)
@@ -101,9 +102,9 @@ build-tf2-cpu:
 		.
 	docker build -f Dockerfile-default-cpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_TF2_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.4.4" \
-		--build-arg TORCH_PIP="torch==1.9.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
-		--build-arg TORCHVISION_PIP="torchvision==0.10.0 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.0" \
+		--build-arg TORCH_PIP="torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.9 torchmetrics==0.5.1" \
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg HOROVOD_PIP="horovod==0.23.0" \
@@ -116,7 +117,7 @@ build-tf2-cpu:
 .PHONY: build-tf2-gpu
 build-tf2-gpu:
 	docker build -f Dockerfile-base-gpu \
-		--build-arg BASE_IMAGE="nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04" \
+		--build-arg BASE_IMAGE="nvidia/cuda:11.3.1-cudnn8-devel-ubuntu18.04" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME)-$(VERSION) \
@@ -124,9 +125,8 @@ build-tf2-gpu:
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_TF2_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TF_CUDA_SYM="1" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.4.4" \
-		--build-arg TORCH_PIP="torch==1.9.1 -f https://download.pytorch.org/whl/cu111/torch_stable.html" \
-		--build-arg TORCHVISION_PIP="torchvision==0.10.0 -f https://download.pytorch.org/whl/cu111/torch_stable.html" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.8.0" \
+		--build-arg TORCH_PIP="torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html" \
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
