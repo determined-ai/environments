@@ -54,8 +54,8 @@ build-cpu-py-37-base:
 	docker build -f Dockerfile-base-cpu \
 		--build-arg BASE_IMAGE="ubuntu:18.04" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_37)" \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY37_BASE_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY37_BASE_NAME)-$(VERSION) \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(VERSION) \
 		.
 
 .PHONY: build-cpu-py-38-base
@@ -107,7 +107,7 @@ build-gpu-cuda-113-base:
 .PHONY: build-tf1-cpu
 build-tf1-cpu: build-cpu-py-37-base
 	docker build -f Dockerfile-default-cpu \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY37_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow==1.15.5" \
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
@@ -209,7 +209,7 @@ build-deepspeed-gpu: build-gpu-cuda-111-base
 	# now since we want to have tensorboard support.  It should be possible to install tensorboard
 	# without tensorflow though.
 	docker build -f Dockerfile-default-gpu \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_111_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TF_CUDA_SYM="1" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.4.4" \
 		--build-arg TORCH_PIP="torch==1.9.1 -f https://download.pytorch.org/whl/cu111/torch_stable.html" \
@@ -234,7 +234,7 @@ build-gpt-neox-deepspeed-gpu: build-gpu-cuda-111-base
 	# now since we want to have tensorboard support.  It should be possible to install tensorboard
 	# without tensorflow though.
 	docker build -f Dockerfile-default-gpu \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_111_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TF_CUDA_SYM="1" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.4.4" \
 		--build-arg TORCH_PIP="torch==1.9.1 -f https://download.pytorch.org/whl/cu111/torch_stable.html" \
@@ -345,7 +345,7 @@ build-pytorch19-tf25-rocm:
 # tf1 and tf2.4 images are not published to NGC due to vulnerabilities.
 .PHONY: publish-tf1-cpu
 publish-tf1-cpu:
-	scripts/publish-docker.sh tf1-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY37_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf1-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf1-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tf1-gpu
