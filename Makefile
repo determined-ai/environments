@@ -126,7 +126,7 @@ build-tf1-gpu: build-gpu-cuda-102-base
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cu102/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cu102/torch_stable.html" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5" \
-		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
+		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@f3291716e6774ecf6987bee7994dee4c830b785e" \
 		--build-arg HOROVOD_PIP="horovod==0.24.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
@@ -161,7 +161,7 @@ build-tf24-gpu: build-gpu-cuda-111-base
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
-		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
+		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@f3291716e6774ecf6987bee7994dee4c830b785e" \
 		--build-arg HOROVOD_PIP="horovod==0.24.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF24_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF24_ENVIRONMENT_NAME)-$(VERSION) \
@@ -194,7 +194,7 @@ build-tf2-gpu: build-gpu-cuda-113-base
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
-		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
+		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@f3291716e6774ecf6987bee7994dee4c830b785e" \
 		--build-arg HOROVOD_PIP="horovod==0.24.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
@@ -217,7 +217,7 @@ build-deepspeed-gpu: build-gpu-cuda-111-base
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
-		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
+		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@f3291716e6774ecf6987bee7994dee4c830b785e" \
 		--build-arg HOROVOD_PIP="horovod==0.24.0" \
 		--build-arg DEEPSPEED_PIP="deepspeed==0.5.10" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -242,7 +242,7 @@ build-gpt-neox-deepspeed-gpu: build-gpu-cuda-111-base
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
-		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@b5eb38dbf7accc24bd872b3ab67ffc77ee858e62" \
+		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@f3291716e6774ecf6987bee7994dee4c830b785e" \
 		--build-arg HOROVOD_PIP="horovod==0.24.0" \
 		--build-arg DEEPSPEED_PIP="git+git://github.com/determined-ai/deepspeed.git@eleuther_dai" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
