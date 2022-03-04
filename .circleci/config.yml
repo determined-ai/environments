@@ -72,7 +72,7 @@ jobs:
         default: false
     machine:
       image: ubuntu-2004:202010-01
-    resource_class: large
+    resource_class: xlarge
     steps:
       - checkout
       - install-docker
