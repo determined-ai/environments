@@ -27,6 +27,11 @@ ARG APEX_GIT
 ARG APEX_PATCH
 RUN /tmp/det_dockerfile_scripts/install_apex.sh
 
+ARG DET_BUILD_NCCL=1
+RUN if [ -n "${DET_BUILD_NCCL}" ]; then /tmp/det_dockerfile_scripts/build_nccl.sh; fi
+ARG HOROVOD_NCCL_LINK=${DET_BUILD_NCCL:+STATIC}
+ARG HOROVOD_NCCL_HOME=${DET_BUILD_NCCL:+/tmp/det_nccl/build}
+
 ARG HOROVOD_PIP=horovod
 ARG HOROVOD_WITH_TENSORFLOW=1
 ARG HOROVOD_WITH_PYTORCH=1
