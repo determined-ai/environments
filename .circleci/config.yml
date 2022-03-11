@@ -4,6 +4,13 @@ version: 2.1
 orbs:
   gcp-cli: circleci/gcp-cli@1.8.4
 
+upstream-feature-branch: &upstream-feature-branch
+  branches:
+    ignore:
+      - /pull\/.*/
+      - /release-.*/
+      - master
+
 commands:
   login-docker:
     parameters:
@@ -60,6 +67,9 @@ jobs:
     parameters:
       image-type:
         type: string
+      dev-mode:
+        type: boolean
+        default: false
     machine:
       image: ubuntu-2004:202010-01
     resource_class: large
@@ -69,16 +79,28 @@ jobs:
       - login-docker:
           username: ${DOCKER_USER}
           password: ${DOCKER_PASS}
-      - login-docker:
-          repository: nvcr.io
-          username: ${NGC_API_USERNAME}
-          password: ${NGC_API_KEY}
-      - run: make build-<<parameters.image-type>>
-      - run: make publish-<<parameters.image-type>>
+      - unless:
+          condition: <<parameters.dev-mode>>
+          steps:
+            - login-docker:
+                repository: nvcr.io
+                username: ${NGC_API_USERNAME}
+                password: ${NGC_API_KEY}
+            - run: make build-<<parameters.image-type>>
+            - run: make publish-<<parameters.image-type>>
+      - when:
+          condition: <<parameters.dev-mode>>
+          steps:
+            - run: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev
+            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev
       - store_artifacts:
           path: /tmp/artifacts
 
   publish-cloud-images:
+    parameters:
+      dev-mode:
+        type: boolean
+        default: false
     docker:
       - image: cimg/python:3.6
     steps:
@@ -87,19 +109,38 @@ jobs:
       - gcp-cli/install
       - activate-service-account
       - install-ansible
-      - run:
-          no_output_timeout: 90m
-          command: make publish-cloud-images PACKER_FLAGS="-force"
+      - unless:
+          condition: <<parameters.dev-mode>>
+          steps:
+            - run:
+                no_output_timeout: 90m
+                command: make publish-cloud-images PACKER_FLAGS="-force"
+      - when:
+          condition: <<parameters.dev-mode>>
+          steps:
+            - run:
+                no_output_timeout: 90m
+                command: make publish-cloud-images PACKER_FLAGS="-force" NGC_PUBLISH= REGISTRY_REPO=environments-dev
       - store_artifacts:
           path: /tmp/artifacts
 
+  test-job:
+    docker:
+      - image: cimg/python:3.6
+    steps:
+      - checkout
+      - run: echo hello
 
 
 workflows:
+  version: 2
   publish:
     jobs:
       - build-and-publish-docker:
           context: determined-production
+          filters:
+            branches:
+              only: master
           matrix:
             parameters:
               image-type:
@@ -116,14 +157,55 @@ workflows:
                 - pytorch19-tf25-rocm
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
-          filters:
-            branches:
-              only: master
 
       - publish-cloud-images:
           context: determined-production
-          requires:
-            - build-and-publish-docker
           filters:
             branches:
               only: master
+          requires:
+            - build-and-publish-docker
+
+  publish-dev:
+    jobs:
+      - request-publish-dev-docker:
+          type: approval
+          filters: *upstream-feature-branch
+
+      - request-publish-dev-cloud:
+          type: approval
+          filters: *upstream-feature-branch
+
+      - build-and-publish-docker:
+          name: build-and-publish-docker-<<matrix.image-type>>-dev
+          context: determined-production
+          filters: *upstream-feature-branch
+          requires:
+            - request-publish-dev-docker
+          matrix:
+            alias: build-docker-all
+            parameters:
+              dev-mode: [true]
+              image-type:
+                - tf1-cpu
+                - tf2-cpu
+                - tf25-cpu
+                - tf26-cpu
+                - tf27-cpu
+                - tf1-gpu
+                - tf2-gpu
+                - tf25-gpu
+                - tf26-gpu
+                - tf27-gpu
+                - pytorch19-tf25-rocm
+                - deepspeed-gpu
+                - gpt-neox-deepspeed-gpu
+
+      - publish-cloud-images:
+          name: publish-cloud-images-dev
+          context: determined-production
+          filters: *upstream-feature-branch
+          requires:
+            - build-docker-all
+            - request-publish-dev-cloud
+          dev-mode: true
