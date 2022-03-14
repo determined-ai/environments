@@ -20,13 +20,16 @@ RUN apt-get update \
 		git \
 		krb5-user \
 		cmake \
-		g++-4.8 \
+		g++ \
 		make \
 		openssh-client \
 		openssh-server \
 		pkg-config \
 		wget \
 		nfs-common \
+                libnuma1 \
+                libnuma-dev \
+                libpmi2-0-dev \
 		unattended-upgrades \
 	&& unattended-upgrade \
 	&& rm -rf /var/lib/apt/lists/* \
@@ -40,6 +43,18 @@ ENV PATH="/opt/conda/bin:${PATH}"
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 ARG PYTHON_VERSION
 RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION}
+
+ARG USE_MPI
+ARG UCX_INSTALL_DIR=/container/ucx
+ARG OMPI_INSTALL_DIR=/container/ompi
+RUN if [ "$USE_MPI" = "1" ]; then /tmp/det_dockerfile_scripts/ompi.sh; fi
+# Make sure OMPI/UCX show up in the right paths
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/lib/libibverbs:${UCX_INSTALL_DIR}/lib:${UCX_INSTALL_DIR}/lib64:${OMPI_INSTALL_DIR}/lib
+ENV PATH ${UCX_INSTALL_DIR}/bin:${OMPI_INSTALL_DIR}/bin:$PATH
+# Enable running OMPI as root
+ENV OMPI_ALLOW_RUN_AS_ROOT=1 \
+    OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+
 
 # We uninstall these packages after installing. This ensures that we can
 # successfully install these packages into containers running as non-root.
