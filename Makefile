@@ -218,7 +218,7 @@ build-deepspeed-gpu: build-gpu-cuda-113-base
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg DET_BUILD_NCCL="" \
-		--build-arg DEEPSPEED_PIP="deepspeed==0.5.10" \
+		--build-arg DEEPSPEED_PIP="deepspeed==0.6.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
