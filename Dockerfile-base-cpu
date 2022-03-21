@@ -49,11 +49,17 @@ ARG UCX_INSTALL_DIR=/container/ucx
 ARG OMPI_INSTALL_DIR=/container/ompi
 RUN if [ "$USE_MPI" = "1" ]; then /tmp/det_dockerfile_scripts/ompi.sh; fi
 # Make sure OMPI/UCX show up in the right paths
-ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/lib/libibverbs:${UCX_INSTALL_DIR}/lib:${UCX_INSTALL_DIR}/lib64:${OMPI_INSTALL_DIR}/lib
-ENV PATH ${UCX_INSTALL_DIR}/bin:${OMPI_INSTALL_DIR}/bin:$PATH
+ARG VERBS_LIB_DIR=/usr/lib/libibverbs
+ARG UCX_LIB_DIR=${UCX_INSTALL_DIR}/lib:${UCX_INSTALL_DIR}/lib64
+ARG UCX_PATH_DIR=${UCX_INSTALL_DIR}/bin
+ARG OMPI_LIB_DIR=${OMPI_INSTALL_DIR}/lib
+ARG OMPI_PATH_DIR=${OMPI_INSTALL_DIR}/bin
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:${USE_MPI:+$VERBS_LIB_DIR:$UCX_LIB_DIR:$OMPI_LIB_DIR}
+ENV PATH $PATH:${USE_MPI:+$UCX_PATH_DIR:$OMPI_PATH_DIR}
 # Enable running OMPI as root
-ENV OMPI_ALLOW_RUN_AS_ROOT=1 \
-    OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+ENV OMPI_ALLOW_RUN_AS_ROOT ${USE_MPI:+1} 
+ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM ${USE_MPI:+1}
+    
 
 
 # We uninstall these packages after installing. This ensures that we can

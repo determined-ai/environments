@@ -22,11 +22,13 @@ ifeq "$(USE_MPI)" "1"
   HOROVOD_WITHOUT_MPI := 0
   HOROVOD_CPU_OPERATIONS := MPI
   CPU_SUFFIX := -cpu-mpi
+  MPI_BUILD_ARG := USE_MPI=1
 else
   USE_MPI := 0
   HOROVOD_WITH_MPI := 0
   HOROVOD_WITHOUT_MPI := 1
   HOROVOD_CPU_OPERATIONS := GLOO
+  MPI_BUILD_ARG := USE_GLOO=1
 endif
 
 export CPU_TF1_BASE_NAME := $(CPU_PREFIX_37)base$(CPU_SUFFIX)
@@ -63,7 +65,7 @@ build-tf1-cpu:
 	docker build -f Dockerfile-base-cpu $(DOCKER_BUILD_OPTS) \
 		--build-arg BASE_IMAGE="ubuntu:20.04" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_37)" \
-                --build-arg USE_MPI="$(USE_MPI)" \
+                --build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF1_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF1_BASE_NAME)-$(VERSION) \
 		.
@@ -109,7 +111,7 @@ build-tf2-cpu:
 	docker build -f Dockerfile-base-cpu $(DOCKER_BUILD_OPTS) \
 		--build-arg BASE_IMAGE="ubuntu:20.04" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
-                --build-arg USE_MPI="$(USE_MPI)" \
+                --build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_BASE_NAME)-$(VERSION) \
 		.
