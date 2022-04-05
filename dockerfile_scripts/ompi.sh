@@ -6,7 +6,7 @@ set -x
 # the base OS is (ie, Ubuntu 20.04) so if that changes then this needs updated.
 #MOFED_VER=5.0-2.1.8.0
 MOFED_VER=5.5-1.0.3.2
-OS_VER=ubuntu20.04
+OS_VER=$1
 PLATFORM=x86_64
 MOFED_TAR_URL="http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VER}"
 MOFED_TAR="MLNX_OFED_LINUX-${MOFED_VER}-${OS_VER}-${PLATFORM}.tgz"

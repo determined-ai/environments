@@ -4,6 +4,9 @@ FROM ${BASE_IMAGE}
 RUN rm -f /etc/apt/sources.list.d/*
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PIP_NO_CACHE_DIR=1
 
+# We need to create sym links for the Slurm PMI headers if we are using 
+# Ubuntu 18.04 because they are not installed in a standard location.
+ARG UBUNTU_VERSION
 RUN mkdir -p /var/run/sshd
 RUN apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -20,19 +23,23 @@ RUN apt-get update \
 		git \
 		krb5-user \
 		cmake \
-		g++-4.8 \
+		g++ \
 		make \
 		openssh-client \
 		openssh-server \
 		pkg-config \
 		wget \
 		nfs-common \
+                libnuma1 \
+                libnuma-dev \
+                libpmi2-0-dev \
 		unattended-upgrades \
 	&& unattended-upgrade \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& rm /etc/ssh/ssh_host_ecdsa_key \
 	&& rm /etc/ssh/ssh_host_ed25519_key \
-	&& rm /etc/ssh/ssh_host_rsa_key
+	&& rm /etc/ssh/ssh_host_rsa_key \
+        && if [ "$UBUNTU_VERSION" = "ubuntu18.04" ]; then ln -s /usr/include/slurm-wlm /usr/include/slurm; fi
 
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
@@ -40,6 +47,23 @@ ENV PATH="/opt/conda/bin:${PATH}"
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 ARG PYTHON_VERSION
 RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION}
+
+ARG USE_MPI
+ARG UCX_INSTALL_DIR=/container/ucx
+ARG OMPI_INSTALL_DIR=/container/ompi
+RUN if [ "$USE_MPI" = "1" ]; then /tmp/det_dockerfile_scripts/ompi.sh "$UBUNTU_VERSION" ; fi
+# Make sure OMPI/UCX show up in the right paths
+ARG VERBS_LIB_DIR=/usr/lib/libibverbs
+ARG UCX_LIB_DIR=${UCX_INSTALL_DIR}/lib:${UCX_INSTALL_DIR}/lib64
+ARG UCX_PATH_DIR=${UCX_INSTALL_DIR}/bin
+ARG OMPI_LIB_DIR=${OMPI_INSTALL_DIR}/lib
+ARG OMPI_PATH_DIR=${OMPI_INSTALL_DIR}/bin
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:${USE_MPI:+$VERBS_LIB_DIR:$UCX_LIB_DIR:$OMPI_LIB_DIR}
+ENV PATH $PATH:${USE_MPI:+$UCX_PATH_DIR:$OMPI_PATH_DIR}
+# Enable running OMPI as root
+ENV OMPI_ALLOW_RUN_AS_ROOT ${USE_MPI:+1} 
+ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM ${USE_MPI:+1}
+
 
 # We uninstall these packages after installing. This ensures that we can
 # successfully install these packages into containers running as non-root.
