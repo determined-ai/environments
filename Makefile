@@ -173,7 +173,7 @@ build-tf24-gpu: build-gpu-cuda-111-base
 build-tf2-cpu: build-cpu-py-38-base
 	docker build -f Dockerfile-default-cpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.2" \
 		--build-arg TORCH_PIP="torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
@@ -188,7 +188,7 @@ build-tf2-cpu: build-cpu-py-38-base
 build-tf2-gpu: build-gpu-cuda-113-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.8.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.8.2" \
 		--build-arg TORCH_PIP="torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html" \
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
@@ -210,7 +210,7 @@ build-deepspeed-gpu: build-gpu-cuda-113-base
 	# without tensorflow though.
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.8.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.8.2" \
 		--build-arg TORCH_PIP="torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html" \
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
@@ -234,7 +234,7 @@ build-gpt-neox-deepspeed-gpu: build-gpu-cuda-113-base
 	# without tensorflow though.
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.8.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.8.2" \
 		--build-arg TORCH_PIP="torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html" \
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
@@ -280,7 +280,7 @@ build-tf25-gpu: build-gpu-cuda-112-base
 build-tf26-cpu: build-cpu-py-38-base
 	docker build -f Dockerfile-default-cpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.6.3" \
+		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.6.5" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -293,7 +293,7 @@ build-tf26-cpu: build-cpu-py-38-base
 build-tf26-gpu: build-gpu-cuda-112-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_112_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.6.3" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.6.5" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF26_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -306,7 +306,7 @@ build-tf26-gpu: build-gpu-cuda-112-base
 build-tf27-cpu: build-cpu-py-38-base
 	docker build -f Dockerfile-default-cpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.7.1" \
+		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.7.3" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -319,7 +319,7 @@ build-tf27-cpu: build-cpu-py-38-base
 build-tf27-gpu: build-gpu-cuda-112-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_112_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.7.1" \
+		--build-arg TENSORFLOW_PIP="tensorflow==2.7.3" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
