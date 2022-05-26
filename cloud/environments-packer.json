@@ -2,10 +2,10 @@
   "variables": {
     "aws_access_key_id": "{{ env `AWS_ACCESS_KEY_ID` }}",
     "aws_secret_access_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
-    "aws_base_image": "ami-0ac79214f93af0a57",
+    "aws_base_image": "ami-077ee47512dc6f3ca",
     "gov_aws_access_key_id": "{{ env `GOV_AWS_ACCESS_KEY_ID` }}",
     "gov_aws_secret_access_key": "{{ env `GOV_AWS_SECRET_ACCESS_KEY` }}",
-    "gov_aws_base_image": "ami-066189aeb91baa0ab",
+    "gov_aws_base_image": "ami-029a634618d6c0300",
     "gcp_base_image": "ubuntu-2004-focal-v20220118",
     "image_description": "Determined environments",
     "cpu_tf2_environment_name": "{{ env `CPU_TF2_ENVIRONMENT_NAME` }}",
