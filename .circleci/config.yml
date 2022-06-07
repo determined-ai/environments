@@ -95,7 +95,62 @@ jobs:
             - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev
       - store_artifacts:
           path: /tmp/artifacts
+  publish-docker-multiplatform:
+    parameters:
+      image-type:
+        type: string
+      dev-mode:
+        type: boolean
+        default: false
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.12
+      - login-docker:
+          username: ${DOCKER_USER}
+          password: ${DOCKER_PASS}
+      - unless:
+          condition: <<parameters.dev-mode>>
+          steps:
+            - run: make assemble-<<parameters.image-type>>
+      - when:
+          condition: <<parameters.dev-mode>>
+          steps:
+            - run: make assemble-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev
 
+  build-and-publish-docker-arm:
+    parameters:
+      image-type:
+        type: string
+      dev-mode:
+        type: boolean
+        default: false
+    machine:
+      image: ubuntu-2004:2022.04.1
+    resource_class: arm.xlarge
+    steps:
+      - checkout
+      - install-docker
+      - login-docker:
+          username: ${DOCKER_USER}
+          password: ${DOCKER_PASS}
+      - unless:
+          condition: <<parameters.dev-mode>>
+          steps:
+            - login-docker:
+                username: ${TMP_DOCKER_USER}
+                password: ${TMP_DOCKER_PASS}
+            - run: make build-<<parameters.image-type>>
+            - run: make publish-<<parameters.image-type>>
+      - when:
+          condition: <<parameters.dev-mode>>
+          steps:
+            - run: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev
+            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev
+      - store_artifacts:
+          path: /tmp/artifacts
   publish-cloud-images:
     parameters:
       dev-mode:
@@ -136,6 +191,16 @@ workflows:
   version: 2
   publish:
     jobs:
+      - build-and-publish-docker-arm:
+          context: determined-production
+          filters:
+            branches:
+              only: master
+          matrix:
+            parameters:
+              image-type:
+                - tf2-arm64
+
       - build-and-publish-docker:
           context: determined-production
           filters:
@@ -146,6 +211,7 @@ workflows:
               image-type:
                 - tf1-cpu
                 - tf2-cpu
+                - tf2-amd64
                 - tf24-cpu
                 - tf25-cpu
                 - tf26-cpu
@@ -160,13 +226,28 @@ workflows:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
 
+      - publish-docker-multiplatform:
+          context: determined-production
+          filters:
+            branches:
+              only: master
+          requires:
+            - build-and-publish-docker-tf2-amd64
+            - build-and-publish-docker-arm-tf2-arm64
+          matrix:
+            parameters:
+              image-type:
+                - tf2-mp
+
       - publish-cloud-images:
           context: determined-production
           filters:
             branches:
               only: master
           requires:
+            - build-and-publish-docker-arm
             - build-and-publish-docker
+            - publish-docker-multiplatform
 
   publish-dev:
     jobs:
@@ -177,6 +258,19 @@ workflows:
       - request-publish-dev-cloud:
           type: approval
           filters: *upstream-feature-branch
+      
+      - build-and-publish-docker-arm:
+          name: build-and-publish-docker-<<matrix.image-type>>-dev
+          context: determined-production
+          filters: *upstream-feature-branch
+          requires:
+            - request-publish-dev-docker
+          matrix:
+            alias: build-docker-arm
+            parameters:
+              dev-mode: [true]
+              image-type:
+                - tf2-arm64
 
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-dev
@@ -191,6 +285,7 @@ workflows:
               image-type:
                 - tf1-cpu
                 - tf2-cpu
+                - tf2-amd64
                 - tf24-cpu
                 - tf25-cpu
                 - tf26-cpu
@@ -204,6 +299,19 @@ workflows:
                 - pytorch19-tf25-rocm
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
+      - publish-docker-multiplatform:
+          name: publish-docker-multiplatform-dev
+          context: determined-production
+          filters: *upstream-feature-branch
+          requires:
+            - build-and-publish-docker-tf2-amd64-dev
+            - build-and-publish-docker-tf2-arm64-dev
+          matrix:
+            alias: publish-docker-mp
+            parameters:
+              dev-mode: [true]
+              image-type:
+                - tf2-mp
 
       - publish-cloud-images:
           name: publish-cloud-images-dev
@@ -211,5 +319,7 @@ workflows:
           filters: *upstream-feature-branch
           requires:
             - build-docker-all
+            - build-docker-arm
+            - publish-docker-multiplatform-dev
             - request-publish-dev-cloud
           dev-mode: true

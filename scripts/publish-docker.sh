@@ -16,8 +16,27 @@ artifacts="$5"
 
 underscore_name="$(echo -n "$log_name" | tr - _)"
 
-docker push "$base_tag-$hash"
-docker push "$base_tag-$version"
+platform="${log_name#*-}"
+
+if [ "$platform" = "arm64" ]; then
+    docker push "$base_tag-$hash-arm64v8"
+    docker push "$base_tag-$version-arm64v8"
+elif [ "$platform" = "amd64" ]; then
+    docker push "$base_tag-$hash-amd64"
+    docker push "$base_tag-$version-amd64"
+elif [ "$platform" = "mp" ]; then
+    docker manifest create "$base_tag-$hash-mp" \
+    --amend "$base_tag-$hash-arm64v8" \
+    --amend "$base_tag-$hash-amd64"
+    docker manifest push "$base_tag-$hash-mp"
+    docker manifest create "$base_tag-$version-mp" \
+    --amend "$base_tag-$version-arm64v8" \
+    --amend "$base_tag-$version-amd64"
+    docker manifest push "$base_tag-$version-mp"
+else
+    docker push "$base_tag-$hash"
+    docker push "$base_tag-$version"
+fi
 
 if [ -n "$artifacts" ]; then
     mkdir -p "$artifacts"

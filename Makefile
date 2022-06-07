@@ -18,7 +18,7 @@ ROCM_42_PREFIX := $(REGISTRY_REPO):rocm-4.2-
 CPU_SUFFIX := -cpu
 GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
-PYTHON_VERSION := 3.8.11
+PYTHON_VERSION := 3.8.12
 PYTHON_VERSION_37 := 3.7.11
 
 export CPU_PY_37_BASE_NAME := $(CPU_PREFIX_37)base$(CPU_SUFFIX)
@@ -58,9 +58,31 @@ build-cpu-py-37-base:
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(VERSION) \
 		.
 
+.PHONY: build-arm64-py-38-base
+build-arm64-py-38-base:
+	docker build -f Dockerfile-base-cpu \
+	    --platform linux/arm64 \
+		--build-arg BASE_IMAGE="ubuntu:18.04" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
+		--build-arg ARCHITECTURE="aarch64" \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)-arm64v8 \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(VERSION)-arm64v8 \
+		.
+
+.PHONY: build-amd64-py-38-base
+build-amd64-py-38-base:
+	docker build -f Dockerfile-base-cpu \
+	    --platform linux/amd64 \
+		--build-arg BASE_IMAGE="ubuntu:18.04" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)-amd64 \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(VERSION)-amd64 \
+		.
+
 .PHONY: build-cpu-py-38-base
 build-cpu-py-38-base:
 	docker build -f Dockerfile-base-cpu \
+	    --platform linux/amd64 \
 		--build-arg BASE_IMAGE="ubuntu:18.04" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH) \
@@ -182,6 +204,38 @@ build-tf2-cpu: build-cpu-py-38-base
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
+		.
+
+.PHONY: build-tf2-arm64
+build-tf2-arm64: build-arm64-py-38-base
+	docker build -f Dockerfile-default-cpu \
+	    --platform linux/arm64 \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)-arm64v8" \
+		--build-arg TENSORFLOW_PIP="tensorflow-aarch64==2.8.1 -f https://tf.kmtea.eu/whl/stable.html" \
+		--build-arg TORCH_PIP="torch==1.10.2 torchvision==0.11.3 torchaudio==0.10.2 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
+		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
+		--build-arg HOROVOD_PIP="horovod==0.24.2" \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)-arm64v8 \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)-arm64v8 \
+		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)-arm64v8 \
+		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)-arm64v8 \
+		.
+
+.PHONY: build-tf2-amd64
+build-tf2-amd64: build-amd64-py-38-base
+	docker build -f Dockerfile-default-cpu \
+	    --platform linux/amd64 \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)-amd64" \
+		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.2" \
+		--build-arg TORCH_PIP="torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
+		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
+		--build-arg HOROVOD_PIP="horovod==0.24.2" \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)-amd64 \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)-amd64 \
+		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)-amd64 \
+		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)-amd64 \
 		.
 
 .PHONY: build-tf2-gpu
@@ -368,6 +422,31 @@ publish-tf2-cpu:
 ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf2-cpu $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 endif
+
+.PHONY: assemble-tf2-mp
+assemble-tf2-mp:
+	scripts/publish-docker.sh tf2-mp $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf2-mp $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
+	scripts/publish-docker.sh tf2-mp $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
+
+.PHONY: publish-tf2-arm64
+publish-tf2-arm64:
+	scripts/publish-docker.sh tf2-arm64 $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf2-arm64 $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
+	scripts/publish-docker.sh tf2-arm64 $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
+
+.PHONY: publish-tf2-amd64
+publish-tf2-amd64:
+	scripts/publish-docker.sh tf2-amd64 $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf2-amd64 $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+ifneq ($(NGC_PUBLISH),)
+	scripts/publish-docker.sh tf2-amd64 $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+endif
+
 
 .PHONY: publish-tf2-gpu
 publish-tf2-gpu:
