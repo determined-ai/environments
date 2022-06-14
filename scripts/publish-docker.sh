@@ -25,14 +25,14 @@ elif [ "$platform" = "amd64" ]; then
     docker push "$base_tag-$hash-amd64"
     docker push "$base_tag-$version-amd64"
 elif [ "$platform" = "mp" ]; then
-    docker manifest create "$base_tag-$hash-mp" \
+    docker manifest create "$base_tag-$hash" \
     --amend "$base_tag-$hash-arm64v8" \
     --amend "$base_tag-$hash-amd64"
-    docker manifest push "$base_tag-$hash-mp"
-    docker manifest create "$base_tag-$version-mp" \
+    docker manifest push "$base_tag-$hash"
+    docker manifest create "$base_tag-$version" \
     --amend "$base_tag-$version-arm64v8" \
     --amend "$base_tag-$version-amd64"
-    docker manifest push "$base_tag-$version-mp"
+    docker manifest push "$base_tag-$version"
 else
     docker push "$base_tag-$hash"
     docker push "$base_tag-$version"

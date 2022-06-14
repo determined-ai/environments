@@ -191,21 +191,6 @@ build-tf24-gpu: build-gpu-cuda-111-base
 		-t $(NGC_REGISTRY)/$(GPU_TF24_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
-.PHONY: build-tf2-cpu
-build-tf2-cpu: build-cpu-py-38-base
-	docker build -f Dockerfile-default-cpu \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.2" \
-		--build-arg TORCH_PIP="torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
-		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
-		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
-		--build-arg HOROVOD_PIP="horovod==0.24.2" \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
-		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
-		.
-
 .PHONY: build-tf2-arm64
 build-tf2-arm64: build-arm64-py-38-base
 	docker build -f Dockerfile-default-cpu \
@@ -414,14 +399,6 @@ publish-tf24-cpu:
 publish-tf24-gpu:
 	scripts/publish-docker.sh tf24-gpu $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_111_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf24-gpu $(DOCKERHUB_REGISTRY)/$(GPU_TF24_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-
-.PHONY: publish-tf2-cpu
-publish-tf2-cpu:
-	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-ifneq ($(NGC_PUBLISH),)
-	scripts/publish-docker.sh tf2-cpu $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
-endif
 
 .PHONY: assemble-tf2-mp
 assemble-tf2-mp:
