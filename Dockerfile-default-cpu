@@ -9,7 +9,6 @@ ARG TARGETPLATFORM
 ARG TENSORFLOW_PIP
 ARG TORCH_PIP
 ARG TORCHVISION_PIP
-ARG LIGHTNING_PIP
 ARG TORCH_PROFILER_GIT
 ARG PIN_PROTOBUF
 RUN if [ "$TENSORFLOW_PIP" ]; then \
@@ -29,7 +28,6 @@ RUN if [ "$TORCH_PIP" ]; then \
         fi; \
     fi
 RUN if [ "$TORCHVISION_PIP" ]; then pip install $TORCHVISION_PIP; fi
-RUN if [ "$LIGHTNING_PIP" ]; then pip install $LIGHTNING_PIP; fi
 RUN if [ "$PIN_PROTOBUF" ]; then pip install $PIN_PROTOBUF; fi
 
 RUN if [ "$TORCH_PROFILER_GIT" ]; then /tmp/det_dockerfile_scripts/torch-tb-profiler-patch.sh; fi
