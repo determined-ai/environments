@@ -196,7 +196,7 @@ build-tf2-arm64: build-arm64-py-38-base
 	docker build -f Dockerfile-default-cpu \
 	    --platform linux/arm64 \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)-arm64v8" \
-		--build-arg TENSORFLOW_PIP="tensorflow-aarch64==2.8.1 -f https://tf.kmtea.eu/whl/stable.html" \
+		--build-arg TENSORFLOW_PIP="tensorflow-aarch64==2.8.2" \
 		--build-arg TORCH_PIP="torch==1.10.2 torchvision==0.11.3 torchaudio==0.10.2 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
