@@ -60,7 +60,8 @@ build-cpu-py-37-base:
 
 .PHONY: build-cpu-py-38-base
 build-cpu-py-38-base:
-	docker build -f Dockerfile-base-cpu \
+	docker buildx build -f Dockerfile-base-cpu \
+	    --platform linux/arm64,linux/amd64 \
 		--build-arg BASE_IMAGE="ubuntu:18.04" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH) \
@@ -171,7 +172,8 @@ build-tf24-gpu: build-gpu-cuda-111-base
 
 .PHONY: build-tf2-cpu
 build-tf2-cpu: build-cpu-py-38-base
-	docker build -f Dockerfile-default-cpu \
+	docker buildx build  -f Dockerfile-default-cpu \
+	    --platform linux/arm64,linux/amd64
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.2" \
 		--build-arg TORCH_PIP="torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html" \

@@ -39,7 +39,7 @@ COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 ENV PATH="/opt/conda/bin:${PATH}"
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 ARG PYTHON_VERSION
-RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION}
+RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION} ${TARGETPLATFORM}
 
 # We uninstall these packages after installing. This ensures that we can
 # successfully install these packages into containers running as non-root.

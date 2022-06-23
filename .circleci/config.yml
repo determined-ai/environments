@@ -71,7 +71,7 @@ jobs:
         type: boolean
         default: false
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.04.2
     resource_class: xlarge
     steps:
       - checkout
