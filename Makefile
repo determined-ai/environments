@@ -60,7 +60,7 @@ build-cpu-py-37-base:
 
 .PHONY: build-cpu-py-38-base
 build-cpu-py-38-base:
-    docker buildx create --use
+	docker buildx create --use
 	docker buildx build -f Dockerfile-base-cpu \
 	    --platform linux/arm64,linux/amd64 \
 		--build-arg BASE_IMAGE="ubuntu:18.04" \
