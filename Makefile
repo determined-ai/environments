@@ -60,7 +60,9 @@ build-cpu-py-37-base:
 
 .PHONY: build-cpu-py-38-base
 build-cpu-py-38-base:
-	docker buildx create --use
+	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+	docker buildx rm builder
+	docker buildx create --name builder --driver docker-container --use
 	docker buildx build -f Dockerfile-base-cpu \
 	    --platform linux/arm64,linux/amd64 \
 		--build-arg BASE_IMAGE="ubuntu:18.04" \
