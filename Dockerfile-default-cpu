@@ -14,7 +14,7 @@ ARG TORCH_PROFILER_GIT
 ARG PIN_PROTOBUF
 RUN if [ "$TENSORFLOW_PIP" ]; then \
         if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
-            TENSORFLOW_AARCH64_PIP=$(printf '%s' "$TENSORFLOW_PIP" | sed 's/cpu/aarch64/')
+            TENSORFLOW_AARCH64_PIP=$(printf '%s' "$TENSORFLOW_PIP" | sed 's/cpu/aarch64/') \
             pip install $TENSORFLOW_AARCH64_PIP; \
         else \
             pip install $TENSORFLOW_PIP; \
