@@ -12,7 +12,7 @@ if [[ "$ARCHITECTURE" == "linux/amd64" ]]; then
   CONDA_MD5="8c69f65a4ae27fb41df0fe552b4a8a3b"
   CONDA_URL="https://repo.anaconda.com/miniconda"
 elif [[ "$ARCHITECTURE" == "linux/arm64" ]]; then
-  CONDA_INSTALLER="Miniforge3-4.10.3-10-Linux-${ARCHITECTURE}.sh"
+  CONDA_INSTALLER="Miniforge3-4.10.3-10-Linux-aarch64.sh"
   CONDA_MD5="85d7ea630bb91259bf09f6d52a5ec1c4"
   CONDA_URL="https://github.com/conda-forge/miniforge/releases/download/4.10.3-10"
 else
