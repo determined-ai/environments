@@ -68,6 +68,7 @@ build-cpu-py-38-base:
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(VERSION) \
+		--push \
 		.
 
 .PHONY: build-gpu-cuda-102-base
@@ -188,6 +189,7 @@ build-tf2-cpu: build-cpu-py-38-base
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
+		--push \
 		.
 
 .PHONY: build-tf2-gpu
