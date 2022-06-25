@@ -20,7 +20,14 @@ RUN if [ "$TENSORFLOW_PIP" ]; then \
             pip install $TENSORFLOW_PIP; \
         fi; \
     fi
-RUN if [ "$TORCH_PIP" ]; then pip install $TORCH_PIP; fi
+RUN if [ "$TORCH_PIP" ]; then \
+        if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+            TORCH_AARCH64_PIP=$(printf '%s' "$TORCH_PIP" | sed 's/+cpu//g') \
+            && pip install $TORCH_AARCH64_PIP; \
+        else \
+            pip install $TORCH_PIP; \
+        fi; \
+    fi
 RUN if [ "$TORCHVISION_PIP" ]; then pip install $TORCHVISION_PIP; fi
 RUN if [ "$LIGHTNING_PIP" ]; then pip install $LIGHTNING_PIP; fi
 RUN if [ "$PIN_PROTOBUF" ]; then pip install $PIN_PROTOBUF; fi

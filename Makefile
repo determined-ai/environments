@@ -143,7 +143,7 @@ build-tf1-gpu: build-gpu-cuda-102-base
 .PHONY: build-tf24-cpu
 build-tf24-cpu: build-cpu-py-38-base
 	docker buildx build -f Dockerfile-default-cpu \
-	    --platfomr linux/amd64 \
+	    --platform linux/amd64 \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.4.4" \
 		--build-arg TORCH_PIP="torch==1.9.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \

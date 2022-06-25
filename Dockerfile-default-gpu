@@ -10,6 +10,7 @@ ARG TORCH_PIP
 ARG TORCHVISION_PIP
 ARG LIGHTNING_PIP
 ARG TORCH_PROFILER_GIT
+ARG PIN_PROTOBUF
 
 RUN if [ "$TENSORFLOW_PIP" ]; then python -m pip install $TENSORFLOW_PIP; fi
 RUN if [ "$TORCH_PIP" ]; then python -m pip install $TORCH_PIP; fi
