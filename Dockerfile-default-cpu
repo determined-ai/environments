@@ -39,6 +39,7 @@ ARG HOROVOD_WITH_PYTORCH=1
 ARG HOROVOD_WITHOUT_MXNET=1
 ARG HOROVOD_WITHOUT_MPI=1
 ARG HOROVOD_CPU_OPERATIONS=GLOO
+RUN pip install cmake==3.22.4
 RUN pip install "$HOROVOD_PIP"
 
 RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
