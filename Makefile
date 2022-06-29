@@ -178,13 +178,17 @@ build-tf24-gpu: build-gpu-cuda-111-base
 .PHONY: build-tf2-cpu
 build-tf2-cpu: build-cpu-py-38-base
 ifeq ($(NGC_PUBLISH),)
-	TFLAGS := -t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+define TFLAGS
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+endef
 else
-	TFLAGS := -t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
-		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+define TFLAGS
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+endef
 endif
 	docker buildx build -f Dockerfile-default-cpu \
 	    --platform linux/arm64,linux/amd64 \
@@ -319,13 +323,17 @@ build-tf26-gpu: build-gpu-cuda-112-base
 .PHONY: build-tf27-cpu
 build-tf27-cpu: build-cpu-py-38-base
 ifeq ($(NGC_PUBLISH),)
-	TFLAGS := -t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION)
+define TFLAGS
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION)
+endef
 else
-	TFLAGS := -t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
-		-t $(NGC_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION)
+define TFLAGS
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION)
+-t $(NGC_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+-t $(NGC_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION)
+endef
 endif
 	docker buildx build -f Dockerfile-default-cpu \
 		--platform linux/arm64,linux/amd64 \
@@ -375,7 +383,6 @@ publish-tf1-gpu:
 
 .PHONY: publish-tf24-cpu
 publish-tf24-cpu:
-#	scripts/publish-docker.sh tf24-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf24-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF24_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tf24-gpu
@@ -386,11 +393,6 @@ publish-tf24-gpu:
 .PHONY: publish-tf2-cpu
 publish-tf2-cpu:
 	echo "Tensorflow 2.8 CPU image is published by buildx"
-# 	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-# 	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-# ifneq ($(NGC_PUBLISH),)
-# 	scripts/publish-docker.sh tf2-cpu $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
-# endif
 
 .PHONY: publish-tf2-gpu
 publish-tf2-gpu:
@@ -416,7 +418,6 @@ endif
 
 .PHONY: publish-tf25-cpu
 publish-tf25-cpu:
-#	scripts/publish-docker.sh tf25-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf25-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf25-cpu $(NGC_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
@@ -432,7 +433,6 @@ endif
 
 .PHONY: publish-tf26-cpu
 publish-tf26-cpu:
-#	scripts/publish-docker.sh tf26-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf26-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf26-cpu $(NGC_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
@@ -449,11 +449,6 @@ endif
 .PHONY: publish-tf27-cpu
 publish-tf27-cpu:
 	echo "Tensorflow 2.7 CPU image is published by buildx"
-#	scripts/publish-docker.sh tf27-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-#	scripts/publish-docker.sh tf27-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-# ifneq ($(NGC_PUBLISH),)
-#	scripts/publish-docker.sh tf27-cpu $(NGC_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
-#endif
 
 .PHONY: publish-tf27-gpu
 publish-tf27-gpu:
