@@ -18,7 +18,7 @@ ROCM_42_PREFIX := $(REGISTRY_REPO):rocm-4.2-
 CPU_SUFFIX := -cpu
 GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
-PYTHON_VERSION := 3.8.11
+PYTHON_VERSION := 3.8.12
 PYTHON_VERSION_37 := 3.7.11
 
 export CPU_PY_37_BASE_NAME := $(CPU_PREFIX_37)base$(CPU_SUFFIX)
@@ -60,11 +60,15 @@ build-cpu-py-37-base:
 
 .PHONY: build-cpu-py-38-base
 build-cpu-py-38-base:
-	docker build -f Dockerfile-base-cpu \
+	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+	docker buildx create --name builder --driver docker-container --use
+	docker buildx build -f Dockerfile-base-cpu \
+	    --platform linux/arm64,linux/amd64 \
 		--build-arg BASE_IMAGE="ubuntu:18.04" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(VERSION) \
+		--push \
 		.
 
 .PHONY: build-gpu-cuda-102-base
@@ -112,6 +116,7 @@ build-tf1-cpu: build-cpu-py-37-base
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
+		--build-arg PIN_PROTOBUF="protobuf==3.20.1" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -128,6 +133,7 @@ build-tf1-gpu: build-gpu-cuda-102-base
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
+		--build-arg PIN_PROTOBUF="protobuf==3.20.1" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -169,19 +175,32 @@ build-tf24-gpu: build-gpu-cuda-111-base
 		-t $(NGC_REGISTRY)/$(GPU_TF24_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
+ifeq ($(NGC_PUBLISH),)
+define CPU_TF2_TAGS
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+endef
+else
+define CPU_TF2_TAGS
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
+-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+endef
+endif
+
 .PHONY: build-tf2-cpu
 build-tf2-cpu: build-cpu-py-38-base
-	docker build -f Dockerfile-default-cpu \
+	docker buildx build -f Dockerfile-default-cpu \
+	    --platform linux/arm64,linux/amd64 \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.2" \
 		--build-arg TORCH_PIP="torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg LIGHTNING_PIP="pytorch_lightning==1.5.10 torchmetrics==0.5.1" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
-		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
+		$(CPU_TF2_TAGS) \
+		--push \
 		.
 
 .PHONY: build-tf2-gpu
@@ -302,17 +321,30 @@ build-tf26-gpu: build-gpu-cuda-112-base
 		-t $(NGC_REGISTRY)/$(GPU_TF26_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
+ifeq ($(NGC_PUBLISH),)
+define CPU_TF27_TAGS
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION)
+endef
+else
+define CPU_TF27_TAGS
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
+-t $(NGC_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+-t $(NGC_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION)
+endef
+endif
+
 .PHONY: build-tf27-cpu
 build-tf27-cpu: build-cpu-py-38-base
-	docker build -f Dockerfile-default-cpu \
+	docker buildx build -f Dockerfile-default-cpu \
+		--platform linux/arm64,linux/amd64 \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.7.3" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
-		-t $(NGC_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
+		$(CPU_TF27_TAGS) \
+		--push \
 		.
 
 .PHONY: build-tf27-gpu
@@ -353,7 +385,6 @@ publish-tf1-gpu:
 
 .PHONY: publish-tf24-cpu
 publish-tf24-cpu:
-	scripts/publish-docker.sh tf24-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf24-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF24_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tf24-gpu
@@ -363,11 +394,7 @@ publish-tf24-gpu:
 
 .PHONY: publish-tf2-cpu
 publish-tf2-cpu:
-	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-ifneq ($(NGC_PUBLISH),)
-	scripts/publish-docker.sh tf2-cpu $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
-endif
+	echo "Tensorflow 2.8 CPU image is published by buildx"
 
 .PHONY: publish-tf2-gpu
 publish-tf2-gpu:
@@ -393,7 +420,6 @@ endif
 
 .PHONY: publish-tf25-cpu
 publish-tf25-cpu:
-	scripts/publish-docker.sh tf25-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf25-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf25-cpu $(NGC_REGISTRY)/$(CPU_TF25_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
@@ -409,7 +435,6 @@ endif
 
 .PHONY: publish-tf26-cpu
 publish-tf26-cpu:
-	scripts/publish-docker.sh tf26-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf26-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf26-cpu $(NGC_REGISTRY)/$(CPU_TF26_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
@@ -425,11 +450,7 @@ endif
 
 .PHONY: publish-tf27-cpu
 publish-tf27-cpu:
-	scripts/publish-docker.sh tf27-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh tf27-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-ifneq ($(NGC_PUBLISH),)
-	scripts/publish-docker.sh tf27-cpu $(NGC_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
-endif
+	echo "Tensorflow 2.7 CPU image is published by buildx"
 
 .PHONY: publish-tf27-gpu
 publish-tf27-gpu:
