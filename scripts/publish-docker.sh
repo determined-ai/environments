@@ -3,8 +3,8 @@
 set -e
 set -x
 
-if [ "$#" -lt 4 ] || [ "$#" -gt 5 ] ; then
-    echo "usage: $0 LOG_NAME BASE_TAG HASH VERSION ARTIFACTS_DIR" >&2
+if [ "$#" -lt 4 ] || [ "$#" -gt 6 ] || [ "$#" -eq 6 ] && [ "$6" != "--no-push" ]; then
+    echo "usage: $0 LOG_NAME BASE_TAG HASH VERSION ARTIFACTS_DIR [--no-push]" >&2
     exit 1
 fi
 
@@ -16,8 +16,10 @@ artifacts="$5"
 
 underscore_name="$(echo -n "$log_name" | tr - _)"
 
-docker push "$base_tag-$hash"
-docker push "$base_tag-$version"
+if [ "$#" -lt 6 ] ; then
+    docker push "$base_tag-$hash"
+    docker push "$base_tag-$version"
+fi
 
 if [ -n "$artifacts" ]; then
     mkdir -p "$artifacts"
