@@ -394,7 +394,8 @@ publish-tf24-gpu:
 
 .PHONY: publish-tf2-cpu
 publish-tf2-cpu:
-	echo "Tensorflow 2.8 CPU image is published by buildx"
+	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
+	scripts/publish-docker.sh tf2-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
 
 .PHONY: publish-tf2-gpu
 publish-tf2-gpu:
@@ -450,7 +451,8 @@ endif
 
 .PHONY: publish-tf27-cpu
 publish-tf27-cpu:
-	echo "Tensorflow 2.7 CPU image is published by buildx"
+	scripts/publish-docker.sh tf27-cpu $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
+	scripts/publish-docker.sh tf27-cpu $(DOCKERHUB_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
 
 .PHONY: publish-tf27-gpu
 publish-tf27-gpu:
