@@ -70,6 +70,9 @@ jobs:
       dev-mode:
         type: boolean
         default: false
+      use-mpi:
+        type: integer
+        default: 0
     machine:
       image: ubuntu-2004:2022.04.2
     resource_class: xlarge
@@ -86,13 +89,13 @@ jobs:
                 repository: nvcr.io
                 username: ${NGC_API_USERNAME}
                 password: ${NGC_API_KEY}
-            - run: make build-<<parameters.image-type>>
-            - run: make publish-<<parameters.image-type>>
+            - run: make build-<<parameters.image-type>> USE_MPI=<<parameters.use-mpi>>
+            - run: make publish-<<parameters.image-type>> USE_MPI=<<parameters.use-mpi>>
       - when:
           condition: <<parameters.dev-mode>>
           steps:
-            - run: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev
-            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev
+            - run: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev USE_MPI=<<parameters.use-mpi>>
+            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev USE_MPI=<<parameters.use-mpi>>
       - store_artifacts:
           path: /tmp/artifacts
 
@@ -143,6 +146,7 @@ workflows:
               only: master
           matrix:
             parameters:
+              use-mpi: [0]
               image-type:
                 - tf1-cpu
                 - tf2-cpu
@@ -188,6 +192,7 @@ workflows:
             alias: build-docker-all
             parameters:
               dev-mode: [true]
+              use-mpi: [1, 0]
               image-type:
                 - tf1-cpu
                 - tf2-cpu

@@ -25,7 +25,7 @@ RUN apt-get update \
 		libtool \
 		git \
 		krb5-user \
-		g++-4.8 \
+		g++ \
 		cmake \
 		make \
 		openssh-client \
