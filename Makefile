@@ -21,6 +21,8 @@ ARTIFACTS_DIR := /tmp/artifacts
 PYTHON_VERSION := 3.8.12
 PYTHON_VERSION_37 := 3.7.11
 UBUNTU_VERSION := ubuntu20.04
+UBUNTU_IMAGE_TAG := ubuntu:20.04
+UBUNTU_VERSION_1804 := ubuntu18.04
 ifeq "$(USE_MPI)" "1"
   HOROVOD_WITH_MPI := 1
   HOROVOD_WITHOUT_MPI := 0
@@ -67,9 +69,9 @@ export AWS_MAX_ATTEMPTS=360
 .PHONY: build-cpu-py-37-base build-cpu-py-38-base  build-gpu-cuda-111-base build-gpu-cuda-112-base build-gpu-cuda-113-base
 build-cpu-py-37-base:
 	docker build -f Dockerfile-base-cpu \
-		--build-arg BASE_IMAGE="ubuntu:20.04" \
+		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_37)" \
-                --build-arg "$(MPI_BUILD_ARG)" \
+		--build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(VERSION) \
 		.
@@ -80,9 +82,9 @@ build-cpu-py-38-base:
 	docker buildx create --name builder --driver docker-container --use
 	docker buildx build -f Dockerfile-base-cpu \
 	    --platform linux/arm64,linux/amd64 \
-		--build-arg BASE_IMAGE="ubuntu:20.04" \
+		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
-                --build-arg "$(MPI_BUILD_ARG)" \
+		--build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(VERSION) \
 		--push \
@@ -91,10 +93,10 @@ build-cpu-py-38-base:
 .PHONY: build-gpu-cuda-102-base
 build-gpu-cuda-102-base:
 	docker build -f Dockerfile-base-gpu \
-		--build-arg BASE_IMAGE="nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04" \
+		--build-arg BASE_IMAGE="nvidia/cuda:10.2-cudnn7-devel-$(UBUNTU_VERSION_1804)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_37)" \
-		--build-arg UBUNTU_VERSION="ubuntu18.04" \
-                --build-arg "$(MPI_BUILD_ARG)" \
+		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION_1804)" \
+		--build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_102_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_102_BASE_NAME)-$(VERSION) \
 		.
@@ -105,7 +107,7 @@ build-gpu-cuda-111-base:
 		--build-arg BASE_IMAGE="nvidia/cuda:11.1-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
-                --build-arg "$(MPI_BUILD_ARG)" \
+		--build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_111_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_111_BASE_NAME)-$(VERSION) \
 		.
@@ -116,7 +118,7 @@ build-gpu-cuda-112-base:
 		--build-arg BASE_IMAGE="nvidia/cuda:11.2.2-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
-                --build-arg "$(MPI_BUILD_ARG)" \
+		--build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_112_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_112_BASE_NAME)-$(VERSION) \
 		.
@@ -127,7 +129,7 @@ build-gpu-cuda-113-base:
 		--build-arg BASE_IMAGE="nvidia/cuda:11.3.1-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
-                --build-arg "$(MPI_BUILD_ARG)" \
+		--build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(VERSION) \
 		.
@@ -513,7 +515,6 @@ publish-tf27-gpu:
 ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf27-gpu $(NGC_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 endif
-
 
 .PHONY: publish-pytorch19-tf25-rocm
 publish-pytorch19-tf25-rocm:
