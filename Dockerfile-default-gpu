@@ -27,6 +27,8 @@ ARG APEX_GIT
 ARG APEX_PATCH
 RUN /tmp/det_dockerfile_scripts/install_apex.sh
 
+RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
+
 ARG DET_BUILD_NCCL=1
 RUN if [ -n "${DET_BUILD_NCCL}" ]; then /tmp/det_dockerfile_scripts/build_nccl.sh; fi
 ARG HOROVOD_NCCL_LINK=${DET_BUILD_NCCL:+STATIC}
@@ -43,8 +45,6 @@ ARG HOROVOD_WITHOUT_MPI
 RUN ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs && \
     pip install "$HOROVOD_PIP" && \
     ldconfig
-
-RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
 
 ARG DEEPSPEED_PIP
 RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed.sh; fi
