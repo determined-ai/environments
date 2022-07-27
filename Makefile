@@ -5,7 +5,7 @@ SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
 
 NGC_REGISTRY := nvcr.io/isv-ngc-partner/determined
 NGC_PUBLISH := 1
-export DOCKERHUB_REGISTRY := determinedai
+export DOCKERHUB_REGISTRY := andazhou
 export REGISTRY_REPO := environments
 
 CPU_PREFIX := $(REGISTRY_REPO):py-3.8-
@@ -15,6 +15,8 @@ CUDA_111_PREFIX := $(REGISTRY_REPO):cuda-11.1-
 CUDA_112_PREFIX := $(REGISTRY_REPO):cuda-11.2-
 CUDA_113_PREFIX := $(REGISTRY_REPO):cuda-11.3-
 ROCM_42_PREFIX := $(REGISTRY_REPO):rocm-4.2-
+ROCM_50_PREFIX := $(REGISTRY_REPO):rocm-5.0-
+
 CPU_SUFFIX := -cpu
 GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
@@ -43,6 +45,8 @@ export GPU_TF26_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.6$(GPU_SUFFIX)
 export CPU_TF27_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.7$(CPU_SUFFIX)
 export GPU_TF27_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.7$(GPU_SUFFIX)
 export ROCM_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_42_PREFIX)pytorch-1.9-tf-2.5-rocm
+
+export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.5-rocm
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
 # waiting for AMI availablity. Bump to 360 attempts = 90 minutes.
@@ -340,6 +344,16 @@ build-pytorch19-tf25-rocm:
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
+.PHONY: build-pytorch10-tf25-rocm50
+build-pytorch10-tf25-rocm50:
+	docker build -f Dockerfile-default-rocm \
+		--build-arg BASE_IMAGE="amdih/pytorch:rocm5.0_ubuntu18.04_py3.7_pytorch_1.10.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.7.1" \
+		--build-arg HOROVOD_PIP="horovod==0.25.0" \
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
+		.
+
 # tf1 and tf2.4 images are not published to NGC due to vulnerabilities.
 .PHONY: publish-tf1-cpu
 publish-tf1-cpu:
@@ -443,6 +457,7 @@ endif
 .PHONY: publish-pytorch19-tf25-rocm
 publish-pytorch19-tf25-rocm:
 	scripts/publish-docker.sh pytorch19-tf25-rocm $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+
 
 
 .PHONY: publish-cloud-images

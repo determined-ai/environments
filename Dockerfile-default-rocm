@@ -52,7 +52,7 @@ RUN if [ "$TENSORFLOW_PIP" ]; then python -m pip install $TENSORFLOW_PIP; fi
 ENV HOROVOD_GPU_BROADCAST=
 ENV HOROVOD_GPU_ALLREDUCE=
 
-ARG HOROVOD_PIP=git+https://github.com/determined-ai/horovod.git@rocm-impl-tf
+ARG HOROVOD_PIP
 ARG HOROVOD_NCCL_HOME=/opt/rocm/rccl
 ARG HOROVOD_WITH_TENSORFLOW=1
 ARG HOROVOD_WITH_PYTORCH=1
@@ -61,7 +61,11 @@ ARG HOROVOD_GPU_OPERATIONS=NCCL
 ARG HOROVOD_WITHOUT_MPI=1
 ARG HOROVOD_GPU=ROCM
 ARG HOROVOD_WITHOUT_MPI=1
+ENV LD_LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/hip/lib
 RUN if [ "$HOROVOD_PIP" != "0" ]; then pip install "${HOROVOD_PIP}" ; fi
+
+ARG DEEPSPEED_PIP
+RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed.sh; fi
 
 RUN rm -r /tmp/*
 # Reset entrypoint.
