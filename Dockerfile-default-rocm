@@ -64,9 +64,6 @@ ARG HOROVOD_WITHOUT_MPI=1
 ENV LD_LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/hip/lib
 RUN if [ "$HOROVOD_PIP" != "0" ]; then pip install "${HOROVOD_PIP}" ; fi
 
-ARG DEEPSPEED_PIP
-RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed.sh; fi
-
 RUN rm -r /tmp/*
 # Reset entrypoint.
 ENTRYPOINT []

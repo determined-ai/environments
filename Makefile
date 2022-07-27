@@ -5,7 +5,7 @@ SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
 
 NGC_REGISTRY := nvcr.io/isv-ngc-partner/determined
 NGC_PUBLISH := 1
-export DOCKERHUB_REGISTRY := andazhou
+export DOCKERHUB_REGISTRY := determinedai
 export REGISTRY_REPO := environments
 
 CPU_PREFIX := $(REGISTRY_REPO):py-3.8-
@@ -44,8 +44,8 @@ export CPU_TF26_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.6$(CPU_SUFFIX)
 export GPU_TF26_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.6$(GPU_SUFFIX)
 export CPU_TF27_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.7$(CPU_SUFFIX)
 export GPU_TF27_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.7$(GPU_SUFFIX)
-export ROCM_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_42_PREFIX)pytorch-1.9-tf-2.5-rocm
 
+export ROCM_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_42_PREFIX)pytorch-1.9-tf-2.5-rocm
 export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.5-rocm
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
@@ -458,6 +458,9 @@ endif
 publish-pytorch19-tf25-rocm:
 	scripts/publish-docker.sh pytorch19-tf25-rocm $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
+.PHONY: publish-pytorch10-tf25-rocm50
+publish-pytorch10-tf25-rocm50:
+	scripts/publish-docker.sh pytorch10-tf25-rocm50 $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 
 .PHONY: publish-cloud-images
