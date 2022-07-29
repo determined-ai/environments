@@ -23,15 +23,20 @@ PYTHON_VERSION_37 := 3.7.11
 UBUNTU_VERSION := ubuntu20.04
 UBUNTU_IMAGE_TAG := ubuntu:20.04
 UBUNTU_VERSION_1804 := ubuntu18.04
-ifeq "$(USE_MPI)" "1"
+PLATFORM_LINUX_ARM_64 := linux/arm64
+PLATFORM_LINUX_AMD_64 := linux/amd64
+ifeq "$(WITH_MPI)" "1"
+  # Don't bother supporting or building arm64+mpi builds.
+  PLATFORMS := $(PLATFORM_LINUX_AMD_64)
   HOROVOD_WITH_MPI := 1
   HOROVOD_WITHOUT_MPI := 0
   HOROVOD_CPU_OPERATIONS := MPI
   CPU_SUFFIX := -cpu-mpi
   GPU_SUFFIX := -gpu-mpi
-  MPI_BUILD_ARG := USE_MPI=1
+  MPI_BUILD_ARG := WITH_MPI=1
 else
-  USE_MPI := 0
+  PLATFORMS := $(PLATFORM_LINUX_AMD_64),$(PLATFORM_LINUX_ARM_64)
+  WITH_MPI := 0
   HOROVOD_WITH_MPI := 0
   HOROVOD_WITHOUT_MPI := 1
   HOROVOD_CPU_OPERATIONS := GLOO
@@ -81,7 +86,7 @@ build-cpu-py-38-base:
 	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 	docker buildx create --name builder --driver docker-container --use
 	docker buildx build -f Dockerfile-base-cpu \
-	    --platform linux/arm64,linux/amd64 \
+	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
@@ -231,7 +236,7 @@ endif
 .PHONY: build-tf2-cpu
 build-tf2-cpu: build-cpu-py-38-base
 	docker buildx build -f Dockerfile-default-cpu \
-	    --platform linux/arm64,linux/amd64 \
+	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.2" \
 		--build-arg TORCH_PIP="torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
@@ -389,7 +394,7 @@ endif
 .PHONY: build-tf27-cpu
 build-tf27-cpu: build-cpu-py-38-base
 	docker buildx build -f Dockerfile-default-cpu \
-		--platform linux/arm64,linux/amd64 \
+		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.7.3" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
