@@ -32,7 +32,7 @@ RUN if [ -n "${DET_BUILD_NCCL}" ]; then /tmp/det_dockerfile_scripts/build_nccl.s
 ARG HOROVOD_NCCL_LINK=${DET_BUILD_NCCL:+STATIC}
 ARG HOROVOD_NCCL_HOME=${DET_BUILD_NCCL:+/tmp/det_nccl/build}
 
-ARG HOROVOD_PIP=horovod
+ARG HOROVOD_PIP=""
 ARG HOROVOD_WITH_TENSORFLOW=1
 ARG HOROVOD_WITH_PYTORCH=1
 ARG HOROVOD_WITHOUT_MXNET=1
@@ -41,9 +41,9 @@ ARG HOROVOD_WITH_MPI
 ARG HOROVOD_CPU_OPERATIONS
 ARG HOROVOD_WITHOUT_MPI
 RUN pip install cmake==3.22.4
-RUN ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs && \
+RUN if [ -n "${HOROVOD_PIP}" ]; then ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs && \
     pip install "$HOROVOD_PIP" && \
-    ldconfig
+    ldconfig; fi
 
 RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
 
