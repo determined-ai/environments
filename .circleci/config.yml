@@ -122,8 +122,8 @@ jobs:
           condition: <<parameters.dev-mode>>
           steps:
             - run:
-                no_output_timeout: 91m
-                command: make publish-cloud-images PACKER_FLAGS="-force" NGC_PUBLISH= REGISTRY_REPO=environments-dev
+                no_output_timeout: 90m
+                command: make publish-cloud-images PACKER_FLAGS="-force -debug" NGC_PUBLISH= REGISTRY_REPO=environments-dev
       - store_artifacts:
           path: /tmp/artifacts
 
