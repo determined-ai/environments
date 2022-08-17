@@ -140,6 +140,7 @@
       "source_image": "{{ user `gcp_base_image`}}",
       "ssh_username": "packer",
       "zone": "us-west1-b",
+      "subnetwork": "default",
       "disk_size": 100,
       "on_host_maintenance": "TERMINATE",
       "machine_type": "n1-standard-1",
