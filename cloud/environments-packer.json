@@ -36,7 +36,8 @@
       ],
       "user": "ubuntu",
       "only": [
-        "amazon-ebs"
+        "amazon-ebs",
+        "amazon-ebs-gov"
       ]
     },
     {
