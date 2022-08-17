@@ -26,21 +26,33 @@ UBUNTU_VERSION_1804 := ubuntu18.04
 PLATFORM_LINUX_ARM_64 := linux/arm64
 PLATFORM_LINUX_AMD_64 := linux/amd64
 ifeq "$(WITH_MPI)" "1"
-  # Don't bother supporting or building arm64+mpi builds.
-  PLATFORMS := $(PLATFORM_LINUX_AMD_64)
-  HOROVOD_WITH_MPI := 1
-  HOROVOD_WITHOUT_MPI := 0
-  HOROVOD_CPU_OPERATIONS := MPI
-  CPU_SUFFIX := -cpu-mpi
-  GPU_SUFFIX := -gpu-mpi
-  MPI_BUILD_ARG := WITH_MPI=1
+# 	Don't bother supporting or building arm64+mpi builds.
+	PLATFORMS := $(PLATFORM_LINUX_AMD_64)
+	HOROVOD_WITH_MPI := 1
+	HOROVOD_WITHOUT_MPI := 0
+	HOROVOD_CPU_OPERATIONS := MPI
+	GPU_SUFFIX := -gpu-mpi
+	MPI_BUILD_ARG := WITH_MPI=1
+	TORCH_PIP_VERSION_TF2_Name := 1.11
+	TORCH_PIP_VERSION_TF2 := "torch==1.11.0+cpu torchvision==0.12.0+cpu torchaudio==0.11.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu"
+
+	ifeq "$(WITH_OFI)" "1"
+		CPU_SUFFIX := -cpu-mpi-ofi
+		OFI_BUILD_ARG := WITH_OFI=1
+	else
+		CPU_SUFFIX := -cpu-mpi
+		OFI_BUILD_ARG := WITH_OFI
+	endif
 else
-  PLATFORMS := $(PLATFORM_LINUX_AMD_64),$(PLATFORM_LINUX_ARM_64)
-  WITH_MPI := 0
-  HOROVOD_WITH_MPI := 0
-  HOROVOD_WITHOUT_MPI := 1
-  HOROVOD_CPU_OPERATIONS := GLOO
-  MPI_BUILD_ARG := USE_GLOO=1
+	PLATFORMS := $(PLATFORM_LINUX_AMD_64),$(PLATFORM_LINUX_ARM_64)
+	WITH_MPI := 0
+	OFI_BUILD_ARG := WITH_OFI
+	HOROVOD_WITH_MPI := 0
+	HOROVOD_WITHOUT_MPI := 1
+	HOROVOD_CPU_OPERATIONS := GLOO
+	MPI_BUILD_ARG := USE_GLOO=1
+	TORCH_PIP_VERSION_TF2_Name := 1.10
+	TORCH_PIP_VERSION_TF2 := "torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html"
 endif
 DEEPSPEED_VERSION := 0.7.0
 
