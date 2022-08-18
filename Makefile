@@ -25,6 +25,7 @@ UBUNTU_IMAGE_TAG := ubuntu:20.04
 UBUNTU_VERSION_1804 := ubuntu18.04
 PLATFORM_LINUX_ARM_64 := linux/arm64
 PLATFORM_LINUX_AMD_64 := linux/amd64
+
 ifeq "$(WITH_MPI)" "1"
 # 	Don't bother supporting or building arm64+mpi builds.
 	PLATFORMS := $(PLATFORM_LINUX_AMD_64)
@@ -67,7 +68,7 @@ export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX_37)pytorch-1.7-tf-1.15$(CPU_SUFF
 export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_102_PREFIX)pytorch-1.7-tf-1.15$(GPU_SUFFIX)
 export CPU_TF24_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.9-tf-2.4$(CPU_SUFFIX)
 export GPU_TF24_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-tf-2.4$(GPU_SUFFIX)
-export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.10-tf-2.8$(CPU_SUFFIX)
+export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_PIP_VERSION_TF2_Name)-tf-2.8$(CPU_SUFFIX)
 export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8$(GPU_SUFFIX)
 export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8-deepspeed-$(DEEPSPEED_VERSION)$(GPU_SUFFIX)
 export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8-gpt-neox-deepspeed$(GPU_SUFFIX)
@@ -89,7 +90,9 @@ build-cpu-py-37-base:
 	docker build -f Dockerfile-base-cpu \
 		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_37)" \
+		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
+		--build-arg "$(OFI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(VERSION) \
 		.
@@ -102,7 +105,9 @@ build-cpu-py-38-base:
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
+		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
+		--build-arg "$(OFI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(VERSION) \
 		--push \
@@ -250,7 +255,7 @@ build-tf2-cpu: build-cpu-py-38-base
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.2" \
-		--build-arg TORCH_PIP="torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+		--build-arg TORCH_PIP=$(TORCH_PIP_VERSION_TF2) \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
@@ -535,3 +540,4 @@ publish-cloud-images:
 	cd cloud \
 		&& packer build $(PACKER_FLAGS) -machine-readable -var "image_suffix=-$(SHORT_GIT_HASH)" environments-packer.json \
 		| tee $(ARTIFACTS_DIR)/packer-log
+		
