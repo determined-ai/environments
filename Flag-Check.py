@@ -14,12 +14,12 @@ if num_args > 1: # if args greater than just file name
         if "=" in curr_arg: #if there is an equals in the arg
             arg_name = curr_arg.split('=')[0] #get left side of equals
             final_arg_name = "$(" + arg_name + ")"
-            # setting flag does not exist
+            # setting Arg does not exist
             flag = 0
             for line in file1:
                 if final_arg_name in line:
                     if "#" in line:
-                        flag = 0
+                        flag = 0 # Arg does not exist if there is a comment
                         break
                     flag = 1
                     break
