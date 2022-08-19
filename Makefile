@@ -71,6 +71,11 @@ export ROCM_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_42_PREFIX)pytorch-1.9-tf-2.5-roc
 # waiting for AMI availablity. Bump to 360 attempts = 90 minutes.
 export AWS_MAX_ATTEMPTS=360
 
+# Arguement Checker
+.PHONY: flag-check
+flag-check:
+	Python3 Flag-Check.py $(MAKEFLAGS)
+
 # Base images.
 .PHONY: build-cpu-py-37-base build-cpu-py-38-base  build-gpu-cuda-111-base build-gpu-cuda-112-base build-gpu-cuda-113-base
 build-cpu-py-37-base:
