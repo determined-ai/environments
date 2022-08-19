@@ -2,7 +2,7 @@
 
 import sys
 file1 = open("Makefile", "r")
-#print('Number of arguments:', len(sys.argv), 'arguments.')
+#print('Number of arguments:', len(sys.argv), 'arguments.') #debugging
 num_args = len(sys.argv) #getting total args
 if num_args > 1: # if args greater than just file name
     pos = num_args-1
