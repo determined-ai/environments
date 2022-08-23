@@ -14,7 +14,8 @@ CUDA_102_PREFIX := $(REGISTRY_REPO):cuda-10.2-
 CUDA_111_PREFIX := $(REGISTRY_REPO):cuda-11.1-
 CUDA_112_PREFIX := $(REGISTRY_REPO):cuda-11.2-
 CUDA_113_PREFIX := $(REGISTRY_REPO):cuda-11.3-
-ROCM_42_PREFIX := $(REGISTRY_REPO):rocm-4.2-
+ROCM_50_PREFIX := $(REGISTRY_REPO):rocm-5.0-
+
 CPU_SUFFIX := -cpu
 GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
@@ -65,7 +66,8 @@ export CPU_TF26_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.6$(CPU_SUFFIX)
 export GPU_TF26_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.6$(GPU_SUFFIX)
 export CPU_TF27_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.7$(CPU_SUFFIX)
 export GPU_TF27_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.7$(GPU_SUFFIX)
-export ROCM_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_42_PREFIX)pytorch-1.9-tf-2.5-rocm
+
+export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
 # waiting for AMI availablity. Bump to 360 attempts = 90 minutes.
@@ -410,16 +412,14 @@ build-tf27-gpu: build-gpu-cuda-112-base
 		-t $(NGC_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
-# ROCM image is build off AMD infinity hub image for rocm+pytorch, adding TF and horovod.
-# Also we are currently forced to use our custom branch of horovod.
-.PHONY: build-pytorch19-tf25-rocm
-build-pytorch19-tf25-rocm:
+.PHONY: build-pytorch10-tf27-rocm50
+build-pytorch10-tf27-rocm50:
 	docker build -f Dockerfile-default-rocm \
-		--build-arg BASE_IMAGE="amdih/pytorch:rocm4.2_ubuntu18.04_py3.6_pytorch_1.9.0" \
-		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.5.0" \
-		--build-arg HOROVOD_PIP="git+https://github.com/determined-ai/horovod.git@rocm-impl-tf" \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
+		--build-arg BASE_IMAGE="amdih/pytorch:rocm5.0_ubuntu18.04_py3.7_pytorch_1.10.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.7.1" \
+		--build-arg HOROVOD_PIP="horovod==0.25.0" \
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
 # tf1 and tf2.4 images are not published to NGC due to vulnerabilities.
@@ -512,10 +512,9 @@ ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf27-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 endif
 
-.PHONY: publish-pytorch19-tf25-rocm
-publish-pytorch19-tf25-rocm:
-	scripts/publish-docker.sh pytorch19-tf25-rocm-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-
+.PHONY: publish-pytorch10-tf27-rocm50
+publish-pytorch10-tf27-rocm50:
+	scripts/publish-docker.sh pytorch10-tf27-rocm50 $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
 publish-cloud-images:
