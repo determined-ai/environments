@@ -46,7 +46,7 @@ export CPU_TF27_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.7$(CPU_SUFFIX)
 export GPU_TF27_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.7$(GPU_SUFFIX)
 
 export ROCM_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_42_PREFIX)pytorch-1.9-tf-2.5-rocm
-export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.5-rocm
+export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
 # waiting for AMI availablity. Bump to 360 attempts = 90 minutes.
@@ -344,8 +344,8 @@ build-pytorch19-tf25-rocm:
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
-.PHONY: build-pytorch10-tf25-rocm50
-build-pytorch10-tf25-rocm50:
+.PHONY: build-pytorch10-tf27-rocm50
+build-pytorch10-tf27-rocm50:
 	docker build -f Dockerfile-default-rocm \
 		--build-arg BASE_IMAGE="amdih/pytorch:rocm5.0_ubuntu18.04_py3.7_pytorch_1.10.0" \
 		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.7.1" \
@@ -458,9 +458,9 @@ endif
 publish-pytorch19-tf25-rocm:
 	scripts/publish-docker.sh pytorch19-tf25-rocm $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
-.PHONY: publish-pytorch10-tf25-rocm50
-publish-pytorch10-tf25-rocm50:
-	scripts/publish-docker.sh pytorch10-tf25-rocm50 $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+.PHONY: publish-pytorch10-tf27-rocm50
+publish-pytorch10-tf27-rocm50:
+	scripts/publish-docker.sh pytorch10-tf27-rocm50 $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 
 .PHONY: publish-cloud-images
