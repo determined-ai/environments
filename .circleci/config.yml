@@ -160,7 +160,7 @@ workflows:
                 - tf25-gpu
                 - tf26-gpu
                 - tf27-gpu
-                - pytorch19-tf25-rocm
+                - pytorch10-tf27-rocm50
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
 
@@ -206,7 +206,7 @@ workflows:
                 - tf25-gpu
                 - tf26-gpu
                 - tf27-gpu
-                - pytorch19-tf25-rocm
+                - pytorch10-tf27-rocm50
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
 
