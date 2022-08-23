@@ -45,7 +45,6 @@ export GPU_TF26_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.6$(GPU_SUFFIX)
 export CPU_TF27_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.7$(CPU_SUFFIX)
 export GPU_TF27_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.7$(GPU_SUFFIX)
 
-export ROCM_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_42_PREFIX)pytorch-1.9-tf-2.5-rocm
 export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
@@ -332,18 +331,6 @@ build-tf27-gpu: build-gpu-cuda-112-base
 		-t $(NGC_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
-# ROCM image is build off AMD infinity hub image for rocm+pytorch, adding TF and horovod.
-# Also we are currently forced to use our custom branch of horovod.
-.PHONY: build-pytorch19-tf25-rocm
-build-pytorch19-tf25-rocm:
-	docker build -f Dockerfile-default-rocm \
-		--build-arg BASE_IMAGE="amdih/pytorch:rocm4.2_ubuntu18.04_py3.6_pytorch_1.9.0" \
-		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.5.0" \
-		--build-arg HOROVOD_PIP="git+https://github.com/determined-ai/horovod.git@rocm-impl-tf" \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
-		.
-
 .PHONY: build-pytorch10-tf27-rocm50
 build-pytorch10-tf27-rocm50:
 	docker build -f Dockerfile-default-rocm \
@@ -453,10 +440,6 @@ ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf27-gpu $(NGC_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 endif
 
-
-.PHONY: publish-pytorch19-tf25-rocm
-publish-pytorch19-tf25-rocm:
-	scripts/publish-docker.sh pytorch19-tf25-rocm $(DOCKERHUB_REGISTRY)/$(ROCM_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-pytorch10-tf27-rocm50
 publish-pytorch10-tf27-rocm50:
