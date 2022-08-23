@@ -70,8 +70,11 @@ jobs:
       dev-mode:
         type: boolean
         default: false
+      with-mpi:
+        type: integer
+        default: 0
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.04.2
     resource_class: xlarge
     steps:
       - checkout
@@ -86,13 +89,13 @@ jobs:
                 repository: nvcr.io
                 username: ${NGC_API_USERNAME}
                 password: ${NGC_API_KEY}
-            - run: make build-<<parameters.image-type>>
-            - run: make publish-<<parameters.image-type>>
+            - run: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+            - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
       - when:
           condition: <<parameters.dev-mode>>
           steps:
-            - run: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev
-            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev
+            - run: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
       - store_artifacts:
           path: /tmp/artifacts
 
@@ -143,6 +146,7 @@ workflows:
               only: master
           matrix:
             parameters:
+              with-mpi: [0, 1]
               image-type:
                 - tf1-cpu
                 - tf2-cpu
@@ -179,7 +183,7 @@ workflows:
           filters: *upstream-feature-branch
 
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-dev
+          name: build-and-publish-docker-<<matrix.image-type>>-with-mpi=<<matrix.with-mpi>>-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
@@ -188,6 +192,7 @@ workflows:
             alias: build-docker-all
             parameters:
               dev-mode: [true]
+              with-mpi: [0, 1]
               image-type:
                 - tf1-cpu
                 - tf2-cpu
