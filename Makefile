@@ -433,8 +433,9 @@ build-tf27-gpu: build-gpu-cuda-112-base
 build-pytorch10-tf27-rocm50:
 	docker build -f Dockerfile-default-rocm \
 		--build-arg BASE_IMAGE="amdih/pytorch:rocm5.0_ubuntu18.04_py3.7_pytorch_1.10.0" \
+		--build-arg PIN_PROTOBUF="protobuf==3.20.1" \
 		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.7.1" \
-		--build-arg HOROVOD_PIP="horovod==0.24.2" \
+		--build-arg HOROVOD_PIP="horovod==0.25.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
 		.
