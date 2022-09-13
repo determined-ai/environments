@@ -45,8 +45,14 @@ RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
 RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
 RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 
+# google-api-python-client -> google-api-core -> googleapis-common-protos -> protobuf
+# Horovod cannot build with protobuf > 3.20.x
+# latest google-api-python-client requires protobuf >= 3.20.1
+ARG PIN_PROTOBUF
+RUN if [ "$PIN_PROTOBUF" ]; then pip install $PIN_PROTOBUF; fi
+
 ARG TENSORFLOW_PIP
-RUN if [ "$TENSORFLOW_PIP" ]; then python -m pip install $TENSORFLOW_PIP; fi
+RUN if [ "$TENSORFLOW_PIP" ]; then pip install $TENSORFLOW_PIP; fi
 
 # Reset these because we set GPU_OPERATIONS later.
 ENV HOROVOD_GPU_BROADCAST=
