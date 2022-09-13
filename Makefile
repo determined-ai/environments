@@ -532,7 +532,7 @@ endif
 
 .PHONY: publish-pytorch10-tf27-rocm50
 publish-pytorch10-tf27-rocm50:
-	scripts/publish-docker.sh pytorch10-tf27-rocm50 $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh pytorch10-tf27-rocm50-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
 publish-cloud-images:
