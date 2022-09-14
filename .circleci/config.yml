@@ -163,6 +163,11 @@ workflows:
                 - pytorch10-tf27-rocm50
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
+            exclude:
+              - dev-mode: false
+                with-mpi: 1
+                image-type: pytorch10-tf27-rocm50
+
 
       - publish-cloud-images:
           context: determined-production
@@ -209,6 +214,10 @@ workflows:
                 - pytorch10-tf27-rocm50
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
+            exclude:
+              - dev-mode: true
+                with-mpi: 1
+                image-type: pytorch10-tf27-rocm50
 
       - publish-cloud-images:
           name: publish-cloud-images-dev
