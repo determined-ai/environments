@@ -168,7 +168,6 @@ build-tf1-cpu: build-cpu-py-37-base
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
-		--build-arg PIN_PROTOBUF="protobuf==3.20.1" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
@@ -188,7 +187,6 @@ build-tf1-gpu: build-gpu-cuda-102-base
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
-		--build-arg PIN_PROTOBUF="protobuf==3.20.1" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
@@ -333,7 +331,6 @@ build-gpt-neox-deepspeed-gpu: build-gpu-cuda-113-base
 build-tf25-cpu: build-cpu-py-38-base
 	docker build -f Dockerfile-default-cpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg PIN_PROTOBUF="protobuf==3.20.1" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.5.3" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
@@ -350,7 +347,6 @@ build-tf25-cpu: build-cpu-py-38-base
 build-tf25-gpu: build-gpu-cuda-112-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_112_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg PIN_PROTOBUF="protobuf==3.20.1" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.5.3" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
@@ -364,7 +360,6 @@ build-tf25-gpu: build-gpu-cuda-112-base
 build-tf26-cpu: build-cpu-py-38-base
 	docker build -f Dockerfile-default-cpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg PIN_PROTOBUF="protobuf==3.20.1" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.6.5" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
@@ -381,7 +376,6 @@ build-tf26-cpu: build-cpu-py-38-base
 build-tf26-gpu: build-gpu-cuda-112-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_112_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg PIN_PROTOBUF="protobuf==3.20.1" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.6.5" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
@@ -437,7 +431,6 @@ build-tf27-gpu: build-gpu-cuda-112-base
 build-pytorch10-tf27-rocm50:
 	docker build -f Dockerfile-default-rocm \
 		--build-arg BASE_IMAGE="amdih/pytorch:rocm5.0_ubuntu18.04_py3.7_pytorch_1.10.0" \
-		--build-arg PIN_PROTOBUF="protobuf==3.20.1" \
 		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.7.1" \
 		--build-arg HOROVOD_PIP="horovod==0.25.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
