@@ -10,7 +10,6 @@ ARG TENSORFLOW_PIP
 ARG TORCH_PIP
 ARG TORCHVISION_PIP
 ARG TORCH_PROFILER_GIT
-ARG PIN_PROTOBUF
 RUN if [ "$TENSORFLOW_PIP" ]; then \
         if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
             TENSORFLOW_AARCH64_PIP=$(printf '%s' "$TENSORFLOW_PIP" | sed 's/cpu/aarch64/') \
@@ -28,7 +27,7 @@ RUN if [ "$TORCH_PIP" ]; then \
         fi; \
     fi
 RUN if [ "$TORCHVISION_PIP" ]; then pip install $TORCHVISION_PIP; fi
-RUN if [ "$PIN_PROTOBUF" ]; then pip install $PIN_PROTOBUF; fi
+RUN pip install protobuf==3.20.1
 
 RUN if [ "$TORCH_PROFILER_GIT" ]; then /tmp/det_dockerfile_scripts/torch-tb-profiler-patch.sh; fi
 ARG HOROVOD_PIP=horovod

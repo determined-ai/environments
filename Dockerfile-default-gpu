@@ -9,12 +9,11 @@ ARG TENSORFLOW_PIP
 ARG TORCH_PIP
 ARG TORCHVISION_PIP
 ARG TORCH_PROFILER_GIT
-ARG PIN_PROTOBUF
 
 RUN if [ "$TENSORFLOW_PIP" ]; then python -m pip install $TENSORFLOW_PIP; fi
 RUN if [ "$TORCH_PIP" ]; then python -m pip install $TORCH_PIP; fi
 RUN if [ "$TORCHVISION_PIP" ]; then python -m pip install $TORCHVISION_PIP; fi
-RUN if [ "$PIN_PROTOBUF" ]; then pip install $PIN_PROTOBUF; fi
+RUN pip install protobuf==3.20.1
 
 ARG TF_CUDA_SYM
 RUN if [ "$TF_CUDA_SYM" ]; then ln -s /usr/local/cuda/lib64/libcusolver.so.11 /opt/conda/lib/python3.8/site-packages/tensorflow/python/libcusolver.so.10; fi
