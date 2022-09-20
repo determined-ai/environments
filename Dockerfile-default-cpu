@@ -27,7 +27,6 @@ RUN if [ "$TORCH_PIP" ]; then \
         fi; \
     fi
 RUN if [ "$TORCHVISION_PIP" ]; then pip install $TORCHVISION_PIP; fi
-RUN pip install protobuf==3.20.1
 
 RUN if [ "$TORCH_PROFILER_GIT" ]; then /tmp/det_dockerfile_scripts/torch-tb-profiler-patch.sh; fi
 ARG HOROVOD_PIP=horovod
@@ -37,7 +36,7 @@ ARG HOROVOD_WITHOUT_MXNET=1
 ARG HOROVOD_WITH_MPI
 ARG HOROVOD_CPU_OPERATIONS
 ARG HOROVOD_WITHOUT_MPI
-RUN pip install cmake==3.22.4
+RUN pip install cmake==3.22.4 protobuf==3.20.1
 RUN pip install "$HOROVOD_PIP"
 
 RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
