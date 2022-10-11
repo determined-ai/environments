@@ -2,29 +2,7 @@
 
 set -x
 
-# Install the Mellanox OFED stack.  Note that this is dependent on what
-# the base OS is (ie, Ubuntu 20.04) so if that changes then this needs updated.
-#MOFED_VER=5.0-2.1.8.0
-#MOFED_VER=5.5-1.0.3.2
-MOFED_VER=5.4-3.4.0.0
 OS_VER=$1
-#OS_VER=ubuntu20.04
-PLATFORM=x86_64
-MOFED_TAR_URL="http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VER}"
-MOFED_TAR="MLNX_OFED_LINUX-${MOFED_VER}-${OS_VER}-${PLATFORM}.tgz"
-TMP_INSTALL_DIR=/tmp/ofed
-
-mkdir -p ${TMP_INSTALL_DIR}                                          && \
-   cd ${TMP_INSTALL_DIR}                                             && \
-   wget --quiet "${MOFED_TAR_URL}/${MOFED_TAR}"                      && \
-   tar -xvf ${MOFED_TAR}                                             && \
-   MLNX_OFED_LINUX-${MOFED_VER}-${OS_VER}-${PLATFORM}/mlnxofedinstall   \
-     --user-space-only --without-fw-update --all --force                \
-     --skip-unsupported-devices-check                                && \
-   rm -rf MLNX_OFED_LINUX-${MOFED_VER}-${OS_VER}-${PLATFORM}.tgz        \
-          MLNX_OFED_LINUX-${MOFED_VER}-${OS_VER}-${PLATFORM}            \
-          MLNX_OFED_LINUX.*.logs                                     && \
-   rm -rf ${TMP_INSTALL_DIR}
 OFI=$2
 if [ "$OFI" = "1" ]; then
   # Install OFI
@@ -45,9 +23,32 @@ if [ "$OFI" = "1" ]; then
     rm -rf ${OFI_SRC_DIR}
 
   #OMPI CONFIG ARGS FOR OFI
-  OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-verbs --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-pmi --with-pmix=internal --with-platform=contrib/platform/mellanox/optimized --disable-ucx --with-libfabric=/container/ofi"
-
+  # kkw orig # OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-verbs --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-pmi --with-pmix=internal --with-platform=contrib/platform/mellanox/optimized --disable-ucx --with-libfabric=/container/ofi"
+  OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-libfabric=/container/ofi --without-ucx --with-pmi --with-pmix=internal "
 else
+  # Install the Mellanox OFED stack.  Note that this is dependent on what
+  # the base OS is (ie, Ubuntu 20.04) so if that changes then this needs updated.
+  #MOFED_VER=5.0-2.1.8.0
+  #MOFED_VER=5.5-1.0.3.2
+  MOFED_VER=5.4-3.4.0.0
+  #OS_VER=ubuntu20.04
+  PLATFORM=x86_64
+  MOFED_TAR_URL="http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VER}"
+  MOFED_TAR="MLNX_OFED_LINUX-${MOFED_VER}-${OS_VER}-${PLATFORM}.tgz"
+  TMP_INSTALL_DIR=/tmp/ofed
+  
+  mkdir -p ${TMP_INSTALL_DIR}                                          && \
+     cd ${TMP_INSTALL_DIR}                                             && \
+     wget --quiet "${MOFED_TAR_URL}/${MOFED_TAR}"                      && \
+     tar -xvf ${MOFED_TAR}                                             && \
+     MLNX_OFED_LINUX-${MOFED_VER}-${OS_VER}-${PLATFORM}/mlnxofedinstall   \
+       --user-space-only --without-fw-update --all --force                \
+       --skip-unsupported-devices-check                                && \
+     rm -rf MLNX_OFED_LINUX-${MOFED_VER}-${OS_VER}-${PLATFORM}.tgz        \
+            MLNX_OFED_LINUX-${MOFED_VER}-${OS_VER}-${PLATFORM}            \
+            MLNX_OFED_LINUX.*.logs                                     && \
+     rm -rf ${TMP_INSTALL_DIR}
+
   # Install UCX
   UCX_VER=1.10.1
   UCX_CONFIG_OPTIONS="--prefix ${UCX_INSTALL_DIR} --enable-mt"
@@ -86,4 +87,28 @@ mkdir -p ${OMPI_SRC_DIR}                        && \
   ./configure ${OMPI_CONFIG_OPTIONS}            && \
   make                                          && \
   make install                                  && \
+  cd /tmp                                       && \
   rm -rf ${OMPI_SRC_DIR}
+
+# Install AWS_OFI_NCCL
+AWS_VER=v1.4.0
+AWS_VER_NUM=1.4.0
+AWS_NAME=aws-ofi-nccl
+AWS_FILE="${AWS_NAME}-${AWS_VER_NUM}"
+AWS_CONFIG_OPTIONS="--prefix ${AWS_PLUGIN_INSTALL_DIR} --with-libfabric=/container/ofi --with-nccl=/tmp/det_nccl/build --with-mpi=${OMPI_INSTALL_DIR} --with-cuda=/usr/local/cuda-11.3/targets/x86_64-linux"
+AWS_SRC_DIR=/tmp/aws-ofi-nccl
+AWS_BASE_URL="https://github.com/aws/aws-ofi-nccl/archive/refs/tags"
+AWS_URL="${AWS_BASE_URL}/${AWS_VER}.tar.gz"
+
+mkdir -p ${AWS_SRC_DIR}                         && \
+  cd ${AWS_SRC_DIR}                             && \
+  wget -O "${AWS_FILE}.tar.gz" ${AWS_URL}       && \
+  tar -xzf ${AWS_FILE}.tar.gz                   && \
+  cd ${AWS_FILE}                                && \
+  find /container | grep rdma                   && \
+  ./autogen.sh                                  && \
+  ./configure ${AWS_CONFIG_OPTIONS}             && \
+  make                                          && \
+  make install                                  && \
+  cd /tmp                                       && \
+  rm -rf ${AWS_SRC_DIR}
