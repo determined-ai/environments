@@ -2,6 +2,15 @@
 
 set -x
 
+# See if we should add CUDA to the OMPI build
+OMPI_WITH_CUDA=""
+if [ "$#" = "3" ] ; then
+    if [ "$3" = "1" ] ; then
+	# Tell OMPI to look for cuda in the default location
+	OMPI_WITH_CUDA="--with-cuda"
+    fi
+fi
+
 OS_VER=$1
 OFI=$2
 if [ "$OFI" = "1" ]; then
@@ -24,14 +33,12 @@ if [ "$OFI" = "1" ]; then
 
   #OMPI CONFIG ARGS FOR OFI
   # kkw orig # OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-verbs --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-pmi --with-pmix=internal --with-platform=contrib/platform/mellanox/optimized --disable-ucx --with-libfabric=/container/ofi"
-  OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-libfabric=/container/ofi --without-ucx --with-pmi --with-pmix=internal "
+  OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-libfabric=/container/ofi --without-ucx --with-pmi --with-pmix=internal ${OMPI_WITH_CUDA}"
 else
-  # Install the Mellanox OFED stack.  Note that this is dependent on what
-  # the base OS is (ie, Ubuntu 20.04) so if that changes then this needs updated.
-  #MOFED_VER=5.0-2.1.8.0
-  #MOFED_VER=5.5-1.0.3.2
+  # Install the Mellanox OFED stack.  Note that this is dependent on
+  # what the base OS is (ie, Ubuntu 20.04) so if that changes then
+  # this needs updated.  MOFED_VER=5.0-2.1.8.0 MOFED_VER=5.5-1.0.3.2
   MOFED_VER=5.4-3.4.0.0
-  #OS_VER=ubuntu20.04
   PLATFORM=x86_64
   MOFED_TAR_URL="http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VER}"
   MOFED_TAR="MLNX_OFED_LINUX-${MOFED_VER}-${OS_VER}-${PLATFORM}.tgz"
@@ -67,7 +74,7 @@ else
     rm -rf ${UCX_SRC_DIR}
 
   #OMPI CONFIG ARGS FOR UCX
-  OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-verbs --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-pmi --with-pmix=internal --with-platform=contrib/platform/mellanox/optimized --with-ucx=/container/ucx"
+  OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-verbs --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-pmi --with-pmix=internal --with-platform=contrib/platform/mellanox/optimized --with-ucx=/container/ucx ${OMPI_WITH_CUDA}"
 
 fi
 
