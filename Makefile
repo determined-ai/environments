@@ -33,14 +33,15 @@ ifeq "$(WITH_MPI)" "1"
 	HOROVOD_WITH_MPI := 1
 	HOROVOD_WITHOUT_MPI := 0
 	HOROVOD_CPU_OPERATIONS := MPI
+	GPU_SUFFIX := -gpu-mpi
         ifeq "$(WITH_NCCL)" "1"
+	        GPU_SUFFIX := -gpu-nccl
 		HOROVOD_GPU_OPERATIONS := NCCL
-		HOROVOD_GPU_ALLREDUCE := NCCL
+		HOROVOD_GPU_ALLREDUCE :=
         else
 		HOROVOD_GPU_OPERATIONS := MPI
-		HOROVOD_GPU_ALLREDUCE := MPI
+		HOROVOD_GPU_ALLREDUCE :=
         endif
-	GPU_SUFFIX := -gpu-mpi
 	MPI_BUILD_ARG := WITH_MPI=1
 	TORCH_PIP_VERSION_TF2_Name := 1.11
 	TORCH_PIP_VERSION_TF2 := "torch==1.11.0+cpu torchvision==0.12.0+cpu torchaudio==0.11.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu"
@@ -60,7 +61,7 @@ else
 	HOROVOD_WITHOUT_MPI := 1
 	HOROVOD_CPU_OPERATIONS := GLOO
 	HOROVOD_GPU_OPERATIONS := NCCL
-	HOROVOD_GPU_ALLREDUCE := NCCL
+	HOROVOD_GPU_ALLREDUCE :=
 	MPI_BUILD_ARG := USE_GLOO=1
 	TORCH_PIP_VERSION_TF2_Name := 1.10
 	TORCH_PIP_VERSION_TF2 := "torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html"
