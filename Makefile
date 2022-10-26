@@ -34,10 +34,15 @@ ifeq "$(WITH_MPI)" "1"
 	HOROVOD_WITHOUT_MPI := 0
 	HOROVOD_CPU_OPERATIONS := MPI
 	GPU_SUFFIX := -gpu-mpi
+	WITH_AWS_TRACE := 0
         ifeq "$(WITH_NCCL)" "1"
 	        GPU_SUFFIX := -gpu-nccl
 		HOROVOD_GPU_OPERATIONS := NCCL
 		HOROVOD_GPU_ALLREDUCE :=
+		ifeq "$(WITH_AWS_TRACE)" "1"
+			WITH_AWS_TRACE := 1
+			GPU_SUFFIX := -gpu-nccl-aws-trace
+		endif
         else
 		HOROVOD_GPU_OPERATIONS := MPI
 		HOROVOD_GPU_ALLREDUCE :=
@@ -164,6 +169,7 @@ build-gpu-cuda-113-base:
 		--build-arg BASE_IMAGE="nvidia/cuda:11.3.1-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
+		--build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH) \

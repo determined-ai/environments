@@ -4,7 +4,12 @@ set -x
 
 # See if we should add CUDA to the OMPI build
 OMPI_WITH_CUDA=""
-if [ "$#" = "3" ] ; then
+WITH_AWS_TRACE=""
+if [ $# -gt 2 ] ; then
+    if [ "$4" = "1" ] ; then
+	# Tell AWS to build with trace messages enabled
+	WITH_AWS_TRACE="--enable-trace"
+    fi
     if [ "$3" = "1" ] ; then
 	# Tell OMPI to look for cuda in the default location
 	OMPI_WITH_CUDA="--with-cuda"
@@ -32,7 +37,6 @@ if [ "$OFI" = "1" ]; then
     rm -rf ${OFI_SRC_DIR}
 
   #OMPI CONFIG ARGS FOR OFI
-  # kkw orig # OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-verbs --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-pmi --with-pmix=internal --with-platform=contrib/platform/mellanox/optimized --disable-ucx --with-libfabric=/container/ofi"
   OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-libfabric=/container/ofi --without-ucx --with-pmi --with-pmix=internal ${OMPI_WITH_CUDA}"
 else
   # Install the Mellanox OFED stack.  Note that this is dependent on
@@ -97,25 +101,31 @@ mkdir -p ${OMPI_SRC_DIR}                        && \
   cd /tmp                                       && \
   rm -rf ${OMPI_SRC_DIR}
 
-# Install AWS_OFI_NCCL
-AWS_VER=v1.4.0
-AWS_VER_NUM=1.4.0
-AWS_NAME=aws-ofi-nccl
-AWS_FILE="${AWS_NAME}-${AWS_VER_NUM}"
-AWS_CONFIG_OPTIONS="--prefix ${AWS_PLUGIN_INSTALL_DIR} --with-libfabric=/container/ofi --with-nccl=/tmp/det_nccl/build --with-mpi=${OMPI_INSTALL_DIR} --with-cuda=/usr/local/cuda-11.3/targets/x86_64-linux"
-AWS_SRC_DIR=/tmp/aws-ofi-nccl
-AWS_BASE_URL="https://github.com/aws/aws-ofi-nccl/archive/refs/tags"
-AWS_URL="${AWS_BASE_URL}/${AWS_VER}.tar.gz"
+if [ "$OFI" = "1" ]; then
+  # Install AWS_OFI_NCCL
+  AWS_VER=v1.4.0
+  AWS_VER_NUM=1.4.0
+  AWS_NAME=aws-ofi-nccl
+  AWS_FILE="${AWS_NAME}-${AWS_VER_NUM}"
+  AWS_CONFIG_OPTIONS="--prefix ${AWS_PLUGIN_INSTALL_DIR} \
+	  --with-libfabric=/container/ofi                \
+	  --with-nccl=/tmp/det_nccl/build                \
+	  --with-mpi=${OMPI_INSTALL_DIR}                 \
+	  --with-cuda=/usr/local/cuda-11.3/targets/x86_64-linux ${WITH_AWS_TRACE}"
+  AWS_SRC_DIR=/tmp/aws-ofi-nccl
+  AWS_BASE_URL="https://github.com/aws/aws-ofi-nccl/archive/refs/tags"
+  AWS_URL="${AWS_BASE_URL}/${AWS_VER}.tar.gz"
 
-mkdir -p ${AWS_SRC_DIR}                         && \
-  cd ${AWS_SRC_DIR}                             && \
-  wget -O "${AWS_FILE}.tar.gz" ${AWS_URL}       && \
-  tar -xzf ${AWS_FILE}.tar.gz                   && \
-  cd ${AWS_FILE}                                && \
-  find /container | grep rdma                   && \
-  ./autogen.sh                                  && \
-  ./configure ${AWS_CONFIG_OPTIONS}             && \
-  make                                          && \
-  make install                                  && \
-  cd /tmp                                       && \
-  rm -rf ${AWS_SRC_DIR}
+  mkdir -p ${AWS_SRC_DIR}                         && \
+    cd ${AWS_SRC_DIR}                             && \
+    wget -O "${AWS_FILE}.tar.gz" ${AWS_URL}       && \
+    tar -xzf ${AWS_FILE}.tar.gz                   && \
+    cd ${AWS_FILE}                                && \
+    find /container | grep rdma                   && \
+    ./autogen.sh                                  && \
+    ./configure ${AWS_CONFIG_OPTIONS}             && \
+    make                                          && \
+    make install                                  && \
+    cd /tmp                                       && \
+    rm -rf ${AWS_SRC_DIR}
+fi
