@@ -37,7 +37,7 @@ if [ "$OFI" = "1" ]; then
     rm -rf ${OFI_SRC_DIR}
 
   #OMPI CONFIG ARGS FOR OFI
-  OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-libfabric=/container/ofi --without-ucx --with-pmi --with-pmix=internal ${OMPI_WITH_CUDA}"
+  OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-libfabric=${OFI_INSTALL_DIR} --without-ucx --with-pmi --with-pmix=internal ${OMPI_WITH_CUDA}"
 else
   # Install the Mellanox OFED stack.  Note that this is dependent on
   # what the base OS is (ie, Ubuntu 20.04) so if that changes then
@@ -107,11 +107,14 @@ if [ "$OFI" = "1" ]; then
   AWS_VER_NUM=1.4.0
   AWS_NAME=aws-ofi-nccl
   AWS_FILE="${AWS_NAME}-${AWS_VER_NUM}"
+  # cuda install dir likely dependent on BaseOS (i.e. ubuntu 20.02)
+  # in case this changes in the future
+  CUDA_DIR="/usr/local/cuda/targets/x86_64-linux"
   AWS_CONFIG_OPTIONS="--prefix ${AWS_PLUGIN_INSTALL_DIR} \
-	  --with-libfabric=/container/ofi                \
-	  --with-nccl=/tmp/det_nccl/build                \
+	  --with-libfabric=${OFI_INSTALL_DIR}            \
+	  --with-nccl=${HOROVOD_NCCL_HOME}               \
 	  --with-mpi=${OMPI_INSTALL_DIR}                 \
-	  --with-cuda=/usr/local/cuda-11.3/targets/x86_64-linux ${WITH_AWS_TRACE}"
+	  --with-cuda=${CUDA_DIR} ${WITH_AWS_TRACE}"
   AWS_SRC_DIR=/tmp/aws-ofi-nccl
   AWS_BASE_URL="https://github.com/aws/aws-ofi-nccl/archive/refs/tags"
   AWS_URL="${AWS_BASE_URL}/${AWS_VER}.tar.gz"
@@ -121,7 +124,6 @@ if [ "$OFI" = "1" ]; then
     wget -O "${AWS_FILE}.tar.gz" ${AWS_URL}       && \
     tar -xzf ${AWS_FILE}.tar.gz                   && \
     cd ${AWS_FILE}                                && \
-    find /container | grep rdma                   && \
     ./autogen.sh                                  && \
     ./configure ${AWS_CONFIG_OPTIONS}             && \
     make                                          && \
