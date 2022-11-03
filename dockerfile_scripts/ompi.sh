@@ -37,7 +37,7 @@ if [ "$OFI" = "1" ]; then
     rm -rf ${OFI_SRC_DIR}
 
   #OMPI CONFIG ARGS FOR OFI
-  OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-shared --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-libfabric=${OFI_INSTALL_DIR} --without-ucx --with-pmi --with-pmix=internal ${OMPI_WITH_CUDA}"
+  OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-orterun-prefix-by-default --enable-shared --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-libfabric=${OFI_INSTALL_DIR} --without-ucx --with-pmi --with-pmix=internal ${OMPI_WITH_CUDA}"
 else
   # Install the Mellanox OFED stack.  Note that this is dependent on
   # what the base OS is (ie, Ubuntu 20.04) so if that changes then
