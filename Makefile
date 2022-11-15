@@ -56,7 +56,7 @@ else
 	TORCH_PIP_VERSION_TF2_Name := 1.10
 	TORCH_PIP_VERSION_TF2 := "torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html"
 endif
-DEEPSPEED_VERSION := 0.7.0
+DEEPSPEED_VERSION := 0.7.5
 
 export CPU_PY_37_BASE_NAME := $(CPU_PREFIX_37)base$(CPU_SUFFIX)
 export GPU_CUDA_102_BASE_NAME := $(CUDA_102_PREFIX)base$(GPU_SUFFIX)
