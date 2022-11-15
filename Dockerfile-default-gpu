@@ -38,7 +38,7 @@ ARG HOROVOD_GPU_OPERATIONS=NCCL
 ARG HOROVOD_WITH_MPI
 ARG HOROVOD_CPU_OPERATIONS
 ARG HOROVOD_WITHOUT_MPI
-RUN pip install cmake==3.22.4 protobuf==3.20.1
+RUN pip install cmake==3.22.4 protobuf==3.20.3
 RUN if [ -n "${HOROVOD_PIP}" ]; then ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs && \
     pip install "$HOROVOD_PIP" && \
     ldconfig; fi

@@ -47,8 +47,8 @@ RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 
 # google-api-python-client -> google-api-core -> googleapis-common-protos -> protobuf
 # Horovod cannot build with protobuf > 3.20.x
-# latest google-api-python-client requires protobuf >= 3.20.1
-RUN pip install protobuf==3.20.1
+# latest google-api-python-client requires protobuf >= 3.20.2
+RUN pip install protobuf==3.20.3
 
 ARG TENSORFLOW_PIP
 RUN if [ "$TENSORFLOW_PIP" ]; then pip install $TENSORFLOW_PIP; fi
