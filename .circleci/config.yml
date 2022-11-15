@@ -57,6 +57,7 @@ commands:
 
   install-docker:
     steps:
+      - run: sudo rm -rf /etc/apt/sources.list.d/heroku.list  # work around "Repository 'https://cli-assets.heroku.com/apt ./ InRelease' changed its 'Origin' value from 'Heroku' to 'Jeff Dickey @jdxcode'"
       - run: sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
       - run: sudo systemctl restart docker
 
