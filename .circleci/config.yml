@@ -190,7 +190,7 @@ workflows:
           filters: *upstream-feature-branch
 
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-with-mpi=<<matrix.with-mpi>>-dev
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
