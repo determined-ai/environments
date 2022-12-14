@@ -9,4 +9,5 @@
     - { role: nvidia-container-toolkit, tags: "docker" }
     - { role: journald-cloudwatch, tags: "journald-cloudwatch", when: "build_type == 'amazon-ebs'"}
     - { role: gpumon, tags: "gpumon", when: "build_type == 'amazon-ebs'"}
+    - { role: aws-fs, tags: "aws-fs", when: "build_type == 'amazon-ebs'"}
     - { role: environments, tags: "docker" }

@@ -23,4 +23,5 @@
     - wget
     - zip
     - nfs-common
+    - binutils
     state: present

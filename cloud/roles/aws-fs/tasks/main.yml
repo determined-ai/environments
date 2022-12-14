@@ -1,0 +1,20 @@
+---
+- name: Build and install AWS EFS utilities.
+  become: yes
+  shell: |
+    git clone https://github.com/aws/efs-utils
+    cd efs-utils
+    ./build-deb.sh
+    apt-get -y install ./build/amazon-efs-utils*deb
+  args:
+    executable: /bin/bash
+
+- name: Install AWS FSX utilities.
+  become: yes
+  shell: |
+    wget -O - https://fsx-lustre-client-repo-public-keys.s3.amazonaws.com/fsx-ubuntu-public-key.asc | sudo apt-key add -
+    echo "deb https://fsx-lustre-client-repo.s3.amazonaws.com/ubuntu xenial main" > /etc/apt/sources.list.d/fsxlustreclientrepo.list
+    apt-get update
+    apt install -y lustre-client-modules-4.4.0-1109-aws
+  args:
+    executable: /bin/bash
