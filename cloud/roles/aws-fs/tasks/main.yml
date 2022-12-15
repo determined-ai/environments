@@ -1,0 +1,23 @@
+---
+- name: Build and install AWS EFS utilities.
+  become: yes
+  shell: |
+    git clone https://github.com/aws/efs-utils
+    cd efs-utils
+    ./build-deb.sh
+    apt-get -y install ./build/amazon-efs-utils*deb
+    cd ..
+    rm -r efs-utils
+  args:
+    executable: /bin/bash
+
+# Note: need to update this when we upgrading away from ubuntu 20.04.
+- name: Install AWS FSX utilities.
+  become: yes
+  shell: |
+    wget -O - https://fsx-lustre-client-repo-public-keys.s3.amazonaws.com/fsx-ubuntu-public-key.asc | sudo apt-key add -
+    echo "deb https://fsx-lustre-client-repo.s3.amazonaws.com/ubuntu focal main" > /etc/apt/sources.list.d/fsxlustreclientrepo.list
+    apt-get update
+    apt install -y lustre-client-modules-$(uname -r)
+  args:
+    executable: /bin/bash
