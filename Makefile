@@ -35,8 +35,8 @@ ifeq "$(WITH_MPI)" "1"
 	HOROVOD_CPU_OPERATIONS := MPI
 	GPU_SUFFIX := -gpu-mpi
 	MPI_BUILD_ARG := WITH_MPI=1
-	TORCH_PIP_VERSION_TF2_Name := 1.11
-	TORCH_PIP_VERSION_TF2 := "torch==1.11.0+cpu torchvision==0.12.0+cpu torchaudio==0.11.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu"
+	TORCH_PIP_VERSION_TF2_Name := 1.12
+	TORCH_PIP_VERSION_TF2 := "torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu"
 
 	ifeq "$(WITH_OFI)" "1"
 		CPU_SUFFIX := -cpu-mpi-ofi
@@ -53,8 +53,8 @@ else
 	HOROVOD_WITHOUT_MPI := 1
 	HOROVOD_CPU_OPERATIONS := GLOO
 	MPI_BUILD_ARG := USE_GLOO=1
-	TORCH_PIP_VERSION_TF2_Name := 1.10
-	TORCH_PIP_VERSION_TF2 := "torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html"
+	TORCH_PIP_VERSION_TF2_Name := 1.12
+	TORCH_PIP_VERSION_TF2 := "torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html"
 endif
 DEEPSPEED_VERSION := 0.7.0
 
