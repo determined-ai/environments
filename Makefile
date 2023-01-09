@@ -35,8 +35,8 @@ ifeq "$(WITH_MPI)" "1"
 	HOROVOD_CPU_OPERATIONS := MPI
 	GPU_SUFFIX := -gpu-mpi
 	MPI_BUILD_ARG := WITH_MPI=1
-	TORCH_PIP_VERSION_TF2_Name := 1.12
-	TORCH_PIP_VERSION_TF2 := "torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu"
+	TORCH_PIP_VERSION_TF2_Name := 1.11
+	TORCH_PIP_VERSION_TF2 := "torch==1.11.0+cpu torchvision==0.12.0+cpu torchaudio==0.11.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu"
 
 	ifeq "$(WITH_OFI)" "1"
 		CPU_SUFFIX := -cpu-mpi-ofi
@@ -53,8 +53,8 @@ else
 	HOROVOD_WITHOUT_MPI := 1
 	HOROVOD_CPU_OPERATIONS := GLOO
 	MPI_BUILD_ARG := USE_GLOO=1
-	TORCH_PIP_VERSION_TF2_Name := 1.12
-	TORCH_PIP_VERSION_TF2 := "torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html"
+	TORCH_PIP_VERSION_TF2_Name := 1.10
+	TORCH_PIP_VERSION_TF2 := "torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html"
 endif
 DEEPSPEED_VERSION := 0.7.0
 
@@ -230,6 +230,24 @@ build-tf24-gpu: build-gpu-cuda-111-base
 		-t $(NGC_REGISTRY)/$(GPU_TF24_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(GPU_TF24_ENVIRONMENT_NAME)-$(VERSION) \
 		.
+
+.PHONY: build-tf28-cpu
+build-tf28-cpu: build-cpu-py-38-base
+    docker build -f Dockerfile-default-cpu \
+        --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
+        --build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.0" \
+        --build-arg TORCH_PIP="torch==1.12 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+        --build-arg TORCHVISION_PIP="torchvision==0.13.0 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
+        --build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
+        --build-arg HOROVOD_PIP="horovod==0.24.2" \
+        --build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
+        --build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
+        --build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
+        -t $(DOCKERHUB_REGISTRY)/$(CPU_TF24_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+        -t $(DOCKERHUB_REGISTRY)/$(CPU_TF24_ENVIRONMENT_NAME)-$(VERSION) \
+        -t $(NGC_REGISTRY)/$(CPU_TF24_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+        -t $(NGC_REGISTRY)/$(CPU_TF24_ENVIRONMENT_NAME)-$(VERSION) \
+        .
 
 ifeq ($(NGC_PUBLISH),)
 define CPU_TF2_TAGS
