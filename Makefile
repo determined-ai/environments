@@ -35,8 +35,6 @@ ifeq "$(WITH_MPI)" "1"
 	HOROVOD_CPU_OPERATIONS := MPI
 	GPU_SUFFIX := -gpu-mpi
 	MPI_BUILD_ARG := WITH_MPI=1
-	TORCH_PIP_VERSION_TF2_Name := 1.12
-	TORCH_PIP_VERSION_TF2 := "torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu"
 
 	ifeq "$(WITH_OFI)" "1"
 		CPU_SUFFIX := -cpu-mpi-ofi
@@ -53,10 +51,12 @@ else
 	HOROVOD_WITHOUT_MPI := 1
 	HOROVOD_CPU_OPERATIONS := GLOO
 	MPI_BUILD_ARG := USE_GLOO=1
-	TORCH_PIP_VERSION_TF2_Name := 1.12
-	TORCH_PIP_VERSION_TF2 := "torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html"
 endif
 DEEPSPEED_VERSION := 0.7.0
+
+TORCH_VERSION_TF2 := 1.12
+TORCH_PIP_TF2_CPU := "torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html"
+TORCH_PIP_TF2_GPU := "torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html"
 
 export CPU_PY_37_BASE_NAME := $(CPU_PREFIX_37)base$(CPU_SUFFIX)
 export GPU_CUDA_102_BASE_NAME := $(CUDA_102_PREFIX)base$(GPU_SUFFIX)
@@ -69,8 +69,8 @@ export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX_37)pytorch-1.7-tf-1.15$(CPU_SUFF
 export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_102_PREFIX)pytorch-1.7-tf-1.15$(GPU_SUFFIX)
 export CPU_TF24_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-1.9-tf-2.4$(CPU_SUFFIX)
 export GPU_TF24_ENVIRONMENT_NAME := $(CUDA_111_PREFIX)pytorch-1.9-tf-2.4$(GPU_SUFFIX)
-export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_PIP_VERSION_TF2_Name)-tf-2.8$(CPU_SUFFIX)
-export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8$(GPU_SUFFIX)
+export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_VERSION_TF2)-tf-2.8$(CPU_SUFFIX)
+export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-$(TORCH_VERSION_TF2)-tf-2.8$(GPU_SUFFIX)
 export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8-deepspeed-$(DEEPSPEED_VERSION)$(GPU_SUFFIX)
 export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8-gpt-neox-deepspeed$(GPU_SUFFIX)
 export CPU_TF27_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.7$(CPU_SUFFIX)
@@ -251,7 +251,7 @@ build-tf2-cpu: build-cpu-py-38-base
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.3" \
-		--build-arg TORCH_PIP=$(TORCH_PIP_VERSION_TF2) \
+		--build-arg TORCH_PIP="$(TORCH_PIP_TF2_CPU)" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
@@ -266,7 +266,7 @@ build-tf2-gpu: build-gpu-cuda-113-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.8.3" \
-		--build-arg TORCH_PIP="torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html" \
+		--build-arg TORCH_PIP="$(TORCH_PIP_TF2_GPU)" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
