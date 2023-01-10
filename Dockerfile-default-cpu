@@ -27,7 +27,7 @@ RUN if [ "$TORCH_PIP" ]; then \
         fi; \
     fi
 RUN if [ "$TORCHVISION_PIP" ]; then pip install $TORCHVISION_PIP; fi
-
+RUN if [ "$TENSORFLOW_PIP" = "tensorflow-cpu==2.4.4" ]; then pip install numpy==1.23.5; fi
 RUN if [ "$TORCH_PROFILER_GIT" ]; then /tmp/det_dockerfile_scripts/torch-tb-profiler-patch.sh; fi
 ARG HOROVOD_PIP=horovod
 ARG HOROVOD_WITH_TENSORFLOW=1
