@@ -97,6 +97,7 @@ build-cpu-py-37-base:
 
 .PHONY: build-cpu-py-38-base
 build-cpu-py-38-base:
+	docker version
 	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 	docker buildx create --name builder --driver docker-container --use
 	docker buildx build -f Dockerfile-base-cpu \
