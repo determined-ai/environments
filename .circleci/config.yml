@@ -150,11 +150,9 @@ workflows:
               image-type:
                 - tf1-cpu
                 - tf2-cpu
-                - tf24-cpu
                 - tf27-cpu
                 - tf1-gpu
                 - tf2-gpu
-                - tf24-gpu
                 - tf27-gpu
                 - pytorch10-tf27-rocm50
                 - deepspeed-gpu
@@ -199,11 +197,9 @@ workflows:
               image-type:
                 - tf1-cpu
                 - tf2-cpu
-                - tf24-cpu
                 - tf27-cpu
                 - tf1-gpu
                 - tf2-gpu
-                - tf24-gpu
                 - tf27-gpu
                 - pytorch10-tf27-rocm50
                 - deepspeed-gpu
