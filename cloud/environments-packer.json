@@ -32,7 +32,8 @@
         "-e cpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf2_environment_name` }}",
         "-e gpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf2_environment_name` }}",
         "-e short_git_hash={{ user `short_git_hash` }}",
-        "-e image_suffix={{ user `image_suffix` }}"
+        "-e image_suffix={{ user `image_suffix` }}",
+        "--ssh-extra-args='-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa -oIdentitiesOnly=yes'"
       ],
       "user": "ubuntu",
       "only": [
