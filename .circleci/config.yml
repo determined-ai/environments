@@ -105,7 +105,7 @@ jobs:
         type: boolean
         default: false
     docker:
-      - image: cimg/python:3.6
+      - image: cimg/python:3.8
     steps:
       - checkout
       - install-packer
@@ -129,7 +129,7 @@ jobs:
 
   test-job:
     docker:
-      - image: cimg/python:3.6
+      - image: cimg/python:3.8
     steps:
       - checkout
       - run: echo hello
