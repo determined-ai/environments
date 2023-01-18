@@ -105,7 +105,7 @@ jobs:
         type: boolean
         default: false
     docker:
-      - image: cimg/python:3.6
+      - image: cimg/python:3.8
     steps:
       - checkout
       - install-packer
@@ -129,7 +129,7 @@ jobs:
 
   test-job:
     docker:
-      - image: cimg/python:3.6
+      - image: cimg/python:3.8
     steps:
       - checkout
       - run: echo hello
@@ -150,11 +150,9 @@ workflows:
               image-type:
                 - tf1-cpu
                 - tf2-cpu
-                - tf24-cpu
                 - tf27-cpu
                 - tf1-gpu
                 - tf2-gpu
-                - tf24-gpu
                 - tf27-gpu
                 - pytorch10-tf27-rocm50
                 - deepspeed-gpu
@@ -199,11 +197,9 @@ workflows:
               image-type:
                 - tf1-cpu
                 - tf2-cpu
-                - tf24-cpu
                 - tf27-cpu
                 - tf1-gpu
                 - tf2-gpu
-                - tf24-gpu
                 - tf27-gpu
                 - pytorch10-tf27-rocm50
                 - deepspeed-gpu
