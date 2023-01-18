@@ -35,8 +35,6 @@ ifeq "$(WITH_MPI)" "1"
 	HOROVOD_CPU_OPERATIONS := MPI
 	GPU_SUFFIX := -gpu-mpi
 	MPI_BUILD_ARG := WITH_MPI=1
-	TORCH_PIP_VERSION_TF2_Name := 1.11
-	TORCH_PIP_VERSION_TF2 := "torch==1.11.0+cpu torchvision==0.12.0+cpu torchaudio==0.11.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu"
 
 	ifeq "$(WITH_OFI)" "1"
 		CPU_SUFFIX := -cpu-mpi-ofi
@@ -53,10 +51,7 @@ else
 	HOROVOD_WITHOUT_MPI := 1
 	HOROVOD_CPU_OPERATIONS := GLOO
 	MPI_BUILD_ARG := USE_GLOO=1
-	TORCH_PIP_VERSION_TF2_Name := 1.10
-	TORCH_PIP_VERSION_TF2 := "torch==1.10.2+cpu torchvision==0.11.3+cpu torchaudio==0.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html"
 endif
-DEEPSPEED_VERSION := 0.7.0
 
 export CPU_PY_37_BASE_NAME := $(CPU_PREFIX_37)base$(CPU_SUFFIX)
 export GPU_CUDA_102_BASE_NAME := $(CUDA_102_PREFIX)base$(GPU_SUFFIX)
@@ -64,17 +59,6 @@ export CPU_PY_38_BASE_NAME := $(CPU_PREFIX)base$(CPU_SUFFIX)
 export GPU_CUDA_111_BASE_NAME := $(CUDA_111_PREFIX)base$(GPU_SUFFIX)
 export GPU_CUDA_112_BASE_NAME := $(CUDA_112_PREFIX)base$(GPU_SUFFIX)
 export GPU_CUDA_113_BASE_NAME := $(CUDA_113_PREFIX)base$(GPU_SUFFIX)
-
-export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX_37)pytorch-1.7-tf-1.15$(CPU_SUFFIX)
-export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_102_PREFIX)pytorch-1.7-tf-1.15$(GPU_SUFFIX)
-export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_PIP_VERSION_TF2_Name)-tf-2.8$(CPU_SUFFIX)
-export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8$(GPU_SUFFIX)
-export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8-deepspeed-$(DEEPSPEED_VERSION)$(GPU_SUFFIX)
-export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8-gpt-neox-deepspeed$(GPU_SUFFIX)
-export CPU_TF27_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.7$(CPU_SUFFIX)
-export GPU_TF27_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.7$(GPU_SUFFIX)
-
-export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
 # waiting for AMI availablity. Bump to 360 attempts = 90 minutes.
@@ -153,6 +137,9 @@ build-gpu-cuda-113-base:
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(VERSION) \
 		.
 
+export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX_37)pytorch-1.7-tf-1.15$(CPU_SUFFIX)
+export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_102_PREFIX)pytorch-1.7-tf-1.15$(GPU_SUFFIX)
+
 # Full images.
 .PHONY: build-tf1-cpu
 build-tf1-cpu: build-cpu-py-37-base
@@ -190,55 +177,22 @@ build-tf1-gpu: build-gpu-cuda-102-base
 		-t $(NGC_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
-ifeq ($(NGC_PUBLISH),)
-define CPU_TF2_TAGS
--t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
--t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
-endef
-else
-define CPU_TF2_TAGS
--t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
--t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
--t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
--t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
-endef
-endif
+export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm
 
-.PHONY: build-tf2-cpu
-build-tf2-cpu: build-cpu-py-38-base
-	docker buildx build -f Dockerfile-default-cpu \
-	    --platform "$(PLATFORMS)" \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.3" \
-		--build-arg TORCH_PIP=$(TORCH_PIP_VERSION_TF2) \
-		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
-		--build-arg HOROVOD_PIP="horovod==0.24.2" \
-		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
-		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
-		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
-		$(CPU_TF2_TAGS) \
-		--push \
+.PHONY: build-pytorch10-tf27-rocm50
+build-pytorch10-tf27-rocm50:
+	docker build -f Dockerfile-default-rocm \
+		--build-arg BASE_IMAGE="amdih/pytorch:rocm5.0_ubuntu18.04_py3.7_pytorch_1.10.0" \
+		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.7.1" \
+		--build-arg HOROVOD_PIP="horovod==0.25.0" \
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
-.PHONY: build-tf2-gpu
-build-tf2-gpu: build-gpu-cuda-113-base
-	docker build -f Dockerfile-default-gpu \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow==2.8.3" \
-		--build-arg TORCH_PIP="torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html" \
-		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
-		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
-		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
-		--build-arg HOROVOD_PIP="horovod==0.24.2" \
-		--build-arg DET_BUILD_NCCL="" \
-		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
-		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
-		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
-		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
-		-t $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
-		.
+DEEPSPEED_VERSION := 0.7.0
+export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8-deepspeed-$(DEEPSPEED_VERSION)$(GPU_SUFFIX)
+export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8-gpt-neox-deepspeed$(GPU_SUFFIX)
+export TORCH_PIP_DEEPSPEED_GPU := torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 
 # This builds deepspeed environment off of upstream microsoft/DeepSpeed.
 .PHONY: build-deepspeed-gpu
@@ -248,7 +202,7 @@ build-deepspeed-gpu: build-gpu-cuda-113-base
 	# without tensorflow though.
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TORCH_PIP="torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html" \
+		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
@@ -269,7 +223,7 @@ build-gpt-neox-deepspeed-gpu: build-gpu-cuda-113-base
 	# without tensorflow though.
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TORCH_PIP="torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html" \
+		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
 		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
@@ -294,6 +248,9 @@ define CPU_TF27_TAGS
 -t $(NGC_REGISTRY)/$(CPU_TF27_ENVIRONMENT_NAME)-$(VERSION)
 endef
 endif
+
+export CPU_TF27_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_VERSION)-tf-2.7$(CPU_SUFFIX)
+export GPU_TF27_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)pytorch-$(TORCH_VERSION)-tf-2.7$(GPU_SUFFIX)
 
 .PHONY: build-tf27-cpu
 build-tf27-cpu: build-cpu-py-38-base
@@ -323,15 +280,67 @@ build-tf27-gpu: build-gpu-cuda-112-base
 		-t $(NGC_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
-.PHONY: build-pytorch10-tf27-rocm50
-build-pytorch10-tf27-rocm50:
-	docker build -f Dockerfile-default-rocm \
-		--build-arg BASE_IMAGE="amdih/pytorch:rocm5.0_ubuntu18.04_py3.7_pytorch_1.10.0" \
-		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.7.1" \
-		--build-arg HOROVOD_PIP="horovod==0.25.0" \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
+TF2_VERSION_SHORT := 2.8
+TF2_VERSION := 2.8.3
+TF2_PIP_CPU := tensorflow-cpu==$(TF2_VERSION)
+TF2_PIP_GPU := tensorflow==$(TF2_VERSION)
+TORCH_VERSION := 1.12
+TORCH_PIP_CPU := torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html
+TORCH_PIP_GPU := torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
+
+export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_VERSION)-tf-$(TF2_VERSION_SHORT)$(CPU_SUFFIX)
+export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-$(TORCH_VERSION)-tf-$(TF2_VERSION_SHORT)$(GPU_SUFFIX)
+
+ifeq ($(NGC_PUBLISH),)
+define CPU_TF2_TAGS
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+endef
+else
+define CPU_TF2_TAGS
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
+-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+-t $(NGC_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME)-$(VERSION)
+endef
+endif
+
+.PHONY: build-tf2-cpu
+build-tf2-cpu: build-cpu-py-38-base
+	docker buildx build -f Dockerfile-default-cpu \
+	    --platform "$(PLATFORMS)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg TENSORFLOW_PIP="$(TF2_PIP_CPU)" \
+		--build-arg TORCH_PIP="$(TORCH_PIP_CPU)" \
+		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
+		--build-arg HOROVOD_PIP="horovod==0.24.2" \
+		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
+		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
+		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
+		$(CPU_TF2_TAGS) \
+		--push \
 		.
+
+.PHONY: build-tf2-gpu
+build-tf2-gpu: build-gpu-cuda-113-base
+	docker build -f Dockerfile-default-gpu \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg TENSORFLOW_PIP="$(TF2_PIP_GPU)" \
+		--build-arg TORCH_PIP="$(TORCH_PIP_GPU)" \
+		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
+		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
+		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
+		--build-arg HOROVOD_PIP="horovod==0.24.2" \
+		--build-arg DET_BUILD_NCCL="" \
+		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
+		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
+		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
+		.
+
 
 # tf1 and tf2.4 images are not published to NGC due to vulnerabilities.
 .PHONY: publish-tf1-cpu
