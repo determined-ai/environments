@@ -203,7 +203,6 @@ build-deepspeed-gpu: build-gpu-cuda-113-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
-		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg DET_BUILD_NCCL="" \
@@ -224,7 +223,6 @@ build-gpt-neox-deepspeed-gpu: build-gpu-cuda-113-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
-		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg DET_BUILD_NCCL="" \
@@ -312,7 +310,6 @@ build-tf2-cpu: build-cpu-py-38-base
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="$(TF2_PIP_CPU)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_CPU)" \
-		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
@@ -327,7 +324,6 @@ build-tf2-gpu: build-gpu-cuda-113-base
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="$(TF2_PIP_GPU)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_GPU)" \
-		--build-arg TORCH_PROFILER_GIT="https://github.com/pytorch/kineto.git@7455c31a01dd98bd0a863feacac4d46c7a44ea40" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
