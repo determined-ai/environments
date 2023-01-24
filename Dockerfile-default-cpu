@@ -38,5 +38,6 @@ RUN pip install cmake==3.22.4 protobuf==3.20.1
 RUN pip install "$HOROVOD_PIP"
 
 RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
+conda install h5py
 
 RUN rm -r /tmp/*
