@@ -11,7 +11,7 @@ ARG TORCH_PIP
 ARG TORCHVISION_PIP
 RUN if [ "$TENSORFLOW_PIP" ]; then \
         conda install h5py \
-        if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+        && if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
             TENSORFLOW_AARCH64_PIP=$(printf '%s' "$TENSORFLOW_PIP" | sed 's/cpu/aarch64/') \
             && pip install $TENSORFLOW_AARCH64_PIP; \
         else \
