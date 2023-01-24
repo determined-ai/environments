@@ -10,6 +10,7 @@ ARG TENSORFLOW_PIP
 ARG TORCH_PIP
 ARG TORCHVISION_PIP
 RUN if [ "$TENSORFLOW_PIP" ]; then \
+        conda install h5py \
         if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
             TENSORFLOW_AARCH64_PIP=$(printf '%s' "$TENSORFLOW_PIP" | sed 's/cpu/aarch64/') \
             && pip install $TENSORFLOW_AARCH64_PIP; \
@@ -38,6 +39,5 @@ RUN pip install cmake==3.22.4 protobuf==3.20.1
 RUN pip install "$HOROVOD_PIP"
 
 RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
-RUN conda install h5py
 
 RUN rm -r /tmp/*
