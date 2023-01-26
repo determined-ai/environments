@@ -37,6 +37,7 @@ RUN apt-get update \
                 libnuma-dev \
                 libpmi2-0-dev \
 		unattended-upgrades \
+        libhdf5-serial-dev \
 	&& unattended-upgrade \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& rm /etc/ssh/ssh_host_ecdsa_key \
