@@ -193,7 +193,7 @@ DEEPSPEED_VERSION := 0.7.0
 export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8-deepspeed-$(DEEPSPEED_VERSION)$(GPU_SUFFIX)
 export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8-gpt-neox-deepspeed$(GPU_SUFFIX)
 export TORCH_PIP_DEEPSPEED_GPU := torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
-export TORCH_TB_PROFILER_PIP := torch-tb-profiler
+export TORCH_TB_PROFILER_PIP := torch-tb-profiler==0.4.1
 
 # This builds deepspeed environment off of upstream microsoft/DeepSpeed.
 .PHONY: build-deepspeed-gpu
