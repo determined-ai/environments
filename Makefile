@@ -249,6 +249,7 @@ define CPU_TF27_TAGS
 endef
 endif
 
+TORCH_VERSION := 1.12
 export CPU_TF27_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_VERSION)-tf-2.7$(CPU_SUFFIX)
 export GPU_TF27_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)pytorch-$(TORCH_VERSION)-tf-2.7$(GPU_SUFFIX)
 
@@ -284,7 +285,6 @@ TF2_VERSION_SHORT := 2.8
 TF2_VERSION := 2.8.3
 TF2_PIP_CPU := tensorflow-cpu==$(TF2_VERSION)
 TF2_PIP_GPU := tensorflow==$(TF2_VERSION)
-TORCH_VERSION := 1.12
 TORCH_PIP_CPU := torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html
 TORCH_PIP_GPU := torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 
