@@ -8,7 +8,6 @@ RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 ARG TENSORFLOW_PIP
 ARG TORCH_PIP
 ARG TORCHVISION_PIP
-ARG TORCH_PROFILER_GIT
 
 RUN if [ "$TENSORFLOW_PIP" ]; then python -m pip install $TENSORFLOW_PIP; fi
 RUN if [ "$TORCH_PIP" ]; then python -m pip install $TORCH_PIP; fi
@@ -17,8 +16,8 @@ RUN if [ "$TORCHVISION_PIP" ]; then python -m pip install $TORCHVISION_PIP; fi
 ARG TF_CUDA_SYM
 RUN if [ "$TF_CUDA_SYM" ]; then ln -s /usr/local/cuda/lib64/libcusolver.so.11 /opt/conda/lib/python3.8/site-packages/tensorflow/python/libcusolver.so.10; fi
 
-ARG TORCH_PROFILER_GIT
-RUN if [ "$TORCH_PROFILER_GIT" ]; then /tmp/det_dockerfile_scripts/torch-tb-profiler-patch.sh; fi
+ARG TORCH_TB_PROFILER_PIP
+RUN if [ "$TORCH_TB_PROFILER_PIP" ]; then python -m pip install $TORCH_TB_PROFILER_PIP; fi
 
 ARG TORCH_CUDA_ARCH_LIST
 ARG APEX_GIT
