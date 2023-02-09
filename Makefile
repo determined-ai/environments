@@ -64,13 +64,10 @@ export GPU_CUDA_113_BASE_NAME := $(CUDA_113_PREFIX)base$(GPU_SUFFIX)
 # waiting for AMI availablity. Bump to 360 attempts = 90 minutes.
 export AWS_MAX_ATTEMPTS=360
 
-DOCKER_BUILD_OPTIONS ?= --quiet
-
 # Base images.
 .PHONY: build-cpu-py-37-base build-cpu-py-38-base  build-gpu-cuda-111-base build-gpu-cuda-112-base build-gpu-cuda-113-base
 build-cpu-py-37-base:
 	docker build -f Dockerfile-base-cpu \
-		$(DOCKER_BUILD_OPTIONS) \
 		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_37)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
@@ -85,7 +82,6 @@ build-cpu-py-38-base:
 	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 	docker buildx create --name builder --driver docker-container --use
 	docker buildx build -f Dockerfile-base-cpu \
-		$(DOCKER_BUILD_OPTIONS) \
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
@@ -100,7 +96,6 @@ build-cpu-py-38-base:
 .PHONY: build-gpu-cuda-102-base
 build-gpu-cuda-102-base:
 	docker build -f Dockerfile-base-gpu \
-		$(DOCKER_BUILD_OPTIONS) \
 		--build-arg BASE_IMAGE="nvidia/cuda:10.2-cudnn7-devel-$(UBUNTU_VERSION_1804)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_37)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION_1804)" \
@@ -112,7 +107,6 @@ build-gpu-cuda-102-base:
 .PHONY: build-gpu-cuda-111-base
 build-gpu-cuda-111-base:
 	docker build -f Dockerfile-base-gpu \
-		$(DOCKER_BUILD_OPTIONS) \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.1.1-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
@@ -124,7 +118,6 @@ build-gpu-cuda-111-base:
 .PHONY: build-gpu-cuda-112-base
 build-gpu-cuda-112-base:
 	docker build -f Dockerfile-base-gpu \
-		$(DOCKER_BUILD_OPTIONS) \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.2.2-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
@@ -136,7 +129,6 @@ build-gpu-cuda-112-base:
 .PHONY: build-gpu-cuda-113-base
 build-gpu-cuda-113-base:
 	docker build -f Dockerfile-base-gpu \
-		$(DOCKER_BUILD_OPTIONS) \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.3.1-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
@@ -152,7 +144,6 @@ export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_102_PREFIX)pytorch-1.7-tf-1.15$(GPU_SU
 .PHONY: build-tf1-cpu
 build-tf1-cpu: build-cpu-py-37-base
 	docker build -f Dockerfile-default-cpu \
-		$(DOCKER_BUILD_OPTIONS) \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow==1.15.5" \
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cpu/torch_stable.html" \
@@ -170,7 +161,6 @@ build-tf1-cpu: build-cpu-py-37-base
 .PHONY: build-tf1-gpu
 build-tf1-gpu: build-gpu-cuda-102-base
 	docker build -f Dockerfile-default-gpu \
-		$(DOCKER_BUILD_OPTIONS) \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_102_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="https://github.com/determined-ai/tensorflow-wheels/releases/download/0.1.0/tensorflow_gpu-1.15.5-cp37-cp37m-linux_x86_64.whl" \
 		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cu102/torch_stable.html" \
@@ -192,7 +182,6 @@ export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-
 .PHONY: build-pytorch10-tf27-rocm50
 build-pytorch10-tf27-rocm50:
 	docker build -f Dockerfile-default-rocm \
-		$(DOCKER_BUILD_OPTIONS) \
 		--build-arg BASE_IMAGE="amdih/pytorch:rocm5.0_ubuntu18.04_py3.7_pytorch_1.10.0" \
 		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.7.1" \
 		--build-arg HOROVOD_PIP="horovod==0.25.0" \
@@ -213,7 +202,6 @@ build-deepspeed-gpu: build-gpu-cuda-113-base
 	# now since we want to have tensorboard support.  It should be possible to install tensorboard
 	# without tensorflow though.
 	docker build -f Dockerfile-default-gpu \
-		$(DOCKER_BUILD_OPTIONS) \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
@@ -235,7 +223,6 @@ build-gpt-neox-deepspeed-gpu: build-gpu-cuda-113-base
 	# now since we want to have tensorboard support.  It should be possible to install tensorboard
 	# without tensorflow though.
 	docker build -f Dockerfile-default-gpu \
-		$(DOCKER_BUILD_OPTIONS) \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
@@ -270,7 +257,6 @@ export GPU_TF27_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)pytorch-$(TORCH_VERSION)-t
 .PHONY: build-tf27-cpu
 build-tf27-cpu: build-cpu-py-38-base
 	docker buildx build -f Dockerfile-default-cpu \
-		$(DOCKER_BUILD_OPTIONS) \
 		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.7.4" \
@@ -286,7 +272,6 @@ build-tf27-cpu: build-cpu-py-38-base
 .PHONY: build-tf27-gpu
 build-tf27-gpu: build-gpu-cuda-112-base
 	docker build -f Dockerfile-default-gpu \
-		$(DOCKER_BUILD_OPTIONS) \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_112_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow==2.7.4" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
@@ -324,7 +309,6 @@ endif
 .PHONY: build-tf2-cpu
 build-tf2-cpu: build-cpu-py-38-base
 	docker buildx build -f Dockerfile-default-cpu \
-		$(DOCKER_BUILD_OPTIONS) \
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="$(TF2_PIP_CPU)" \
@@ -341,7 +325,6 @@ build-tf2-cpu: build-cpu-py-38-base
 .PHONY: build-tf2-gpu
 build-tf2-gpu: build-gpu-cuda-113-base
 	docker build -f Dockerfile-default-gpu \
-		$(DOCKER_BUILD_OPTIONS) \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="$(TF2_PIP_GPU)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_GPU)" \
