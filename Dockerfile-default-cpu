@@ -10,12 +10,16 @@ ARG TENSORFLOW_PIP
 ARG TORCH_PIP
 ARG TORCHVISION_PIP
 RUN if [ "$TENSORFLOW_PIP" ]; then \
+		ARG HOROVOD_WITH_TENSORFLOW=1 && \
         if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
             TENSORFLOW_AARCH64_PIP=$(printf '%s' "$TENSORFLOW_PIP" | sed 's/cpu/aarch64/') \
             && pip install $TENSORFLOW_AARCH64_PIP; \
         else \
             pip install $TENSORFLOW_PIP; \
         fi; \
+	else \
+		ARG HOROVOD_WITH_TENSORFLOW=0 \
+		&& ARG HOROVOD_WITHOUT_TENSORFLOW=1; \
     fi
 RUN if [ "$TORCH_PIP" ]; then \
         if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
@@ -31,7 +35,6 @@ ARG TORCH_TB_PROFILER_PIP
 RUN if [ "$TORCH_TB_PROFILER_PIP" ]; then pip install $TORCH_TB_PROFILER_PIP; fi
 
 ARG HOROVOD_PIP=horovod
-ARG HOROVOD_WITH_TENSORFLOW=1
 ARG HOROVOD_WITH_PYTORCH=1
 ARG HOROVOD_WITHOUT_MXNET=1
 ARG HOROVOD_WITH_MPI
