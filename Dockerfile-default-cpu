@@ -18,8 +18,7 @@ RUN if [ "$TENSORFLOW_PIP" ]; then \
             pip install $TENSORFLOW_PIP; \
         fi; \
 	else \
-		export HOROVOD_WITH_TENSORFLOW=0 \
-		&& export HOROVOD_WITHOUT_TENSORFLOW=1; \
+		export HOROVOD_WITH_TENSORFLOW=0; \
     fi
 RUN if [ "$TORCH_PIP" ]; then \
         if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
