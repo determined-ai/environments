@@ -10,6 +10,7 @@ ARG UBUNTU_VERSION
 RUN mkdir -p /var/run/sshd
 RUN apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+		lsb-core \
 		autoconf \
 		automake \
 		autotools-dev \
@@ -19,6 +20,7 @@ RUN apt-get update \
 		daemontools \
 		ibverbs-providers \
 		libibverbs1 \
+		libjpeg-dev \
 		libkrb5-dev \
 		librdmacm1 \
 		libssl-dev \
@@ -44,12 +46,16 @@ RUN apt-get update \
 	&& rm /etc/ssh/ssh_host_rsa_key \
         && if [ "$UBUNTU_VERSION" = "ubuntu18.04" ]; then ln -s /usr/include/slurm-wlm /usr/include/slurm; fi
 
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH=/root/.cargo/bin:${PATH}
+
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
 ENV PATH="/opt/conda/bin:${PATH}"
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 ARG PYTHON_VERSION
-RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION}
+ARG TARGETPLATFORM
+RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION} ${TARGETPLATFORM}
 
 ARG WITH_MPI
 ARG UCX_INSTALL_DIR=/container/ucx

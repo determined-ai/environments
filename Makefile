@@ -5,7 +5,7 @@ SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
 
 NGC_REGISTRY := nvcr.io/isv-ngc-partner/determined
 NGC_PUBLISH := 1
-export DOCKERHUB_REGISTRY := determinedai
+export DOCKERHUB_REGISTRY ?= determinedai
 export REGISTRY_REPO := environments
 
 CPU_PREFIX := $(REGISTRY_REPO):py-3.8-
@@ -14,16 +14,19 @@ CUDA_102_PREFIX := $(REGISTRY_REPO):cuda-10.2-
 CUDA_111_PREFIX := $(REGISTRY_REPO):cuda-11.1-
 CUDA_112_PREFIX := $(REGISTRY_REPO):cuda-11.2-
 CUDA_113_PREFIX := $(REGISTRY_REPO):cuda-11.3-
+CUDA_118_PREFIX := $(REGISTRY_REPO):cuda-11.8-
+CUDA_120_PREFIX := $(REGISTRY_REPO):cuda-12.0-
 ROCM_50_PREFIX := $(REGISTRY_REPO):rocm-5.0-
 
 CPU_SUFFIX := -cpu
 GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
-PYTHON_VERSION := 3.8.12
-PYTHON_VERSION_37 := 3.7.11
+PYTHON_VERSION := 3.8.15
+PYTHON_VERSION_37 := 3.7.12
 UBUNTU_VERSION := ubuntu20.04
 UBUNTU_IMAGE_TAG := ubuntu:20.04
 UBUNTU_VERSION_1804 := ubuntu18.04
+UBUNTU_VERSION_2204 := ubuntu22.04
 PLATFORM_LINUX_ARM_64 := linux/arm64
 PLATFORM_LINUX_AMD_64 := linux/amd64
 
@@ -59,13 +62,23 @@ export CPU_PY_38_BASE_NAME := $(CPU_PREFIX)base$(CPU_SUFFIX)
 export GPU_CUDA_111_BASE_NAME := $(CUDA_111_PREFIX)base$(GPU_SUFFIX)
 export GPU_CUDA_112_BASE_NAME := $(CUDA_112_PREFIX)base$(GPU_SUFFIX)
 export GPU_CUDA_113_BASE_NAME := $(CUDA_113_PREFIX)base$(GPU_SUFFIX)
+export GPU_CUDA_118_BASE_NAME := $(CUDA_118_PREFIX)base$(GPU_SUFFIX)
+export GPU_CUDA_120_BASE_NAME := $(CUDA_120_PREFIX)base$(GPU_SUFFIX)
 
 # Timeout used by packer for AWS operations. Default is 120 (30 minutes) for
 # waiting for AMI availablity. Bump to 360 attempts = 90 minutes.
 export AWS_MAX_ATTEMPTS=360
 
+.PHONY: buildx
+buildx:
+	docker context rm -f buildx-context || true
+	docker context create buildx-context
+	docker buildx rm -f buildx-build || true
+	docker --context=buildx-context buildx create --platform ${PLATFORMS} --bootstrap --use --name buildx-build
+	docker buildx ls
+
 # Base images.
-.PHONY: build-cpu-py-37-base build-cpu-py-38-base  build-gpu-cuda-111-base build-gpu-cuda-112-base build-gpu-cuda-113-base
+.PHONY: build-cpu-py-37-base
 build-cpu-py-37-base:
 	docker build -f Dockerfile-base-cpu \
 		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
@@ -78,10 +91,8 @@ build-cpu-py-37-base:
 		.
 
 .PHONY: build-cpu-py-38-base
-build-cpu-py-38-base:
-	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-	docker buildx create --name builder --driver docker-container --use
-	docker buildx build -f Dockerfile-base-cpu \
+build-cpu-py-38-base: buildx
+	docker buildx --builder=buildx-build build -f Dockerfile-base-cpu \
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
@@ -135,6 +146,34 @@ build-gpu-cuda-113-base:
 		--build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(VERSION) \
+		.
+
+.PHONY: build-gpu-cuda-118-base
+build-gpu-cuda-118-base: buildx
+	docker buildx --builder=buildx-build build -f Dockerfile-base-gpu \
+		--progress plain \
+		--platform "$(PLATFORMS)" \
+		--build-arg BASE_IMAGE="nvidia/cuda:11.8.0-cudnn8-devel-$(UBUNTU_VERSION)" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
+		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
+		--build-arg "$(MPI_BUILD_ARG)" \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(VERSION) \
+		--push \
+		.
+
+.PHONY: build-gpu-cuda-120-base
+build-gpu-cuda-120-base: buildx
+	docker buildx --builder=buildx-build build -f Dockerfile-base-gpu \
+		--progress plain \
+		--platform "$(PLATFORMS)" \
+		--build-arg BASE_IMAGE="nvidia/cuda:12.0.1-devel-$(UBUNTU_VERSION_2204)" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
+		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION_2204)" \
+		--build-arg "$(MPI_BUILD_ARG)" \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_120_BASE_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_120_BASE_NAME)-$(VERSION) \
+		--push \
 		.
 
 export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX_37)pytorch-1.7-tf-1.15$(CPU_SUFFIX)

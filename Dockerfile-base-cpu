@@ -7,6 +7,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PIP_NO_CACHE_DIR=1
 RUN mkdir -p /var/run/sshd
 RUN apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+		lsb-core \
 		autoconf \
 		automake \
 		autotools-dev \
@@ -14,6 +15,7 @@ RUN apt-get update \
 		ca-certificates \
 		curl \
 		daemontools \
+		libjpeg-dev \
 		libkrb5-dev \
 		libssl-dev \
 		libtool \
@@ -36,6 +38,9 @@ RUN apt-get update \
 	&& rm /etc/ssh/ssh_host_ecdsa_key \
 	&& rm /etc/ssh/ssh_host_ed25519_key \
 	&& rm /etc/ssh/ssh_host_rsa_key
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH=/root/.cargo/bin:${PATH}
 
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
