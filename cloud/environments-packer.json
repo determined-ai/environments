@@ -146,7 +146,7 @@
       "machine_type": "n1-standard-1",
       "accelerator_type": "zones/us-west1-b/acceleratorTypes/nvidia-tesla-k80",
       "accelerator_count": 1,
-      "state_timeout": "10m",
+      "state_timeout": "20m",
       "image_name": "det-environments{{ user `image_suffix` }}",
       "image_description": "{{ user `image_description` }}"
     }
