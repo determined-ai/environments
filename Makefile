@@ -324,7 +324,7 @@ build-tf2-cpu: build-cpu-py-38-base
 		.
 
 .PHONY: build-tf2-gpu
-build-tf2-gpu: #build-gpu-cuda-113-base
+build-tf2-gpu: build-gpu-cuda-113-base
 	docker build -f Dockerfile-default-gpu \
 		--platform linux/amd64 \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
