@@ -129,6 +129,7 @@ build-gpu-cuda-112-base:
 .PHONY: build-gpu-cuda-113-base
 build-gpu-cuda-113-base:
 	docker build -f Dockerfile-base-gpu \
+		--platform linux/amd64 \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.3.1-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
@@ -323,14 +324,15 @@ build-tf2-cpu: build-cpu-py-38-base
 		.
 
 .PHONY: build-tf2-gpu
-build-tf2-gpu: build-gpu-cuda-113-base
+build-tf2-gpu: #build-gpu-cuda-113-base
 	docker build -f Dockerfile-default-gpu \
+		--platform linux/amd64 \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="$(TF2_PIP_GPU)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_GPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
-		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
+		--build-arg APEX_GIT="https://github.com/NVIDIA/apex.git@6943fd26e04c59327de32592cf5af68be8f5c44e" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg DET_BUILD_NCCL="" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
