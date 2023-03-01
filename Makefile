@@ -133,6 +133,7 @@ build-gpu-cuda-113-base:
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
+		--build-arg "$(OFI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(VERSION) \
 		.
