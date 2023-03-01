@@ -250,9 +250,8 @@ define CPU_TF27_TAGS
 endef
 endif
 
-TORCH_VERSION := 1.12
-export CPU_TF27_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_VERSION)-tf-2.7$(CPU_SUFFIX)
-export GPU_TF27_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)pytorch-$(TORCH_VERSION)-tf-2.7$(GPU_SUFFIX)
+export CPU_TF27_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.7$(CPU_SUFFIX)
+export GPU_TF27_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.7$(GPU_SUFFIX)
 
 .PHONY: build-tf27-cpu
 build-tf27-cpu: build-cpu-py-38-base
@@ -282,6 +281,7 @@ build-tf27-gpu: build-gpu-cuda-112-base
 		-t $(NGC_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
+TORCH_VERSION := 1.12
 TF2_VERSION_SHORT := 2.8
 TF2_VERSION := 2.8.3
 TF2_PIP_CPU := tensorflow-cpu==$(TF2_VERSION)
