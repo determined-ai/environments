@@ -44,12 +44,22 @@ RUN apt-get update \
 	&& rm /etc/ssh/ssh_host_rsa_key \
         && if [ "$UBUNTU_VERSION" = "ubuntu18.04" ]; then ln -s /usr/include/slurm-wlm /usr/include/slurm; fi
 
+# Install debuild util, etc. for later compiling GDRcopy libraries
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y devscripts debhelper
+
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+
+# Install GDRcopy so OMPI, NCCL, AWS plugin, etc, can see it
+RUN /tmp/det_dockerfile_scripts/build_gdrcopy.sh
 
 ENV PATH="/opt/conda/bin:${PATH}"
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 ARG PYTHON_VERSION
 RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION}
+
+# Install fixed version of FFI package for Ubuntu 20.04.
+# This is done after above stuff to make sure we get right version.
+RUN /tmp/det_dockerfile_scripts/install_package_fixes.sh
 
 ARG WITH_MPI
 ARG WITH_OFI

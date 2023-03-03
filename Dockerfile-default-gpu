@@ -23,12 +23,16 @@ RUN if [ "$TORCH_PROFILER_GIT" ]; then /tmp/det_dockerfile_scripts/torch-tb-prof
 ARG TORCH_CUDA_ARCH_LIST
 ARG APEX_GIT
 ARG APEX_PATCH
-RUN /tmp/det_dockerfile_scripts/install_apex.sh
+#RUN /tmp/det_dockerfile_scripts/install_apex.sh
 
 ARG DET_BUILD_NCCL=1
 RUN if [ -n "${DET_BUILD_NCCL}" ]; then /tmp/det_dockerfile_scripts/build_nccl.sh; fi
-ARG HOROVOD_NCCL_LINK=${DET_BUILD_NCCL:+STATIC}
-ARG HOROVOD_NCCL_HOME=${DET_BUILD_NCCL:+/tmp/det_nccl/build}
+#ARG HOROVOD_NCCL_LINK=${DET_BUILD_NCCL:+STATIC}
+ARG HOROVOD_NCCL_LINK=${DET_BUILD_NCCL:+SHARED}
+#ARG HOROVOD_NCCL_HOME=${DET_BUILD_NCCL:+/tmp/det_nccl/build}
+# Make it look for the system nccl, which hopefully is the newer one we built
+# and installed
+ARG HOROVOD_NCCL_HOME=""
 
 ARG HOROVOD_PIP=""
 ARG HOROVOD_WITH_TENSORFLOW=1
