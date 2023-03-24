@@ -208,6 +208,7 @@ build-deepspeed-gpu: build-gpu-cuda-113-base
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg DET_BUILD_NCCL="" \
+		--build-arg DS_BUILD_OPS=0 \
 		--build-arg DEEPSPEED_PIP="deepspeed[autotuning_ml]==$(DEEPSPEED_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
