@@ -98,6 +98,45 @@ jobs:
             - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
       - store_artifacts:
           path: /tmp/artifacts
+  
+  build-and-publish-docker-on-gpu:
+    parameters:
+      image-type:
+        type: string
+      dev-mode:
+        type: boolean
+        default: false
+      with-mpi:
+        type: integer
+        default: 0
+    machine:
+      # image: ubuntu-2004:2022.04.2
+      image: ubuntu-2004-cuda-11.4:202110-01
+    resource_class: gpu.nvidia.small
+    # resource_class: xlarge
+    steps:
+      - run: nvidia-smi
+      - checkout
+      - install-docker
+      - login-docker:
+          username: ${DOCKER_USER}
+          password: ${DOCKER_PASS}
+      - unless:
+          condition: <<parameters.dev-mode>>
+          steps:
+            - login-docker:
+                repository: nvcr.io
+                username: ${NGC_API_USERNAME}
+                password: ${NGC_API_KEY}
+            - run: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+            - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+      - when:
+          condition: <<parameters.dev-mode>>
+          steps:
+            - run: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+      - store_artifacts:
+          path: /tmp/artifacts
 
   publish-cloud-images:
     parameters:
@@ -157,8 +196,8 @@ workflows:
                 - tf27-gpu
                 - pt-gpu
                 - pytorch10-tf27-rocm50
-                - deepspeed-gpu
-                - gpt-neox-deepspeed-gpu
+                # - deepspeed-gpu
+                # - gpt-neox-deepspeed-gpu
             exclude:
               - with-mpi: 1
                 image-type: pytorch10-tf27-rocm50
@@ -185,45 +224,61 @@ workflows:
           type: approval
           filters: *upstream-feature-branch
 
-      - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
+      # - build-and-publish-docker:
+      #     name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
+      #     context: determined-production
+      #     filters: *upstream-feature-branch
+      #     requires:
+      #       - request-publish-dev-docker
+      #     matrix:
+      #       alias: build-docker-cpu
+      #       parameters:
+      #         dev-mode: [true]
+      #         with-mpi: [0, 1]
+      #         image-type:
+      #           - tf1-cpu
+      #           - tf2-cpu
+      #           - tf27-cpu
+      #           - pt-cpu
+      #           - tf1-gpu
+      #           - tf2-gpu
+      #           - tf27-gpu
+      #           - pt-gpu
+      #           - pytorch10-tf27-rocm50
+      #           # - deepspeed-gpu
+      #           # - gpt-neox-deepspeed-gpu
+      #       exclude:
+      #         - dev-mode: true
+      #           with-mpi: 1
+      #           image-type: pytorch10-tf27-rocm50
+      #         # - dev-mode: true
+      #         #   with-mpi: 1
+      #         #   image-type: deepspeed-gpu
+      #         # - dev-mode: true
+      #         #   with-mpi: 1
+      #         #   image-type: gpt-neox-deepspeed-gpu
+      
+      - build-and-publish-docker-on-gpu:
+          name: build-and-publish-docker-on-gpu-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
             - request-publish-dev-docker
           matrix:
-            alias: build-docker-all
+            alias: build-docker-gpu
             parameters:
               dev-mode: [true]
-              with-mpi: [0, 1]
+              with-mpi: [0]
               image-type:
-                - tf1-cpu
-                - tf2-cpu
-                - tf27-cpu
-                - pt-cpu
-                - tf1-gpu
-                - tf2-gpu
-                - tf27-gpu
-                - pt-gpu
-                - pytorch10-tf27-rocm50
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
-            exclude:
-              - dev-mode: true
-                with-mpi: 1
-                image-type: pytorch10-tf27-rocm50
-              - dev-mode: true
-                with-mpi: 1
-                image-type: deepspeed-gpu
-              - dev-mode: true
-                with-mpi: 1
-                image-type: gpt-neox-deepspeed-gpu
 
       - publish-cloud-images:
           name: publish-cloud-images-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
-            - build-docker-all
+            # - build-docker-cpu
+            - build-docker-gpu
             - request-publish-dev-cloud
           dev-mode: true
