@@ -215,6 +215,106 @@ build-deepspeed-gpu: build-gpu-cuda-113-base
 		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
+.PHONY: build-deepspeed-gpu
+build-deepspeed-gpu-cpu-adam: build-gpu-cuda-113-base
+	# We should consider building without tensorflow in the future.  Going to keep tensorflow for
+	# now since we want to have tensorboard support.  It should be possible to install tensorboard
+	# without tensorflow though.
+	docker build -f Dockerfile-default-gpu \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
+		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
+		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
+		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
+		--build-arg DET_BUILD_NCCL="" \
+		--build-arg DS_BUILD_CPU_ADAM=1 \
+		--build-arg DEEPSPEED_PIP="deepspeed[autotuning_ml]==$(DEEPSPEED_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		.
+
+.PHONY: build-deepspeed-gpu
+build-deepspeed-gpu-fused-adam: build-gpu-cuda-113-base
+	# We should consider building without tensorflow in the future.  Going to keep tensorflow for
+	# now since we want to have tensorboard support.  It should be possible to install tensorboard
+	# without tensorflow though.
+	docker build -f Dockerfile-default-gpu \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
+		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
+		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
+		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
+		--build-arg DET_BUILD_NCCL="" \
+		--build-arg DS_BUILD_FUSED_ADAM=1 \
+		--build-arg DEEPSPEED_PIP="deepspeed[autotuning_ml]==$(DEEPSPEED_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		.
+
+.PHONY: build-deepspeed-gpu
+build-deepspeed-gpu-fused-lamb: build-gpu-cuda-113-base
+	# We should consider building without tensorflow in the future.  Going to keep tensorflow for
+	# now since we want to have tensorboard support.  It should be possible to install tensorboard
+	# without tensorflow though.
+	docker build -f Dockerfile-default-gpu \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
+		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
+		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
+		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
+		--build-arg DET_BUILD_NCCL="" \
+		--build-arg DS_BUILD_FUSED_LAMB=1 \
+		--build-arg DEEPSPEED_PIP="deepspeed[autotuning_ml]==$(DEEPSPEED_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		.
+
+.PHONY: build-deepspeed-gpu
+build-deepspeed-gpu-sparse-attn: build-gpu-cuda-113-base
+	# We should consider building without tensorflow in the future.  Going to keep tensorflow for
+	# now since we want to have tensorboard support.  It should be possible to install tensorboard
+	# without tensorflow though.
+	docker build -f Dockerfile-default-gpu \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
+		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
+		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
+		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
+		--build-arg DET_BUILD_NCCL="" \
+		--build-arg DS_BUILD_SPARSE_ATTN=1 \
+		--build-arg DEEPSPEED_PIP="deepspeed[autotuning_ml]==$(DEEPSPEED_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		.
+
+.PHONY: build-deepspeed-gpu
+build-deepspeed-gpu-transformer: build-gpu-cuda-113-base
+	# We should consider building without tensorflow in the future.  Going to keep tensorflow for
+	# now since we want to have tensorboard support.  It should be possible to install tensorboard
+	# without tensorflow though.
+	docker build -f Dockerfile-default-gpu \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
+		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
+		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
+		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
+		--build-arg DET_BUILD_NCCL="" \
+		--build-arg DS_BUILD_TRANSFORMER=1 \
+		--build-arg DEEPSPEED_PIP="deepspeed[autotuning_ml]==$(DEEPSPEED_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		.
+
 # This builds deepspeed environment off of a patched version of EleutherAI's fork of DeepSpeed
 # that we need for gpt-neox support.
 .PHONY: build-gpt-neox-deepspeed-gpu

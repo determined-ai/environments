@@ -197,16 +197,21 @@ workflows:
               dev-mode: [true]
               with-mpi: [0, 1]
               image-type:
-                - tf1-cpu
-                - tf2-cpu
-                - tf27-cpu
-                - pt-cpu
-                - tf1-gpu
-                - tf2-gpu
-                - tf27-gpu
-                - pt-gpu
-                - pytorch10-tf27-rocm50
+                # - tf1-cpu
+                # - tf2-cpu
+                # - tf27-cpu
+                # - pt-cpu
+                # - tf1-gpu
+                # - tf2-gpu
+                # - tf27-gpu
+                # - pt-gpu
+                # - pytorch10-tf27-rocm50
                 - deepspeed-gpu
+                - deepspeed-gpu-cpu-adam
+                - deepspeed-gpu-fused-adam
+                - deepspeed-gpu-fused-lamb
+                - deepspeed-gpu-sparse-attn
+                - deepspeed-gpu-transformer
                 - gpt-neox-deepspeed-gpu
             exclude:
               - dev-mode: true
