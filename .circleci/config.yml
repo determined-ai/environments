@@ -209,14 +209,14 @@ workflows:
                 - deepspeed-gpu
                 - deepspeed-gpu-cpu-adam
                 - deepspeed-gpu-fused-adam
-                # - deepspeed-gpu-fused-lamb
-                # - deepspeed-gpu-sparse-attn
-                # - deepspeed-gpu-transformer
-                # - deepspeed-gpu-transformer-inference
-                # - deepspeed-gpu-stochastic-transformer
-                # - deepspeed-gpu-build-utils
-                # - deepspeed-gpu-build-aio
-                # - gpt-neox-deepspeed-gpu
+                - deepspeed-gpu-fused-lamb
+                - deepspeed-gpu-sparse-attn
+                - deepspeed-gpu-transformer
+                - deepspeed-gpu-transformer-inference
+                - deepspeed-gpu-stochastic-transformer
+                - deepspeed-gpu-build-utils
+                - deepspeed-gpu-build-aio
+                - gpt-neox-deepspeed-gpu
             exclude:
               - dev-mode: true
                 with-mpi: 1
@@ -228,11 +228,11 @@ workflows:
                 with-mpi: 1
                 image-type: gpt-neox-deepspeed-gpu
 
-      - publish-cloud-images:
-          name: publish-cloud-images-dev
-          context: determined-production
-          filters: *upstream-feature-branch
-          requires:
-            - build-docker-all
-            - request-publish-dev-cloud
-          dev-mode: true
+      # - publish-cloud-images:
+      #     name: publish-cloud-images-dev
+      #     context: determined-production
+      #     filters: *upstream-feature-branch
+      #     requires:
+      #       - build-docker-all
+      #       - request-publish-dev-cloud
+      #     dev-mode: true
