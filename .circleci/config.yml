@@ -212,6 +212,10 @@ workflows:
                 - deepspeed-gpu-fused-lamb
                 - deepspeed-gpu-sparse-attn
                 - deepspeed-gpu-transformer
+                - deepspeed-gpu-transformer-inference
+                - deepspeed-gpu-stochastic-transformer
+                - deepspeed-gpu-build-utils
+                - deepspeed-gpu-build-aio
                 - gpt-neox-deepspeed-gpu
             exclude:
               - dev-mode: true
