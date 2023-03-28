@@ -30,3 +30,8 @@
 - name: Install NVIDIA Persistence Daemon.
   become: yes
   command: sh /tmp/nvidia-persistenced-init/install.sh
+
+- name: Install NVIDIA FabricManager.
+  become: yes
+  apt:
+    name: cuda-drivers-fabricmanager-470
