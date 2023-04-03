@@ -4,12 +4,7 @@ set -x
 
 # See if we should add CUDA to the OMPI build
 OMPI_WITH_CUDA=""
-WITH_AWS_TRACE=""
 if [ $# -gt 2 ] ; then
-    if [ "$4" = "1" ] ; then
-	# Tell AWS to build with trace messages enabled
-	WITH_AWS_TRACE="--enable-trace"
-    fi
     if [ "$3" = "1" ] ; then
 	# Tell OMPI to look for cuda in the default location
 	OMPI_WITH_CUDA="--with-cuda"
@@ -100,34 +95,3 @@ mkdir -p ${OMPI_SRC_DIR}                        && \
   make install                                  && \
   cd /tmp                                       && \
   rm -rf ${OMPI_SRC_DIR}
-
-if [ "$OFI" = "1" ]; then
-  # Install AWS_OFI_NCCL
-  AWS_VER=v1.4.0
-  AWS_VER_NUM=1.4.0
-  AWS_NAME=aws-ofi-nccl
-  AWS_FILE="${AWS_NAME}-${AWS_VER_NUM}"
-  # cuda install dir likely dependent on BaseOS (i.e. ubuntu 20.02)
-  # in case this changes in the future
-  CUDA_DIR="/usr/local/cuda/targets/x86_64-linux"
-  AWS_CONFIG_OPTIONS="--prefix ${AWS_PLUGIN_INSTALL_DIR} \
-	  --with-libfabric=${OFI_INSTALL_DIR}            \
-	  --with-nccl=${HOROVOD_NCCL_HOME}               \
-	  --with-mpi=${OMPI_INSTALL_DIR}                 \
-	  --with-cuda=${CUDA_DIR} ${WITH_AWS_TRACE}"
-  AWS_SRC_DIR=/tmp/aws-ofi-nccl
-  AWS_BASE_URL="https://github.com/aws/aws-ofi-nccl/archive/refs/tags"
-  AWS_URL="${AWS_BASE_URL}/${AWS_VER}.tar.gz"
-
-  mkdir -p ${AWS_SRC_DIR}                         && \
-    cd ${AWS_SRC_DIR}                             && \
-    wget -O "${AWS_FILE}.tar.gz" ${AWS_URL}       && \
-    tar -xzf ${AWS_FILE}.tar.gz                   && \
-    cd ${AWS_FILE}                                && \
-    ./autogen.sh                                  && \
-    ./configure ${AWS_CONFIG_OPTIONS}             && \
-    make                                          && \
-    make install                                  && \
-    cd /tmp                                       && \
-    rm -rf ${AWS_SRC_DIR}
-fi

@@ -5,6 +5,22 @@ COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
 RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 
+ARG WITH_NCCL
+# Make it look for the system nccl, which hopefully is the newer one we built
+# and installed
+ENV HOROVOD_NCCL_HOME="/container/nccl"
+ENV HOROVOD_NCCL_LINK=${WITH_NCCL:+SHARED}
+
+RUN if [ -n "${WITH_NCCL}" ]; then /tmp/det_dockerfile_scripts/build_nccl.sh; fi
+
+#USING OFI
+ARG WITH_OFI
+ARG UCX_INSTALL_DIR=/container/ucx
+ARG OMPI_INSTALL_DIR=/container/ompi
+ARG OFI_INSTALL_DIR=/container/ofi
+ENV NCCL_LIB_DIR=${HOROVOD_NCCL_HOME}/lib
+ENV LD_LIBRARY_PATH=${WITH_OFI:+$NCCL_LIB_DIR:$LD_LIBRARY_PATH}
+
 ARG TENSORFLOW_PIP
 ARG TORCH_PIP
 ARG TORCHVISION_PIP
@@ -29,10 +45,13 @@ ARG APEX_GIT
 ARG APEX_PATCH
 RUN /tmp/det_dockerfile_scripts/install_apex.sh
 
-ARG DET_BUILD_NCCL=1
-RUN if [ -n "${DET_BUILD_NCCL}" ]; then /tmp/det_dockerfile_scripts/build_nccl.sh; fi
-ARG HOROVOD_NCCL_LINK=${DET_BUILD_NCCL:+STATIC}
-ARG HOROVOD_NCCL_HOME=${DET_BUILD_NCCL:+/tmp/det_nccl/build}
+ARG AWS_PLUGIN_INSTALL_DIR=/container/aws
+ARG WITH_AWS_TRACE
+RUN if [ "$WITH_OFI" = "1" ]; then /tmp/det_dockerfile_scripts/build_aws.sh "$WITH_OFI" "$WITH_AWS_TRACE"; fi
+
+#USING OFI
+ARG AWS_LIB_DIR=${AWS_PLUGIN_INSTALL_DIR}/lib
+ENV LD_LIBRARY_PATH=${WITH_OFI:+$AWS_LIB_DIR:$LD_LIBRARY_PATH}
 
 ARG HOROVOD_WITH_TENSORFLOW
 RUN if [ "$HOROVOD_WITH_TENSORFLOW" ]; then export HOROVOD_WITH_TENSORFLOW=$HOROVOD_WITH_TENSORFLOW; fi

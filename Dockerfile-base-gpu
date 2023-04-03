@@ -46,20 +46,29 @@ RUN apt-get update \
 
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
+ARG WITH_NCCL
+# Install debuild util, etc. for later compiling GDRcopy libraries
+RUN if [ "$WITH_NCCL" = "1" ]; then apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y devscripts debhelper; fi
+
+# Install GDRcopy so OMPI, NCCL, AWS plugin, etc, can see it
+RUN if [ "$WITH_NCCL" = "1" ]; then /tmp/det_dockerfile_scripts/build_gdrcopy.sh; fi
+
 ENV PATH="/opt/conda/bin:${PATH}"
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 ARG PYTHON_VERSION
 RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION}
+
+# Install fixed version of FFI package for Ubuntu 20.04.
+# This is done after above stuff to make sure we get right version.
+RUN /tmp/det_dockerfile_scripts/install_package_fixes.sh
 
 ARG WITH_MPI
 ARG WITH_OFI
 ARG UCX_INSTALL_DIR=/container/ucx
 ARG OMPI_INSTALL_DIR=/container/ompi
 ARG OFI_INSTALL_DIR=/container/ofi
-ARG AWS_PLUGIN_INSTALL_DIR=/container/aws
-ARG WITH_AWS_TRACE
 ARG OMPI_WITH_CUDA=1
-RUN if [ "$WITH_MPI" = "1" ]; then /tmp/det_dockerfile_scripts/ompi.sh "$UBUNTU_VERSION" "$WITH_OFI" "$OMPI_WITH_CUDA" "$WITH_AWS_TRACE"; fi
+RUN if [ "$WITH_MPI" = "1" ]; then /tmp/det_dockerfile_scripts/ompi.sh "$UBUNTU_VERSION" "$WITH_OFI" "$OMPI_WITH_CUDA"; fi
 # Make sure OMPI/UCX show up in the right paths
 ARG VERBS_LIB_DIR=/usr/lib/libibverbs
 ARG UCX_LIB_DIR=${UCX_INSTALL_DIR}/lib:${UCX_INSTALL_DIR}/lib64
@@ -68,11 +77,9 @@ ARG OFI_LIB_DIR=${OFI_INSTALL_DIR}/lib:${OFI_INSTALL_DIR}/lib64
 ARG OFI_PATH_DIR=${OFI_INSTALL_DIR}/bin
 ARG OMPI_LIB_DIR=${OMPI_INSTALL_DIR}/lib
 ARG OMPI_PATH_DIR=${OMPI_INSTALL_DIR}/bin
-ARG AWS_LIB_DIR=${AWS_PLUGIN_INSTALL_DIR}/lib
 
 #USING OFI
 ENV LD_LIBRARY_PATH=${WITH_OFI:+$LD_LIBRARY_PATH:${WITH_MPI:+$VERBS_LIB_DIR:$OFI_LIB_DIR:$OMPI_LIB_DIR}}
-ENV LD_LIBRARY_PATH=${WITH_OFI:+${WITH_MPI:+$AWS_LIB_DIR:$LD_LIBRARY_PATH}}
 ENV PATH=${PATH}:${WITH_OFI:+$PATH:${WITH_MPI:+$OFI_PATH_DIR:$OMPI_PATH_DIR}}
 
 #USING UCX
