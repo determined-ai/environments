@@ -190,17 +190,14 @@ build-pytorch10-tf27-rocm50:
 		.
 
 DEEPSPEED_VERSION := 0.7.0
-export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8-deepspeed-$(DEEPSPEED_VERSION)$(GPU_SUFFIX)
-export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-tf-2.8-gpt-neox-deepspeed$(GPU_SUFFIX)
+export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-deepspeed-$(DEEPSPEED_VERSION)$(GPU_SUFFIX)
+export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-gpt-neox-deepspeed$(GPU_SUFFIX)
 export TORCH_PIP_DEEPSPEED_GPU := torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 export TORCH_TB_PROFILER_PIP := torch-tb-profiler==0.4.1
 
 # This builds deepspeed environment off of upstream microsoft/DeepSpeed.
 .PHONY: build-deepspeed-gpu
 build-deepspeed-gpu: build-gpu-cuda-113-base
-	# We should consider building without tensorflow in the future.  Going to keep tensorflow for
-	# now since we want to have tensorboard support.  It should be possible to install tensorboard
-	# without tensorflow though.
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
@@ -219,9 +216,6 @@ build-deepspeed-gpu: build-gpu-cuda-113-base
 # that we need for gpt-neox support.
 .PHONY: build-gpt-neox-deepspeed-gpu
 build-gpt-neox-deepspeed-gpu: build-gpu-cuda-113-base
-	# We should consider building without tensorflow in the future.  Going to keep tensorflow for
-	# now since we want to have tensorboard support.  It should be possible to install tensorboard
-	# without tensorflow though.
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
