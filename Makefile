@@ -276,8 +276,8 @@ build-tf27-gpu: build-gpu-cuda-112-base
 		.
 
 TORCH_VERSION := 1.12
-TF2_VERSION_SHORT := 2.8
-TF2_VERSION := 2.8.3
+TF2_VERSION_SHORT := 2.12
+TF2_VERSION := 2.12.0
 TF2_PIP_CPU := tensorflow-cpu==$(TF2_VERSION)
 TF2_PIP_GPU := tensorflow==$(TF2_VERSION)
 TORCH_PIP_CPU := torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html
