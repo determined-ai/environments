@@ -75,6 +75,7 @@ build-cpu-py-37-base:
 		--build-arg "$(OFI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 .PHONY: build-cpu-py-38-base
@@ -91,6 +92,7 @@ build-cpu-py-38-base:
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(VERSION) \
 		--push \
+		--progress plain \
 		.
 
 .PHONY: build-gpu-cuda-102-base
@@ -102,6 +104,7 @@ build-gpu-cuda-102-base:
 		--build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_102_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_102_BASE_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 .PHONY: build-gpu-cuda-111-base
@@ -113,6 +116,7 @@ build-gpu-cuda-111-base:
 		--build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_111_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_111_BASE_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 .PHONY: build-gpu-cuda-112-base
@@ -124,6 +128,7 @@ build-gpu-cuda-112-base:
 		--build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_112_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_112_BASE_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 .PHONY: build-gpu-cuda-113-base
@@ -135,6 +140,7 @@ build-gpu-cuda-113-base:
 		--build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX_37)pytorch-1.7-tf-1.15$(CPU_SUFFIX)
@@ -156,6 +162,7 @@ build-tf1-cpu: build-cpu-py-37-base
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 .PHONY: build-tf1-gpu
@@ -175,6 +182,7 @@ build-tf1-gpu: build-gpu-cuda-102-base
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm
@@ -187,6 +195,7 @@ build-pytorch10-tf27-rocm50:
 		--build-arg HOROVOD_PIP="horovod==0.25.0" \
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 DEEPSPEED_VERSION := 0.7.0
@@ -210,6 +219,7 @@ build-deepspeed-gpu: build-gpu-cuda-113-base
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 # This builds deepspeed environment off of a patched version of EleutherAI's fork of DeepSpeed
@@ -228,6 +238,7 @@ build-gpt-neox-deepspeed-gpu: build-gpu-cuda-113-base
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 ifeq ($(NGC_PUBLISH),)
@@ -260,6 +271,7 @@ build-tf27-cpu: build-cpu-py-38-base
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
 		$(CPU_TF27_TAGS) \
 		--push \
+		--progress plain \
 		.
 
 .PHONY: build-tf27-gpu
@@ -273,6 +285,7 @@ build-tf27-gpu: build-gpu-cuda-112-base
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(GPU_TF27_ENVIRONMENT_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 TORCH_VERSION := 1.12
@@ -326,6 +339,7 @@ build-tf2-cpu: build-cpu-py-38-base
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
 		$(CPU_TF2_TAGS) \
 		--push \
+		--progress plain \
 		.
 
 .PHONY: build-pt-cpu
@@ -341,6 +355,7 @@ build-pt-cpu: build-cpu-py-38-base
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
 		$(CPU_PT_TAGS) \
 		--push \
+		--progress plain \
 		.
 
 .PHONY: build-tf2-gpu
@@ -361,6 +376,7 @@ build-tf2-gpu: build-gpu-cuda-113-base
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 .PHONY: build-pt-gpu
@@ -380,6 +396,7 @@ build-pt-gpu: build-gpu-cuda-113-base
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME)-$(VERSION) \
+		--progress plain \
 		.
 
 
