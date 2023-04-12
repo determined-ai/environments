@@ -34,13 +34,17 @@ if [ "$OFI" = "1" ]; then
   AWS_SRC_DIR=/tmp/aws-ofi-nccl
   AWS_BASE_URL="https://github.com/aws/aws-ofi-nccl/archive/refs/tags"
   AWS_URL="${AWS_BASE_URL}/${AWS_VER}.tar.gz"
-  # The INTERNAL_DATASERVER variable must exist in the env
-  INTERNAL_DS="http://set.to.your.server.name"
-  INTERNAL_DS_NCCL_PATH="/set/to/nccl/tarball/path"
-  INTERNAL_DS="cflhal01.us.cray.com"
-  INTERNAL_DS_NCCL_PATH="/build_files/nccl"
-  AWS_BASE_URL="http://${INTERNAL_DS}${INTERNAL_DS_NCCL_PATH}"
-  AWS_URL="${AWS_BASE_URL}/${AWS_NAME}.tar.gz"
+  # The INTERNAL_AWS_DS variable must exist in the env
+  ## INTERNAL_AWS_DS="http://set.to.your.server.name"
+  ## INTERNAL_AWS_PATH="/set/to/aws/tarball/path"
+  if [ -z "$INTERNAL_AWS_DS" ]
+  then
+    echo "Using EXTERNAL AWS $AWS_URL" 
+  else
+    AWS_BASE_URL="http://${INTERNAL_AWS_DS}${INTERNAL_AWS_PATH}"
+    AWS_URL="${AWS_BASE_URL}/${AWS_NAME}.tar.gz"
+    echo "Using INTERNAL AWS $AWS_URL" 
+  fi
 
   mkdir -p ${AWS_SRC_DIR}                         && \
     cd ${AWS_SRC_DIR}                             && \

@@ -381,6 +381,8 @@ build-tf2-gpu: build-gpu-cuda-113-base
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
+		--build-arg INTERNAL_AWS_DS="$(INTERNAL_AWS_DS)" \
+		--build-arg INTERNAL_AWS_PATH="$(INTERNAL_AWS_PATH)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
 		--build-arg "$(NCCL_BUILD_ARG)" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \

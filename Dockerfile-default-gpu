@@ -47,6 +47,8 @@ RUN /tmp/det_dockerfile_scripts/install_apex.sh
 
 ARG AWS_PLUGIN_INSTALL_DIR=/container/aws
 ARG WITH_AWS_TRACE
+ARG INTERNAL_AWS_DS
+ARG INTERNAL_AWS_PATH
 RUN if [ "$WITH_OFI" = "1" ]; then /tmp/det_dockerfile_scripts/build_aws.sh "$WITH_OFI" "$WITH_AWS_TRACE"; fi
 
 #USING OFI
