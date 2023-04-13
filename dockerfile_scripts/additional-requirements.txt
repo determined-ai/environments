@@ -9,4 +9,4 @@ azure-storage-blob
 Pillow>=8.3.2
 analytics-python
 nvidia-ml-py
-protobuf<=3.20.1
+protobuf<=3.20.3
