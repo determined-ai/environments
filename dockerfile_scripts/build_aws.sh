@@ -11,8 +11,6 @@ if [ $# -gt 1 ] ; then
 fi
 OFI=$1
 
-env|grep -i nccl
-
 if [ "$OFI" = "1" ]; then
   # Install AWS_OFI_NCCL
   AWS_VER=v1.4.0
@@ -40,6 +38,8 @@ if [ "$OFI" = "1" ]; then
   if [ -z "$INTERNAL_AWS_DS" ]
   then
     echo "Using EXTERNAL AWS $AWS_URL" 
+    # aws-ofi-nccl-1.4.0
+    AWS_NAME="${AWS_NAME}-${AWS_VER_NUM}"
   else
     AWS_BASE_URL="http://${INTERNAL_AWS_DS}${INTERNAL_AWS_PATH}"
     AWS_URL="${AWS_BASE_URL}/${AWS_NAME}.tar.gz"

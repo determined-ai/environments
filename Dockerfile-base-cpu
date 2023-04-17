@@ -63,7 +63,7 @@ ARG OMPI_PATH_DIR=${OMPI_INSTALL_DIR}/bin
 
 #USING OFI
 ENV LD_LIBRARY_PATH=${WITH_OFI:+$LD_LIBRARY_PATH:${WITH_MPI:+$VERBS_LIB_DIR:$OFI_LIB_DIR:$OMPI_LIB_DIR}}
-ENV PATH=${PATH}:${WITH_OFI:+$PATH:${WITH_MPI:+$OFI_PATH_DIR:$OMPI_PATH_DIR}}
+ENV PATH=${WITH_OFI:+$PATH:${WITH_MPI:+$OFI_PATH_DIR:$OMPI_PATH_DIR}}
 
 #USING UCX
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-$LD_LIBRARY_PATH:${WITH_MPI:+$VERBS_LIB_DIR:$UCX_LIB_DIR:$OMPI_LIB_DIR}}
@@ -89,12 +89,5 @@ ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
 RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
 
 RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
-
-# Set an entrypoint that can scrape up the host libfabric.so and then 
-# run the user command. This is intended to enable performant execution
-# on non-IB systems that have a proprietary libfabric.
-RUN mkdir -p /container/bin && \
-    cp /tmp/det_dockerfile_scripts/scrape_libs.sh /container/bin
-ENTRYPOINT ["/container/bin/scrape_libs.sh"]
 
 RUN rm -r /tmp/*

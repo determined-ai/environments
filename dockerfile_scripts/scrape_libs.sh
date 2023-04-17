@@ -12,7 +12,7 @@ if [ -d "$host_dir" ]; then
         # after the container ones so we append the rest of the
         # host libs.  tmp_dir="`pwd`/tmp"
         tmp_dir="/tmp"
-	tmp_lib_dir="$tmp_dir/$(whoami)/detAI/lib"
+        tmp_lib_dir="$tmp_dir/$(whoami)/detAI/lib"
         mkdir -p $tmp_lib_dir
         for lib in `/bin/ls $libfabric_dir/ | grep libfabric` ; do
             ln -s $libfabric_dir/$lib $tmp_lib_dir 2>/dev/null
@@ -31,6 +31,9 @@ else
     echo "INFO: $host_dir not present, check srun for --bind /usr:$host_dir/usr"
 fi # end if /host exists
 
+if [ -d /container/aws/lib ]
+then
+    export LD_LIBRARY_PATH=/container/aws/lib:$LD_LIBRARY_PATH
+fi
 # Execute what we were told to execute
-export LD_LIBRARY_PATH=/container/aws/lib:$LD_LIBRARY_PATH
 exec "${@}"
