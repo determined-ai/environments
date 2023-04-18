@@ -3,6 +3,7 @@ VERSION := $(shell cat VERSION)
 VERSION_DASHES := $(subst .,-,$(VERSION))
 SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
 
+
 NGC_REGISTRY := nvcr.io/isv-ngc-partner/determined
 NGC_PUBLISH := 1
 export DOCKERHUB_REGISTRY := determinedai
