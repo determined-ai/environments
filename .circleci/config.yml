@@ -148,24 +148,24 @@ workflows:
             parameters:
               with-mpi: [0, 1]
               image-type:
-                  #- tf1-cpu
+                - tf1-cpu
                 - tf2-cpu
                 - tf28-cpu
                 - pt-cpu
-                  #- tf1-gpu
-                  #- tf2-gpu
-                  #- tf28-gpu
-                  #- pt-gpu
-                  #- pytorch10-tf27-rocm50
-                  #- deepspeed-gpu
-                  #- gpt-neox-deepspeed-gpu
-                  #exclude:
-                  #- with-mpi: 1
-                  #image-type: pytorch10-tf27-rocm50
-                  #- with-mpi: 1
-                  #image-type: deepspeed-gpu
-                  #- with-mpi: 1
-                  #image-type: gpt-neox-deepspeed-gpu
+                - tf1-gpu
+                - tf2-gpu
+                - tf28-gpu
+                - pt-gpu
+                - pytorch10-tf27-rocm50
+                - deepspeed-gpu
+                - gpt-neox-deepspeed-gpu
+            exclude:
+              - with-mpi: 1
+                image-type: pytorch10-tf27-rocm50
+              - with-mpi: 1
+                image-type: deepspeed-gpu
+              - with-mpi: 1
+                image-type: gpt-neox-deepspeed-gpu
 
       - publish-cloud-images:
           context: determined-production
@@ -197,27 +197,27 @@ workflows:
               dev-mode: [true]
               with-mpi: [0, 1]
               image-type:
-                  #- tf1-cpu
+                - tf1-cpu
                 - tf2-cpu
                 - tf28-cpu
                 - pt-cpu
-                  #- tf1-gpu
-                  #- tf2-gpu
-                  #- tf28-gpu
-                  #- pt-gpu
-                  #- pytorch10-tf27-rocm50
-                  #- deepspeed-gpu
-                  #- gpt-neox-deepspeed-gpu
-                  #exclude:
-                  #- dev-mode: true
-                  #with-mpi: 1
-                  #image-type: pytorch10-tf27-rocm50
-                  #- dev-mode: true
-                  #with-mpi: 1
-                  #image-type: deepspeed-gpu
-                  #- dev-mode: true
-                  #with-mpi: 1
-                  #image-type: gpt-neox-deepspeed-gpu
+                - tf1-gpu
+                - tf2-gpu
+                - tf28-gpu
+                - pt-gpu
+                - pytorch10-tf27-rocm50
+                - deepspeed-gpu
+                - gpt-neox-deepspeed-gpu
+            exclude:
+              - dev-mode: true
+                with-mpi: 1
+                image-type: pytorch10-tf27-rocm50
+              - dev-mode: true
+                with-mpi: 1
+                image-type: deepspeed-gpu
+              - dev-mode: true
+                with-mpi: 1
+                image-type: gpt-neox-deepspeed-gpu
 
       - publish-cloud-images:
           name: publish-cloud-images-dev
