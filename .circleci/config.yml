@@ -89,13 +89,21 @@ jobs:
                 repository: nvcr.io
                 username: ${NGC_API_USERNAME}
                 password: ${NGC_API_KEY}
-            - run: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
-            - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+            - run:
+                no_output_timeout: 30m
+                command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+            - run:
+                no_output_timeout: 30m
+                command: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
       - when:
           condition: <<parameters.dev-mode>>
           steps:
-            - run: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
-            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+            - run:
+                no_output_timeout: 30m
+                command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+            - run:
+                no_output_timeout: 30m
+                command: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
       - store_artifacts:
           path: /tmp/artifacts
 
