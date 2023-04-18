@@ -35,7 +35,7 @@ ifeq "$(WITH_MPI)" "1"
 	HOROVOD_CPU_OPERATIONS := MPI
 	GPU_SUFFIX := -gpu-mpi
 	WITH_AWS_TRACE := 0
-	NCCL_BUILD_ARG :=
+	NCCL_BUILD_ARG := WITH_NCCL
         ifeq "$(WITH_NCCL)" "1"
 		NCCL_BUILD_ARG := WITH_NCCL=1
 	        GPU_SUFFIX := -gpu-nccl
