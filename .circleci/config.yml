@@ -10,6 +10,7 @@ upstream-feature-branch: &upstream-feature-branch
       - /pull\/.*/
       - /release-.*/
       - master
+      - main
 
 commands:
   login-docker:
@@ -147,7 +148,7 @@ workflows:
           context: determined-production
           filters:
             branches:
-              only: master
+              only: main
           matrix:
             parameters:
               with-mpi: [0, 1]
@@ -175,7 +176,7 @@ workflows:
           context: determined-production
           filters:
             branches:
-              only: master
+              only: main
           requires:
             - build-and-publish-docker
 
