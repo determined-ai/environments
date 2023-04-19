@@ -157,6 +157,7 @@ workflows:
             branches:
               only: main
           matrix:
+            alias: build-docker-all-cpu
             parameters:
               with-mpi: [0, 1]
               image-type:
@@ -179,9 +180,12 @@ workflows:
             branches:
               only: master
           matrix:
+            alias: build-docker-all-gpu
             parameters:
-              ci-image: ubuntu-2004-cuda-11.4:202110-01
-              ci-resource_class: gpu.nvidia.small
+              ci-image:
+                - ubuntu-2004-cuda-11.4:202110-01
+              ci-resource_class:
+                - gpu.nvidia.small
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
@@ -191,8 +195,8 @@ workflows:
             branches:
               only: main
           requires:
-            - build-and-publish-docker-cpu
-            - build-and-publish-docker-gpu
+            - build-docker-all-cpu
+            - build-docker-all-gpu
 
   publish-dev:
     jobs:
@@ -240,8 +244,10 @@ workflows:
             alias: build-docker-all-gpu
             parameters:
               dev-mode: [true]
-              ci-image: ubuntu-2004-cuda-11.4:202110-01
-              ci-resource_class: gpu.nvidia.small
+              ci-image:
+                - ubuntu-2004-cuda-11.4:202110-01
+              ci-resource_class:
+                - gpu.nvidia.small
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
