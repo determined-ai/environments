@@ -27,8 +27,6 @@ if [ -d "$host_dir" ]; then
         export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/host/usr/lib64
         export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/host/usr/local/lib64
     fi # end if found libfabric.so
-else
-    echo "INFO: $host_dir not present, check srun for --bind /usr:$host_dir/usr"
 fi # end if /host exists
 
 if [ -d /container/aws/lib ]
