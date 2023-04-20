@@ -178,7 +178,7 @@ workflows:
           context: determined-production
           filters:
             branches:
-              only: master
+              only: main
           matrix:
             alias: build-docker-all-gpu
             parameters:
@@ -186,6 +186,7 @@ workflows:
                 - ubuntu-2004-cuda-11.4:202110-01
               ci-resource_class:
                 - gpu.nvidia.small
+              with-mpi: [0]
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
@@ -235,7 +236,7 @@ workflows:
                 image-type: pytorch10-tf27-rocm50
 
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-dev
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
@@ -248,6 +249,7 @@ workflows:
                 - ubuntu-2004-cuda-11.4:202110-01
               ci-resource_class:
                 - gpu.nvidia.small
+              with-mpi: [0]
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
