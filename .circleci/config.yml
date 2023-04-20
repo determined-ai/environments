@@ -10,6 +10,7 @@ upstream-feature-branch: &upstream-feature-branch
       - /pull\/.*/
       - /release-.*/
       - master
+      - main
 
 commands:
   login-docker:
@@ -89,12 +90,16 @@ jobs:
                 repository: nvcr.io
                 username: ${NGC_API_USERNAME}
                 password: ${NGC_API_KEY}
-            - run: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+            - run:
+                no_output_timeout: 30m
+                command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
             - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
       - when:
           condition: <<parameters.dev-mode>>
           steps:
-            - run: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+            - run:
+                no_output_timeout: 30m
+                command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
             - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
       - store_artifacts:
           path: /tmp/artifacts
@@ -143,18 +148,18 @@ workflows:
           context: determined-production
           filters:
             branches:
-              only: master
+              only: main
           matrix:
             parameters:
               with-mpi: [0, 1]
               image-type:
                 - tf1-cpu
                 - tf2-cpu
-                - tf27-cpu
+                - tf28-cpu
                 - pt-cpu
                 - tf1-gpu
                 - tf2-gpu
-                - tf27-gpu
+                - tf28-gpu
                 - pt-gpu
                 - pytorch10-tf27-rocm50
                 - deepspeed-gpu
@@ -171,7 +176,7 @@ workflows:
           context: determined-production
           filters:
             branches:
-              only: master
+              only: main
           requires:
             - build-and-publish-docker
 
@@ -199,11 +204,11 @@ workflows:
               image-type:
                 - tf1-cpu
                 - tf2-cpu
-                - tf27-cpu
+                - tf28-cpu
                 - pt-cpu
                 - tf1-gpu
                 - tf2-gpu
-                - tf27-gpu
+                - tf28-gpu
                 - pt-gpu
                 - pytorch10-tf27-rocm50
                 - deepspeed-gpu
