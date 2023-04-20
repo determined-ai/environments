@@ -151,7 +151,7 @@ workflows:
   publish:
     jobs:
       - build-and-publish-docker:
-          name: build-and-publish-docker-cpu
+          name: build-and-publish-docker
           context: determined-production
           filters:
             branches:
@@ -174,7 +174,7 @@ workflows:
               - with-mpi: 1
                 image-type: pytorch10-tf27-rocm50
       - build-and-publish-docker:
-          name: build-and-publish-docker-gpu
+          name: build-and-publish-docker
           context: determined-production
           filters:
             branches:
@@ -209,7 +209,7 @@ workflows:
           filters: *upstream-feature-branch
 
       - build-and-publish-docker:
-          name: build-and-publish-docker-cpu-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
@@ -235,7 +235,7 @@ workflows:
                 image-type: pytorch10-tf27-rocm50
 
       - build-and-publish-docker:
-          name: build-and-publish-docker-gpu-<<matrix.image-type>>-dev
+          name: build-and-publish-docker-<<matrix.image-type>>-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
