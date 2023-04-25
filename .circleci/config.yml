@@ -66,6 +66,12 @@ commands:
 jobs:
   build-and-publish-docker:
     parameters:
+      ci-image:
+        type: string
+        default: ubuntu-2004:2022.04.2
+      ci-resource_class:
+        type: string
+        default: xlarge
       image-type:
         type: string
       dev-mode:
@@ -75,8 +81,8 @@ jobs:
         type: integer
         default: 0
     machine:
-      image: ubuntu-2004:2022.04.2
-    resource_class: xlarge
+      image: <<parameters.ci-image>>
+    resource_class: <<parameters.ci-resource_class>>
     steps:
       - checkout
       - install-docker
@@ -145,11 +151,13 @@ workflows:
   publish:
     jobs:
       - build-and-publish-docker:
+          name: build-and-publish-docker
           context: determined-production
           filters:
             branches:
               only: main
           matrix:
+            alias: build-docker-all-cpu
             parameters:
               with-mpi: [0, 1]
               image-type:
@@ -162,23 +170,34 @@ workflows:
                 - tf28-gpu
                 - pt-gpu
                 - pytorch10-tf27-rocm50
-                - deepspeed-gpu
-                - gpt-neox-deepspeed-gpu
             exclude:
               - with-mpi: 1
                 image-type: pytorch10-tf27-rocm50
-              - with-mpi: 1
-                image-type: deepspeed-gpu
-              - with-mpi: 1
-                image-type: gpt-neox-deepspeed-gpu
-
+      - build-and-publish-docker:
+          name: build-and-publish-docker
+          context: determined-production
+          filters:
+            branches:
+              only: main
+          matrix:
+            alias: build-docker-all-gpu
+            parameters:
+              ci-image:
+                - ubuntu-2004-cuda-11.4:202110-01
+              ci-resource_class:
+                - gpu.nvidia.small
+              with-mpi: [0]
+              image-type:
+                - deepspeed-gpu
+                - gpt-neox-deepspeed-gpu
       - publish-cloud-images:
           context: determined-production
           filters:
             branches:
               only: main
           requires:
-            - build-and-publish-docker
+            - build-docker-all-cpu
+            - build-docker-all-gpu
 
   publish-dev:
     jobs:
@@ -197,7 +216,7 @@ workflows:
           requires:
             - request-publish-dev-docker
           matrix:
-            alias: build-docker-all
+            alias: build-docker-all-cpu
             parameters:
               dev-mode: [true]
               with-mpi: [0, 1]
@@ -211,24 +230,36 @@ workflows:
                 - tf28-gpu
                 - pt-gpu
                 - pytorch10-tf27-rocm50
-                - deepspeed-gpu
-                - gpt-neox-deepspeed-gpu
             exclude:
               - dev-mode: true
                 with-mpi: 1
                 image-type: pytorch10-tf27-rocm50
-              - dev-mode: true
-                with-mpi: 1
-                image-type: deepspeed-gpu
-              - dev-mode: true
-                with-mpi: 1
-                image-type: gpt-neox-deepspeed-gpu
+
+      - build-and-publish-docker:
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
+          context: determined-production
+          filters: *upstream-feature-branch
+          requires:
+            - request-publish-dev-docker
+          matrix:
+            alias: build-docker-all-gpu
+            parameters:
+              dev-mode: [true]
+              ci-image:
+                - ubuntu-2004-cuda-11.4:202110-01
+              ci-resource_class:
+                - gpu.nvidia.small
+              with-mpi: [0]
+              image-type:
+                - deepspeed-gpu
+                - gpt-neox-deepspeed-gpu
 
       - publish-cloud-images:
           name: publish-cloud-images-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
-            - build-docker-all
+            - build-docker-all-cpu
+            - build-docker-all-gpu
             - request-publish-dev-cloud
           dev-mode: true
