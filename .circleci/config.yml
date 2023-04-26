@@ -92,7 +92,26 @@ jobs:
       - when:
           condition: <<parameters.use-nvidia-runtime>>
           steps:
-            - run: ./scripts/setup_nvidia_container_runtime.sh
+            - run:
+                name: install nvidia-container-runtime
+                command: sudo apt-get install nvidia-container-runtime
+            - run:
+                name: set default docker runtime to nvidia
+                command: |
+                  cat \<<'EOF' | sudo tee /etc/docker/daemon.json
+                  {
+                    "runtimes": {
+                        "nvidia": {
+                            "path": "/usr/bin/nvidia-container-runtime",
+                            "runtimeArgs": []
+                        }
+                    },
+                    "default-runtime": "nvidia"
+                  }
+                  EOF
+            - run:
+                name: restart docker
+                command: sudo systemctl restart docker
       - login-docker:
           username: ${DOCKER_USER}
           password: ${DOCKER_PASS}
