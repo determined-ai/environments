@@ -198,11 +198,12 @@ export TORCH_TB_PROFILER_PIP := torch-tb-profiler==0.4.1
 # This builds deepspeed environment off of upstream microsoft/DeepSpeed.
 .PHONY: build-deepspeed-gpu
 build-deepspeed-gpu: build-gpu-cuda-113-base
-	DOCKER_BUILDKIT=0 docker build -f Dockerfile-default-gpu \
+	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
+		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg DET_BUILD_NCCL="" \
 		--build-arg DEEPSPEED_PIP="deepspeed==$(DEEPSPEED_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -215,7 +216,7 @@ build-deepspeed-gpu: build-gpu-cuda-113-base
 # that we need for gpt-neox support.
 .PHONY: build-gpt-neox-deepspeed-gpu
 build-gpt-neox-deepspeed-gpu: build-gpu-cuda-113-base
-	DOCKER_BUILDKIT=0 docker build -f Dockerfile-default-gpu \
+	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
