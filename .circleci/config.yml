@@ -66,6 +66,9 @@ commands:
 jobs:
   build-and-publish-docker:
     parameters:
+      use-nvidia-runtime:
+        type: boolean
+        default: false
       ci-image:
         type: string
         default: ubuntu-2004:2022.04.2
@@ -86,6 +89,10 @@ jobs:
     steps:
       - checkout
       - install-docker
+      - when:
+          condition: <<parameters.use-nvidia-runtime>>
+          steps:
+            - run: ./scripts/setup_nvidia_container_runtime.sh
       - login-docker:
           username: ${DOCKER_USER}
           password: ${DOCKER_PASS}
@@ -182,6 +189,8 @@ workflows:
           matrix:
             alias: build-docker-all-gpu
             parameters:
+              use-nvidia-runtime:
+                - true
               ci-image:
                 - ubuntu-2004-cuda-11.4:202110-01
               ci-resource_class:
@@ -244,6 +253,8 @@ workflows:
           matrix:
             alias: build-docker-all-gpu
             parameters:
+              use-nvidia-runtime:
+                - true
               dev-mode: [true]
               ci-image:
                 - ubuntu-2004-cuda-11.4:202110-01
