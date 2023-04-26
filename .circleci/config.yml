@@ -151,7 +151,7 @@ workflows:
   publish:
     jobs:
       - build-and-publish-docker:
-          name: build-and-publish-docker
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
           context: determined-production
           filters:
             branches:
@@ -174,7 +174,7 @@ workflows:
               - with-mpi: 1
                 image-type: pytorch10-tf27-rocm50
       - build-and-publish-docker:
-          name: build-and-publish-docker
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
           context: determined-production
           filters:
             branches:
