@@ -66,6 +66,9 @@ commands:
 jobs:
   build-and-publish-docker:
     parameters:
+      use-nvidia-runtime:
+        type: boolean
+        default: false
       ci-image:
         type: string
         default: ubuntu-2004:2022.04.2
@@ -86,6 +89,29 @@ jobs:
     steps:
       - checkout
       - install-docker
+      - when:
+          condition: <<parameters.use-nvidia-runtime>>
+          steps:
+            - run:
+                name: install nvidia-container-runtime
+                command: sudo apt-get install nvidia-container-runtime
+            - run:
+                name: set default docker runtime to nvidia
+                command: |
+                  cat \<<'EOF' | sudo tee /etc/docker/daemon.json
+                  {
+                    "runtimes": {
+                        "nvidia": {
+                            "path": "/usr/bin/nvidia-container-runtime",
+                            "runtimeArgs": []
+                        }
+                    },
+                    "default-runtime": "nvidia"
+                  }
+                  EOF
+            - run:
+                name: restart docker
+                command: sudo systemctl restart docker
       - login-docker:
           username: ${DOCKER_USER}
           password: ${DOCKER_PASS}
@@ -182,6 +208,8 @@ workflows:
           matrix:
             alias: build-docker-all-gpu
             parameters:
+              use-nvidia-runtime:
+                - true
               ci-image:
                 - ubuntu-2004-cuda-11.4:202110-01
               ci-resource_class:
@@ -244,6 +272,8 @@ workflows:
           matrix:
             alias: build-docker-all-gpu
             parameters:
+              use-nvidia-runtime:
+                - true
               dev-mode: [true]
               ci-image:
                 - ubuntu-2004-cuda-11.4:202110-01
