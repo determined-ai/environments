@@ -12,6 +12,10 @@ fi
 OFI=$1
 
 if [ "$OFI" = "1" ]; then
+  apt-get update \
+        && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+                tcsh
+
   # Install AWS_OFI_NCCL
   AWS_VER=v1.4.0
   AWS_VER_NUM=1.4.0
