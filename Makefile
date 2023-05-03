@@ -38,20 +38,17 @@ ifeq "$(WITH_MPI)" "1"
 	NCCL_BUILD_ARG := WITH_NCCL
         ifeq "$(WITH_NCCL)" "1"
 		NCCL_BUILD_ARG := WITH_NCCL=1
-	        GPU_SUFFIX := -gpu-nccl
 		HOROVOD_GPU_OPERATIONS := NCCL
-		HOROVOD_GPU_ALLREDUCE :=
 		ifeq "$(WITH_AWS_TRACE)" "1"
 			WITH_AWS_TRACE := 1
-			GPU_SUFFIX := -gpu-nccl-aws-trace
 		endif
         else
 		HOROVOD_GPU_OPERATIONS := MPI
-		HOROVOD_GPU_ALLREDUCE :=
         endif
 	MPI_BUILD_ARG := WITH_MPI=1
 
 	ifeq "$(WITH_OFI)" "1"
+	        GPU_SUFFIX := -gpu-mpi-ofi
 		CPU_SUFFIX := -cpu-mpi-ofi
 		OFI_BUILD_ARG := WITH_OFI=1
 	else
@@ -67,7 +64,6 @@ else
 	HOROVOD_WITHOUT_MPI := 1
 	HOROVOD_CPU_OPERATIONS := GLOO
 	HOROVOD_GPU_OPERATIONS := NCCL
-	HOROVOD_GPU_ALLREDUCE :=
 	MPI_BUILD_ARG := USE_GLOO=1
 endif
 
