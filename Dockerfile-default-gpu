@@ -15,7 +15,7 @@ RUN if [ "$TENSORFLOW_PIP" ]; then \
 	else \
 		export HOROVOD_WITH_TENSORFLOW=0; \
 	fi
-RUN if [ "$TORCH_PIP" ]; then python -m pip install $TORCH_PIP; fi
+RUN if [ "$TORCH_PIP" ]; then python -m pip install $TORCH_PIP && python -c "import torch; print(torch.__config__.show())"; fi
 RUN if [ "$TORCHVISION_PIP" ]; then python -m pip install $TORCHVISION_PIP; fi
 
 ARG TF_CUDA_SYM
@@ -27,7 +27,7 @@ RUN if [ "$TORCH_TB_PROFILER_PIP" ]; then python -m pip install $TORCH_TB_PROFIL
 ARG TORCH_CUDA_ARCH_LIST
 ARG APEX_GIT
 ARG APEX_PATCH
-RUN /tmp/det_dockerfile_scripts/install_apex.sh
+#RUN /tmp/det_dockerfile_scripts/install_apex.sh
 
 ARG DET_BUILD_NCCL=1
 RUN if [ -n "${DET_BUILD_NCCL}" ]; then /tmp/det_dockerfile_scripts/build_nccl.sh; fi

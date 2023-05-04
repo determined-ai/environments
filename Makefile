@@ -489,7 +489,7 @@ publish-cloud-images:
 ###################
 
 TORCH_VERSION := 2.0
-TORCH_PIP_CPU := --pre torch torchvision torchaudio --force-reinstall --index-url https://download.pytorch.org/whl/nightly/cpu
+TORCH_PIP_CPU := torch==${TORCH_VERSION}+cpu torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cpu
 
 CPU_PT_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_VERSION)$(CPU_SUFFIX)
 
@@ -509,14 +509,15 @@ build-pt2-cpu: build-cpu-py-38-base
         .
 
 ### CUDA 11.7
-TORCH_PIP_GPU := --pre torch torchvision torchaudio --force-reinstall --index-url https://download.pytorch.org/whl/nightly/cu117
-GPU_PT_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-$(TORCH_VERSION)$(GPU_SUFFIX)
+CU117 := cu117
+TORCH_PIP_GPU_CU117 := torch==${TORCH_VERSION}+${CU117} torchvision torchaudio -f https://download.pytorch.org/whl/${CU118}/torch_stable.html# --index-url https://download.pytorch.org/whl/nightly/${CU117}
+GPU_CU117_PT_ENVIRONMENT_NAME := $(CUDA_117_PREFIX)pytorch-$(TORCH_VERSION)$(GPU_SUFFIX)
 
-.PHONY: build-pt2-gpu
-build-pt2-gpu: build-gpu-cuda-117-base
+.PHONY: build-pt2-cuda-117-gpu
+build-pt2-cuda-117-gpu:# build-gpu-cuda-117-base
 	docker build -f Dockerfile-default-gpu \
         --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_117_BASE_NAME)-$(SHORT_GIT_HASH)" \
-        --build-arg TORCH_PIP="$(TORCH_PIP_GPU)" \
+        --build-arg TORCH_PIP="$(TORCH_PIP_GPU_CU117)" \
         --build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
         --build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
         --build-arg HOROVOD_PIP="horovod==0.24.2" \
@@ -524,21 +525,22 @@ build-pt2-gpu: build-gpu-cuda-117-base
         --build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
         --build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
         --build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
-        -t $(DOCKERHUB_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-        -t $(DOCKERHUB_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME)-$(VERSION) \
-        -t $(NGC_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-        -t $(NGC_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME)-$(VERSION) \
+        -t $(DOCKERHUB_REGISTRY)/$(GPU_CU117_PT_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+        -t $(DOCKERHUB_REGISTRY)/$(GPU_CU117_PT_ENVIRONMENT_NAME)-$(VERSION) \
+        -t $(NGC_REGISTRY)/$(GPU_CU117_PT_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+        -t $(NGC_REGISTRY)/$(GPU_CU117_PT_ENVIRONMENT_NAME)-$(VERSION) \
         .
 
 ### CUDA 11.8
-TORCH_PIP_GPU := --pre torch torchvision torchaudio --force-reinstall --index-url https://download.pytorch.org/whl/nightly/cu118
-GPU_PT_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-$(TORCH_VERSION)$(GPU_SUFFIX)
+CU118 := cu118
+TORCH_PIP_GPU_CU118 := torch==${TORCH_VERSION}+${CU118} torchvision torchaudio -f https://download.pytorch.org/whl/${CU118}/torch_stable.html# --index-url https://download.pytorch.org/whl/nightly/${CU118}
+GPU_CU118_PT_ENVIRONMENT_NAME := $(CUDA_118_PREFIX)pytorch-$(TORCH_VERSION)$(GPU_SUFFIX)
 
 .PHONY: build-pt2-cuda-118-gpu
 build-pt2-cuda-118-gpu: build-gpu-cuda-118-base
 	docker build -f Dockerfile-default-gpu \
         --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(SHORT_GIT_HASH)" \
-        --build-arg TORCH_PIP="$(TORCH_PIP_GPU)" \
+        --build-arg TORCH_PIP="$(TORCH_PIP_GPU_CU118)" \
         --build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
         --build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
         --build-arg HOROVOD_PIP="horovod==0.24.2" \
@@ -546,9 +548,9 @@ build-pt2-cuda-118-gpu: build-gpu-cuda-118-base
         --build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
         --build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
         --build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
-        -t $(DOCKERHUB_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-        -t $(DOCKERHUB_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME)-$(VERSION) \
-        -t $(NGC_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-        -t $(NGC_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME)-$(VERSION) \
+        -t $(DOCKERHUB_REGISTRY)/$(GPU_CU118_PT_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+        -t $(DOCKERHUB_REGISTRY)/$(GPU_CU118_PT_ENVIRONMENT_NAME)-$(VERSION) \
+        -t $(NGC_REGISTRY)/$(GPU_CU118_PT_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+        -t $(NGC_REGISTRY)/$(GPU_CU118_PT_ENVIRONMENT_NAME)-$(VERSION) \
         .
 
