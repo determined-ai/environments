@@ -22,4 +22,10 @@ if [ "$APEX_GIT" ]; then
         --global-option="--cuda_ext" \
         git+$APEX_GIT
   fi
+else
+  pip install \
+      -v --disable-pip-version-check --no-cache-dir \
+      --global-option="--cpp_ext" \
+      --global-option="--cuda_ext" \
+      git+https://github.com/NVIDIA/apex.git
 fi
