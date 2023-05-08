@@ -34,9 +34,21 @@ ifeq "$(WITH_MPI)" "1"
 	HOROVOD_WITHOUT_MPI := 0
 	HOROVOD_CPU_OPERATIONS := MPI
 	GPU_SUFFIX := -gpu-mpi
+	WITH_AWS_TRACE := 0
+	NCCL_BUILD_ARG := WITH_NCCL
+        ifeq "$(WITH_NCCL)" "1"
+		NCCL_BUILD_ARG := WITH_NCCL=1
+		HOROVOD_GPU_OPERATIONS := NCCL
+		ifeq "$(WITH_AWS_TRACE)" "1"
+			WITH_AWS_TRACE := 1
+		endif
+        else
+		HOROVOD_GPU_OPERATIONS := MPI
+        endif
 	MPI_BUILD_ARG := WITH_MPI=1
 
 	ifeq "$(WITH_OFI)" "1"
+	        GPU_SUFFIX := -gpu-mpi-ofi
 		CPU_SUFFIX := -cpu-mpi-ofi
 		OFI_BUILD_ARG := WITH_OFI=1
 	else
@@ -47,9 +59,11 @@ else
 	PLATFORMS := $(PLATFORM_LINUX_AMD_64),$(PLATFORM_LINUX_ARM_64)
 	WITH_MPI := 0
 	OFI_BUILD_ARG := WITH_OFI
+	NCCL_BUILD_ARG := WITH_NCCL
 	HOROVOD_WITH_MPI := 0
 	HOROVOD_WITHOUT_MPI := 1
 	HOROVOD_CPU_OPERATIONS := GLOO
+	HOROVOD_GPU_OPERATIONS := NCCL
 	MPI_BUILD_ARG := USE_GLOO=1
 endif
 
@@ -132,7 +146,10 @@ build-gpu-cuda-113-base:
 		--build-arg BASE_IMAGE="nvidia/cuda:11.3.1-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
+		--build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
+		--build-arg "$(OFI_BUILD_ARG)" \
+		--build-arg "$(NCCL_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(VERSION) \
 		.
@@ -204,7 +221,7 @@ build-deepspeed-gpu: build-gpu-cuda-113-base
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
-		--build-arg DET_BUILD_NCCL="" \
+		--build-arg "$(NCCL_BUILD_ARG)" \
 		--build-arg DEEPSPEED_PIP="deepspeed==$(DEEPSPEED_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
@@ -222,7 +239,7 @@ build-gpt-neox-deepspeed-gpu: build-gpu-cuda-113-base
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
-		--build-arg DET_BUILD_NCCL="" \
+		--build-arg "$(NCCL_BUILD_ARG)" \
 		--build-arg DEEPSPEED_PIP="git+https://github.com/determined-ai/deepspeed.git@eleuther_dai" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
@@ -353,10 +370,16 @@ build-tf2-gpu: build-gpu-cuda-113-base
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg HOROVOD_PIP="horovod==0.27.0" \
-		--build-arg DET_BUILD_NCCL="" \
+		--build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
+		--build-arg INTERNAL_AWS_DS="$(INTERNAL_AWS_DS)" \
+		--build-arg INTERNAL_AWS_PATH="$(INTERNAL_AWS_PATH)" \
+		--build-arg "$(OFI_BUILD_ARG)" \
+		--build-arg "$(NCCL_BUILD_ARG)" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
+		--build-arg HOROVOD_GPU_OPERATIONS="$(HOROVOD_GPU_OPERATIONS)" \
+		--build-arg HOROVOD_GPU_ALLREDUCE="$(HOROVOD_GPU_ALLREDUCE)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
@@ -372,7 +395,7 @@ build-pt-gpu: build-gpu-cuda-113-base
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
-		--build-arg DET_BUILD_NCCL="" \
+		--build-arg "$(NCCL_BUILD_ARG)" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
