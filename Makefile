@@ -500,7 +500,7 @@ build-pt2-cpu: build-cpu-py-38-base
         --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
         --build-arg TORCH_PIP="$(TORCH_PIP_CPU)" \
         --build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
-        --build-arg HOROVOD_PIP="horovod==0.24.2" \
+        --build-arg HOROVOD_PIP="horovod==0.27.0" \
         --build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
         --build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
         --build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
@@ -520,7 +520,7 @@ build-pt2-cuda-117-gpu:# build-gpu-cuda-117-base
         --build-arg TORCH_PIP="$(TORCH_PIP_GPU_CU117)" \
         --build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
         --build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
-        --build-arg HOROVOD_PIP="horovod==0.24.2" \
+        --build-arg HOROVOD_PIP="horovod==0.27.0" \
         --build-arg DET_BUILD_NCCL="" \
         --build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
         --build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
@@ -543,7 +543,7 @@ build-pt2-cuda-118-gpu: build-gpu-cuda-118-base
         --build-arg TORCH_PIP="$(TORCH_PIP_GPU_CU118)" \
         --build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
         --build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
-        --build-arg HOROVOD_PIP="horovod==0.24.2" \
+        --build-arg HOROVOD_PIP="horovod==0.27.0" \
         --build-arg DET_BUILD_NCCL="" \
         --build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
         --build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
