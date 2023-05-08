@@ -490,7 +490,7 @@ publish-cloud-images:
 ###################
 
 TORCH_VERSION := 2.0
-TORCH_PIP_CPU := torch==${TORCH_VERSION}+cpu torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cpu
+TORCH_PIP_CPU := torch==${TORCH_VERSION} torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 
 CPU_PT_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_VERSION)$(CPU_SUFFIX)
 
@@ -511,7 +511,7 @@ build-pt2-cpu: build-cpu-py-38-base
 
 ### CUDA 11.7
 CU117 := cu117
-TORCH_PIP_GPU_CU117 := torch==${TORCH_VERSION}+${CU117} torchvision torchaudio -f https://download.pytorch.org/whl/${CU118}/torch_stable.html# --index-url https://download.pytorch.org/whl/nightly/${CU117}
+TORCH_PIP_GPU_CU117 := torch==${TORCH_VERSION}+${CU117} torchvision torchaudio -f https://download.pytorch.org/whl/${CU117}/torch_stable.html
 GPU_CU117_PT_ENVIRONMENT_NAME := $(CUDA_117_PREFIX)pytorch-$(TORCH_VERSION)$(GPU_SUFFIX)
 
 .PHONY: build-pt2-cuda-117-gpu
@@ -534,7 +534,7 @@ build-pt2-cuda-117-gpu:# build-gpu-cuda-117-base
 
 ### CUDA 11.8
 CU118 := cu118
-TORCH_PIP_GPU_CU118 := torch==${TORCH_VERSION}+${CU118} torchvision torchaudio -f https://download.pytorch.org/whl/${CU118}/torch_stable.html# --index-url https://download.pytorch.org/whl/nightly/${CU118}
+TORCH_PIP_GPU_CU118 := torch==${TORCH_VERSION}+${CU118} torchvision torchaudio -f https://download.pytorch.org/whl/${CU118}/torch_stable.html
 GPU_CU118_PT_ENVIRONMENT_NAME := $(CUDA_118_PREFIX)pytorch-$(TORCH_VERSION)$(GPU_SUFFIX)
 
 .PHONY: build-pt2-cuda-118-gpu
