@@ -114,6 +114,6 @@ RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
 RUN mkdir -p /container/bin && \
     cp /tmp/det_dockerfile_scripts/scrape_libs.sh /container/bin
 ENTRYPOINT ["/container/bin/scrape_libs.sh"]
+CMD ["/bin/bash"]
 
 RUN rm -r /tmp/*
-
