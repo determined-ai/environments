@@ -5,7 +5,7 @@
 
 - [ ] Bump VERSION to make the pushed images are tagged with the right version.
 - [ ] Licenses should be included for new code which was copied and/or modified from any external code.
-- [ ] Test the images by running `bumpenvs --dev` in the determined repo. See [README](https://github.com/determined-ai/environments/blob/main/README.md).
+- [ ] Test the images by running the test `bumpenvs` procedure in the determined repo. See [README](https://github.com/determined-ai/environments/blob/main/README.md).
 
 
 <!---
