@@ -32,11 +32,7 @@ This repository is tightly coupled with [the determined repository](https://gith
 1. Create a PR against this repo.
 2. Open CI workflow and approve `request-publish-dev-docker`. Make sure all the downstream jobs succeed. Approve `request-publish-dev-cloud`. Wait for it to succeed as well. The images are now published to [the development dockerhub](https://hub.docker.com/r/determinedai/environments-dev).
 3. Review the REAMDE.md in https://github.com/determined-ai/determined/tree/main/tools/scripts . It describes the bumpenvs procedure. You are going to run a test "drill" of this procedure with the development images just created.
-4. Create a branch in your local clone of determined github repo. From `tools/scripts` directory run 
-```bash
-./update-bumpenvs-yaml.py --dev bumpenvs.yaml THECOMMIT
-```
-where THECOMMIT is _the full commit hash of the commit to your branch in environments repo_. (This corresponds to steps 3 and 4 from the `tools/scripts` README.)
+4. Create a branch in your local clone of determined github repo. From `tools/scripts` directory run `./update-bumpenvs-yaml.py --dev bumpenvs.yaml THECOMMIT`, where THECOMMIT is _the full commit hash of the commit to your branch in environments repo_. (This corresponds to steps 3 and 4 from the `tools/scripts` README.)
 5. Run `./bumpenvs.py bumpenvs.yaml`. (This corresponds to step 6 in the `tools/scripts` README.)
 6. Push your branch _to the main determined-ai remote_. This is an important detail! Image updates, in particular ones containing version changes to DL frameworks may break functionality in Determined. In order to run the extended
 test suite, including long-running tests, you need to push to the upstream repo and not to your fork!
