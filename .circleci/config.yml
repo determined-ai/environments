@@ -213,7 +213,6 @@ workflows:
             alias: build-docker-all-cpu
             parameters:
               with-mpi: [0, 1]
-              with-ofi: [0]
               image-type:
                 - tf1-cpu
                 - tf2-cpu
@@ -227,6 +226,7 @@ workflows:
             exclude:
               - with-mpi: 1
                 image-type: pytorch10-tf27-rocm50
+
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>
           context: determined-production
@@ -240,6 +240,7 @@ workflows:
               with-ofi: [1]
               image-type:
                 - tf2-gpu
+
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
           context: determined-production
@@ -256,7 +257,6 @@ workflows:
               ci-resource_class:
                 - gpu.nvidia.small
               with-mpi: [0]
-              with-ofi: [0]
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
@@ -291,7 +291,6 @@ workflows:
             parameters:
               dev-mode: [true]
               with-mpi: [0, 1]
-              with-ofi: [0]
               image-type:
                 - tf1-cpu
                 - tf2-cpu
@@ -339,7 +338,6 @@ workflows:
               ci-resource_class:
                 - gpu.nvidia.small
               with-mpi: [0]
-              with-ofi: [0]
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
