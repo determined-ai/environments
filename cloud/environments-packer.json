@@ -114,7 +114,7 @@
         "us-gov-west-1"
       ],
       "source_ami": "{{ user `gov_aws_base_image`}}",
-      "instance_type": "m5.large",
+      "instance_type": "g4dn.xlarge",
       "ssh_username": "ubuntu",
       "launch_block_device_mappings": [
         {
