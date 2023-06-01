@@ -84,7 +84,7 @@
         "us-east-2"
       ],
       "source_ami": "{{ user `aws_base_image`}}",
-      "instance_type": "p2.xlarge",
+      "instance_type": "g4dn.xlarge",
       "ssh_username": "ubuntu",
       "launch_block_device_mappings": [
         {
