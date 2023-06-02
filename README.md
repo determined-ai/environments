@@ -20,10 +20,26 @@ To build a custom image:
 - Add/modify any additional scripts needed for the image build
 - run `make {build_name}`
 
-To publish an image:
+To publish an image manually:
 - Add a `publish` target or modify an existing recipe
 - Change registry info (`DOCKERHUB_REGISTRY` and `NGC_REGISTRY`) in `Makefile` or specify make args
 - run `make {publish-target} DOCKERHUB_REGISTRY={registry}`
+
+### Complete development workflow for updates to environment images
+This repository is tightly coupled with [the determined repository](https://github.com/determined-ai/determined). Changes to environment images may (and should be assumed to) affect the behavior of the MLDE. When making significant changes to the images, such as updating a deep learning framework library to a more recent version, make sure Determined can still run experiments using the new image.
+
+#### Steps to introduce an updated environment image
+1. Create a PR against this repo.
+2. Open CI workflow and approve `request-publish-dev-docker` and `request-publish-dev-cloud`. Make sure all the downstream jobs succeed. The images are now published to [the development dockerhub](https://hub.docker.com/r/determinedai/environments-dev).
+3. Review the REAMDE.md in https://github.com/determined-ai/determined/tree/main/tools/scripts . It describes the bumpenvs procedure. You are going to run a test "drill" of this procedure with the development images just created.
+4. Create a branch in your local clone of determined github repo. From `tools/scripts` directory run `./update-bumpenvs-yaml.py --dev bumpenvs.yaml THECOMMIT`, where THECOMMIT is _the full commit hash of the commit to your branch in environments repo_. (This corresponds to steps 3 and 4 from the `tools/scripts` README.)
+5. Run `./bumpenvs.py bumpenvs.yaml`. (This corresponds to step 6 in the `tools/scripts` README.)
+6. Push your branch _to the main determined-ai remote_. This is an important detail! Image updates, in particular ones containing version changes to DL frameworks may break functionality in Determined. In order to run the extended
+test suite, including long-running tests, you need to push to the upstream repo and not to your fork!
+7. Approve the `request-` jobs in `test-e2e-longrunning` CI workflow. Monitor the workflow to confirm nothing is broken. If some of the end-to-end tests (or unit or integration tests), investigate!
+8. Note: not all images are currently tested with end-to-end tests in the determined repo. This is a flaw in the current system. It is prudent to run a workload with the new version of every image specified in a startup hook to confirm that the image works. We are planning to address this.
+9. After you confirmed that Determined works nicely with the new images, you can merge your PR to environments, wait for main branch CI build to complete, and follow the steps from [toos/scripts/README.md](https://github.com/determined-ai/determined/tree/main/tools/scripts/README.md) with the images published to the official dockerhub.
+10. Again, it is recommended to push your bumpenvs branch to the main determined-ai remote (and not to your fork). Open your PR from there to confirm again that all the long-running tests pass.
 
 ### Multi-platform images
 We use [Docker Buildx](https://docs.docker.com/buildx/working-with-buildx/) to create multi-platform CPU images. Although `docker buildx` is more powerful than the ordinary
