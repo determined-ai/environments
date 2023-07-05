@@ -26,6 +26,7 @@ UBUNTU_IMAGE_TAG := ubuntu:20.04
 UBUNTU_VERSION_1804 := ubuntu18.04
 PLATFORM_LINUX_ARM_64 := linux/arm64
 PLATFORM_LINUX_AMD_64 := linux/amd64
+HOROVOD_GPU_OPERATIONS := NCCL 
 
 ifeq "$(WITH_MPI)" "1"
 # 	Don't bother supporting or building arm64+mpi builds.
@@ -38,12 +39,9 @@ ifeq "$(WITH_MPI)" "1"
 	NCCL_BUILD_ARG := WITH_NCCL
         ifeq "$(WITH_NCCL)" "1"
 		NCCL_BUILD_ARG := WITH_NCCL=1
-		HOROVOD_GPU_OPERATIONS := NCCL
 		ifeq "$(WITH_AWS_TRACE)" "1"
 			WITH_AWS_TRACE := 1
 		endif
-        else
-		HOROVOD_GPU_OPERATIONS := MPI
         endif
 	MPI_BUILD_ARG := WITH_MPI=1
 
@@ -63,7 +61,6 @@ else
 	HOROVOD_WITH_MPI := 0
 	HOROVOD_WITHOUT_MPI := 1
 	HOROVOD_CPU_OPERATIONS := GLOO
-	HOROVOD_GPU_OPERATIONS := NCCL
 	MPI_BUILD_ARG := USE_GLOO=1
 endif
 
