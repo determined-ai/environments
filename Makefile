@@ -26,7 +26,7 @@ UBUNTU_IMAGE_TAG := ubuntu:20.04
 UBUNTU_VERSION_1804 := ubuntu18.04
 PLATFORM_LINUX_ARM_64 := linux/arm64
 PLATFORM_LINUX_AMD_64 := linux/amd64
-HOROVOD_GPU_OPERATIONS := NCCL 
+HOROVOD_GPU_OPERATIONS := NCCL
 
 ifeq "$(WITH_MPI)" "1"
 # 	Don't bother supporting or building arm64+mpi builds.
