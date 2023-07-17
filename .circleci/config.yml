@@ -191,7 +191,6 @@ workflows:
                 - tf2-cpu
                 - tf28-cpu
                 - pt-cpu
-                - tf1-gpu
                 - tf2-gpu
                 - tf28-gpu
                 - pt-gpu
@@ -253,7 +252,6 @@ workflows:
                 - tf2-cpu
                 - tf28-cpu
                 - pt-cpu
-                - tf1-gpu
                 - tf2-gpu
                 - tf28-gpu
                 - pt-gpu

@@ -155,7 +155,6 @@ build-gpu-cuda-113-base:
 		.
 
 export CPU_TF1_ENVIRONMENT_NAME := $(CPU_PREFIX_37)pytorch-1.7-tf-1.15$(CPU_SUFFIX)
-export GPU_TF1_ENVIRONMENT_NAME := $(CUDA_102_PREFIX)pytorch-1.7-tf-1.15$(GPU_SUFFIX)
 
 # Full images.
 .PHONY: build-tf1-cpu
@@ -173,25 +172,6 @@ build-tf1-cpu: build-cpu-py-37-base
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
-		.
-
-.PHONY: build-tf1-gpu
-build-tf1-gpu: build-gpu-cuda-102-base
-	docker build -f Dockerfile-default-gpu \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_102_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="https://github.com/determined-ai/tensorflow-wheels/releases/download/0.1.0/tensorflow_gpu-1.15.5-cp37-cp37m-linux_x86_64.whl" \
-		--build-arg TORCH_PIP="torch==1.7.1 -f https://download.pytorch.org/whl/cu102/torch_stable.html" \
-		--build-arg TORCHVISION_PIP="torchvision==0.8.2 -f https://download.pytorch.org/whl/cu102/torch_stable.html" \
-		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5" \
-		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
-		--build-arg HOROVOD_PIP="horovod==0.24.2" \
-		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
-		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
-		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
-		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
-		-t $(NGC_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
 export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm
@@ -411,11 +391,6 @@ build-pt-gpu: build-gpu-cuda-113-base
 publish-tf1-cpu:
 	scripts/publish-docker.sh tf1-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh tf1-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF1_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-
-.PHONY: publish-tf1-gpu
-publish-tf1-gpu:
-	scripts/publish-docker.sh tf1-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_102_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh tf1-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_TF1_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tf2-cpu
 publish-tf2-cpu:
