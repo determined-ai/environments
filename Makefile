@@ -268,14 +268,15 @@ build-tf28-gpu: build-gpu-cuda-112-base
 		-t $(NGC_REGISTRY)/$(GPU_TF28_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
-TORCH_VERSION := 1.12
+TORCH_VERSION := 2.0
 TF2_VERSION_SHORT := 2.11
 TF2_VERSION := 2.11.1
 TF2_PIP_CPU := tensorflow-cpu==$(TF2_VERSION)
 TF2_PIP_GPU := tensorflow==$(TF2_VERSION)
-TORCH_PIP_CPU := torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html
-TORCH_PIP_GPU := torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
-APEX_GIT_URL = https://github.com/determined-ai/apex.git@85e9eddece9d4ac72b48c2407f8162f2173e1bf4
+TORCH_PIP_CPU := torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2
+TORCH_PIP_GPU := torch==2.0.1+cu117 torchvision==0.15.2+cu117 torchaudio==2.0.2+cu117 --index-url https://download.pytorch.org/whl/cu117
+APEX_GIT_URL := https://github.com/determined-ai/apex.git@85e9eddece9d4ac72b48c2407f8162f2173e1bf4
+HOROVOD_PIP_COMMAND := horovod==0.28.1
 
 export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_VERSION)-tf-$(TF2_VERSION_SHORT)$(CPU_SUFFIX)
 export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-$(TORCH_VERSION)-tf-$(TF2_VERSION_SHORT)$(GPU_SUFFIX)
@@ -314,7 +315,7 @@ build-tf2-cpu: build-cpu-py-38-base
 		--build-arg TENSORFLOW_PIP="$(TF2_PIP_CPU)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_CPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
-		--build-arg HOROVOD_PIP="horovod==0.27.0" \
+		--build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
@@ -329,7 +330,7 @@ build-pt-cpu: build-cpu-py-38-base
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_CPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
-		--build-arg HOROVOD_PIP="horovod==0.24.2" \
+		--build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
@@ -338,15 +339,15 @@ build-pt-cpu: build-cpu-py-38-base
 		.
 
 .PHONY: build-tf2-gpu
-build-tf2-gpu: build-gpu-cuda-113-base
+build-tf2-gpu: build-gpu-cuda-117-base
 	docker build -f Dockerfile-default-gpu \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_117_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="$(TF2_PIP_GPU)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_GPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT=$(APEX_GIT_URL) \
-		--build-arg HOROVOD_PIP="horovod==0.27.0" \
+		--build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
 		--build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
 		--build-arg INTERNAL_AWS_DS="$(INTERNAL_AWS_DS)" \
 		--build-arg INTERNAL_AWS_PATH="$(INTERNAL_AWS_PATH)" \
@@ -364,14 +365,14 @@ build-tf2-gpu: build-gpu-cuda-113-base
 		.
 
 .PHONY: build-pt-gpu
-build-pt-gpu: build-gpu-cuda-113-base
+build-pt-gpu: build-gpu-cuda-117-base
 	docker build -f Dockerfile-default-gpu \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_117_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_GPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT=$(APEX_GIT_URL) \
-		--build-arg HOROVOD_PIP="horovod==0.24.2" \
+		--build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
 		--build-arg "$(NCCL_BUILD_ARG)" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
