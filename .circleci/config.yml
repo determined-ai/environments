@@ -187,7 +187,6 @@ workflows:
             parameters:
               with-mpi: [0, 1]
               image-type:
-                - tf1-cpu
                 - tf2-cpu
                 - tf28-cpu
                 - pt-cpu
@@ -248,7 +247,6 @@ workflows:
               dev-mode: [true]
               with-mpi: [0, 1]
               image-type:
-                - tf1-cpu
                 - tf2-cpu
                 - tf28-cpu
                 - pt-cpu
