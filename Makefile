@@ -9,8 +9,6 @@ export DOCKERHUB_REGISTRY := determinedai
 export REGISTRY_REPO := environments
 
 CPU_PREFIX := $(REGISTRY_REPO):py-3.8-
-CPU_PREFIX_37 := $(REGISTRY_REPO):py-3.7-
-CUDA_102_PREFIX := $(REGISTRY_REPO):cuda-10.2-
 CUDA_111_PREFIX := $(REGISTRY_REPO):cuda-11.1-
 CUDA_112_PREFIX := $(REGISTRY_REPO):cuda-11.2-
 CUDA_113_PREFIX := $(REGISTRY_REPO):cuda-11.3-
@@ -21,7 +19,6 @@ CPU_SUFFIX := -cpu
 GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
 PYTHON_VERSION := 3.8.12
-PYTHON_VERSION_37 := 3.7.11
 UBUNTU_VERSION := ubuntu20.04
 UBUNTU_IMAGE_TAG := ubuntu:20.04
 UBUNTU_VERSION_1804 := ubuntu18.04
@@ -69,7 +66,6 @@ else
 endif
 
 export CPU_PY_37_BASE_NAME := $(CPU_PREFIX_37)base$(CPU_SUFFIX)
-export GPU_CUDA_102_BASE_NAME := $(CUDA_102_PREFIX)base$(GPU_SUFFIX)
 export CPU_PY_38_BASE_NAME := $(CPU_PREFIX)base$(CPU_SUFFIX)
 export GPU_CUDA_111_BASE_NAME := $(CUDA_111_PREFIX)base$(GPU_SUFFIX)
 export GPU_CUDA_112_BASE_NAME := $(CUDA_112_PREFIX)base$(GPU_SUFFIX)
@@ -81,18 +77,6 @@ export GPU_CUDA_117_BASE_NAME := $(CUDA_117_PREFIX)base$(GPU_SUFFIX)
 export AWS_MAX_ATTEMPTS=360
 
 # Base images.
-.PHONY: build-cpu-py-37-base build-cpu-py-38-base  build-gpu-cuda-111-base build-gpu-cuda-112-base build-gpu-cuda-113-base
-build-cpu-py-37-base:
-	docker build -f Dockerfile-base-cpu \
-		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
-		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_37)" \
-		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
-		--build-arg "$(MPI_BUILD_ARG)" \
-		--build-arg "$(OFI_BUILD_ARG)" \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_37_BASE_NAME)-$(VERSION) \
-		.
-
 .PHONY: build-cpu-py-38-base
 build-cpu-py-38-base:
 	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
@@ -107,17 +91,6 @@ build-cpu-py-38-base:
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(VERSION) \
 		--push \
-		.
-
-.PHONY: build-gpu-cuda-102-base
-build-gpu-cuda-102-base:
-	docker build -f Dockerfile-base-gpu \
-		--build-arg BASE_IMAGE="nvidia/cuda:10.2-cudnn7-devel-$(UBUNTU_VERSION_1804)" \
-		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_37)" \
-		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION_1804)" \
-		--build-arg "$(MPI_BUILD_ARG)" \
-		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_102_BASE_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_102_BASE_NAME)-$(VERSION) \
 		.
 
 .PHONY: build-gpu-cuda-111-base
