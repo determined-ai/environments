@@ -34,4 +34,4 @@
 - name: Install NVIDIA FabricManager.
   become: yes
   apt:
-    name: cuda-drivers-fabricmanager-470
+    name: cuda-drivers-fabricmanager-515
