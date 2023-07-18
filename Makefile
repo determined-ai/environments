@@ -218,7 +218,7 @@ build-tf28-cpu: build-cpu-py-38-base
 	docker buildx build -f Dockerfile-default-cpu \
 		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
-		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.3" \
+		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.4" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
