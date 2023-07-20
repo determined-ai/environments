@@ -89,8 +89,8 @@ build-cpu-py-310-base:
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME)-$(VERSION) \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(VERSION) \
 		--push \
 		.
 
@@ -218,7 +218,7 @@ export GPU_TF28_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.8$(GPU_SUFFIX)
 build-tf28-cpu: build-cpu-py-310-base
 	docker buildx build -f Dockerfile-default-cpu \
 		--platform "$(PLATFORMS)" \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.4" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
@@ -399,7 +399,7 @@ endif
 
 .PHONY: publish-tf28-cpu
 publish-tf28-cpu:
-	scripts/publish-docker.sh tf28-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
+	scripts/publish-docker.sh tf28-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
 	scripts/publish-docker.sh tf28-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF28_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
 
 .PHONY: publish-tf28-gpu
