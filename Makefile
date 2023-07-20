@@ -85,7 +85,7 @@ build-cpu-py-310-base:
 	docker buildx build -f Dockerfile-base-cpu \
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
-		--build-arg PYTHON_VERSION="$(PYTHON_VERSION)" \
+		--build-arg PYTHON_VERSION="3.10.12" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
@@ -211,7 +211,7 @@ define CPU_TF28_TAGS
 endef
 endif
 
-export CPU_TF28_ENVIRONMENT_NAME := $(CPU_PREFIX)tf-2.8$(CPU_SUFFIX)
+export CPU_TF28_ENVIRONMENT_NAME := $(CPU_PREFIX_310)tf-2.8$(CPU_SUFFIX)
 export GPU_TF28_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.8$(GPU_SUFFIX)
 
 .PHONY: build-tf28-cpu
@@ -252,9 +252,9 @@ TORCH_PIP_GPU := torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+
 APEX_GIT_URL := https://github.com/determined-ai/apex.git@85e9eddece9d4ac72b48c2407f8162f2173e1bf4
 HOROVOD_PIP_COMMAND := horovod==0.28.1
 
-export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_VERSION)-tf-$(TF2_VERSION_SHORT)$(CPU_SUFFIX)
+export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX_310)pytorch-$(TORCH_VERSION)-tf-$(TF2_VERSION_SHORT)$(CPU_SUFFIX)
 export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_118_PREFIX)pytorch-$(TORCH_VERSION)-tf-$(TF2_VERSION_SHORT)$(GPU_SUFFIX)
-export CPU_PT_ENVIRONMENT_NAME := $(CPU_PREFIX)pytorch-$(TORCH_VERSION)$(CPU_SUFFIX)
+export CPU_PT_ENVIRONMENT_NAME := $(CPU_PREFIX_310)pytorch-$(TORCH_VERSION)$(CPU_SUFFIX)
 export GPU_PT_ENVIRONMENT_NAME := $(CUDA_118_PREFIX)pytorch-$(TORCH_VERSION)$(GPU_SUFFIX)
 
 ifeq ($(NGC_PUBLISH),)
