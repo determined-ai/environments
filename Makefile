@@ -247,7 +247,7 @@ TF2_VERSION_SHORT := 2.11
 TF2_VERSION := 2.11.1
 TF2_PIP_CPU := tensorflow-cpu==$(TF2_VERSION)
 TF2_PIP_GPU := tensorflow==$(TF2_VERSION)
-TORCH_PIP_CPU := torch==2.0.1+cpu torchvision==0.15.2+cpu torchaudio==2.0.2
+TORCH_PIP_CPU := torch==2.0.1+cpu torchvision==0.15.2+cpu torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cpu
 TORCH_PIP_GPU := torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 --index-url https://download.pytorch.org/whl/cu118
 APEX_GIT_URL := https://github.com/determined-ai/apex.git@50ac8425403b98147cbb66aea9a2a27dd3fe7673
 HOROVOD_PIP_COMMAND := horovod==0.28.1
