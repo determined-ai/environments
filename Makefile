@@ -9,7 +9,7 @@ export DOCKERHUB_REGISTRY := determinedai
 export REGISTRY_REPO := environments
 
 CPU_PREFIX_38 := $(REGISTRY_REPO):py-3.8-
-CPU_PREFIX_39 := $(REGISTRY_REPO):py-3.9-
+CPU_PREFIX_39  := (REGISTRY_REPO):py-3.9-
 CPU_PREFIX_310 := $(REGISTRY_REPO):py-3.10-
 CUDA_111_PREFIX := $(REGISTRY_REPO):cuda-11.1-
 CUDA_112_PREFIX := $(REGISTRY_REPO):cuda-11.2-
@@ -21,7 +21,6 @@ CPU_SUFFIX := -cpu
 GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
 PYTHON_VERSION_38 := 3.8.12
-PYTHON_VERSION_39 := 3.9.16
 PYTHON_VERSION_310 := 3.10.12
 UBUNTU_VERSION := ubuntu20.04
 UBUNTU_IMAGE_TAG := ubuntu:20.04
@@ -67,7 +66,6 @@ else
 endif
 
 export CPU_PY_38_BASE_NAME := $(CPU_PREFIX_38)base$(CPU_SUFFIX)
-export CPU_PY_39_BASE_NAME := $(CPU_PREFIX_39)base$(CPU_SUFFIX)
 export CPU_PY_310_BASE_NAME := $(CPU_PREFIX_310)base$(CPU_SUFFIX)
 export GPU_CUDA_111_BASE_NAME := $(CUDA_111_PREFIX)base$(GPU_SUFFIX)
 export GPU_CUDA_112_BASE_NAME := $(CUDA_112_PREFIX)base$(GPU_SUFFIX)
@@ -214,14 +212,63 @@ build-pytorch20-tf210-rocm56:
 
 export TF_PROFILER_PIP := tensorboard-plugin-profile
 export TORCH_TB_PROFILER_PIP := torch-tb-profiler==0.4.1
+
+NGC_PYTORCH_PREFIX=nvcr.io/nvidia/pytorch
+NGC_TENSORFLOW_PREFIX=nvcr.io/nvidia/tensorflow
+NGC_PYTORCH_VERSION=23.10-py3
+NGC_TENSORFLOW_VERSION=23.11-tf2-py3
+NGCPLUS_BASE_PYTORCH=pytorch-ngc
+NGCPLUS_BASE_TENSORFLOW=tensorflow-ngc
+
+.PHONY: build-ngc-pytorch
+build-ngc-pytorch:
+	docker build -f Dockerfile-ngc-pytorch \
+		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-$(VERSION) \
+		.
+
+.PHONY: build-ngc-deepspeed
+build-ngc-deepspeed:
+	docker build -f Dockerfile-ngc-pytorch \
+		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
+		--build-arg DEEPSPEED_PIP="deepspeed==0.11.1" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-deepspeed-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-deepspeed-$(VERSION) \
+		.
+
+.PHONY: build-ngc-hpc-deepspeed
+build-ngc-hpc-deepspeed:
+	docker build -f Dockerfile-ngc-pytorch-hpc \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-deepspeed-$(SHORT_GIT_HASH)" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-hpc-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-hpc-$(VERSION) \
+		.
+
+.PHONY: build-ngc-tensorflow
+build-ngc-tensorflow:
+	docker build -f Dockerfile-ngc-tensorflow-base \
+		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(VERSION) \
+		.
+
+.PHONY: build-ngc-tensorflow-hpc
+build-ngc-tensorflow-hpc:
+	docker build -f Dockerfile-ngc-tensorflow-hpc \
+		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(VERSION) \
+		.
+
 DEEPSPEED_VERSION := 0.8.3
 export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-deepspeed-$(DEEPSPEED_VERSION)$(GPU_SUFFIX)
 export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-gpt-neox-deepspeed$(GPU_SUFFIX)
 export TORCH_PIP_DEEPSPEED_GPU := torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 
 # This builds deepspeed environment off of upstream microsoft/DeepSpeed.
-.PHONY: build-deepspeed-gpu
-build-deepspeed-gpu: build-gpu-cuda-113-base
+.PHONY: build-pytorch-deepspeed
+build-pytorch-deepspeed: build-gpu-cuda-113-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
@@ -513,11 +560,11 @@ ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh pt2-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 endif
 
-.PHONY: publish-deepspeed-gpu
-publish-deepspeed-gpu:
-	scripts/publish-docker.sh deepspeed-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+.PHONY: publish-pytorch-deepspeed
+publish-pytorch-deepspeed:
+	scripts/publish-docker.sh pytorch-deepspeed-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-docker.sh deepspeed-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+	scripts/publish-docker.sh pytorch-deepspeed-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH)
 endif
 
 .PHONY: publish-gpt-neox-deepspeed-gpu
@@ -547,6 +594,10 @@ publish-pytorch13-tf210-rocm56:
 .PHONY: publish-pytorch20-tf210-rocm56
 publish-pytorch20-tf210-rocm56:
 	scripts/publish-docker.sh pytorch20-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+
+.PHONY: publish-ngc-pytorch-base
+publish-ngc-pytorch-base:
+	scripts/publish-docker.sh ngc-pytorch-base $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
 publish-cloud-images:
