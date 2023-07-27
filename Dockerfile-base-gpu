@@ -7,44 +7,10 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PIP_NO_CACHE_DIR=1
 # We need to create sym links for the Slurm PMI headers if we are using 
 # Ubuntu 18.04 because they are not installed in a standard location.
 ARG UBUNTU_VERSION
-RUN mkdir -p /var/run/sshd
-RUN apt-get update \
-	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-		autoconf \
-		automake \
-		autotools-dev \
-		build-essential \
-		ca-certificates \
-		curl \
-		daemontools \
-		ibverbs-providers \
-		libibverbs1 \
-		libkrb5-dev \
-		librdmacm1 \
-		libssl-dev \
-		libtool \
-		git \
-		krb5-user \
-		g++ \
-		cmake \
-		make \
-		openssh-client \
-		openssh-server \
-		pkg-config \
-		wget \
-		nfs-common \
-                libnuma1 \
-                libnuma-dev \
-                libpmi2-0-dev \
-		unattended-upgrades \
-	&& unattended-upgrade \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& rm /etc/ssh/ssh_host_ecdsa_key \
-	&& rm /etc/ssh/ssh_host_ed25519_key \
-	&& rm /etc/ssh/ssh_host_rsa_key \
-        && if [ "$UBUNTU_VERSION" = "ubuntu18.04" ]; then ln -s /usr/include/slurm-wlm /usr/include/slurm; fi
 
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+
+RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
 
 ARG WITH_NCCL
 # Install debuild util, etc. for later compiling GDRcopy libraries

@@ -188,20 +188,30 @@ workflows:
               with-mpi: [0, 1]
               image-type:
                 - tf2-cpu
-                - tf28-cpu
                 - pt-cpu
                 - pt2-cpu
                 - tf2-gpu
-                - tf28-gpu
                 - pt-gpu
                 - pt2-gpu
+                - tensorflow-ngc
+                - tensorflow-ngc-hpc
+                - pytorch-ngc
+                - pytorch-ngc-hpc
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
             exclude:
               - with-mpi: 1
-                image-type: 
-                  - pytorch13-tf210-rocm56
-                  - pytorch20-tf210-rocm56
+                image-type: pytorch13-tf210-rocm56
+              - with-mpi: 1
+                image-type: pytorch20-tf210-rocm56
+              - with-mpi: 1
+                image-type: tensorflow-ngc
+              - with-mpi: 1
+                image-type: tensorflow-ngc-hpc
+              - with-mpi: 1
+                image-type: pytorch-ngc
+              - with-mpi: 1
+                image-type: pytorch-ngc-hpc
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
           context: determined-production
@@ -219,8 +229,9 @@ workflows:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
-                - deepspeed-gpu
-                - gpt-neox-deepspeed-gpu
+                - deepspeed
+                - gpt-neox-deepspeed
+                - pytorch-ngc
       - publish-cloud-images:
           context: determined-production
           filters:
@@ -253,21 +264,36 @@ workflows:
               with-mpi: [0, 1]
               image-type:
                 - tf2-cpu
-                - tf28-cpu
                 - pt-cpu
                 - pt2-cpu
                 - tf2-gpu
-                - tf28-gpu
                 - pt-gpu
                 - pt2-gpu
+                - tensorflow-ngc
+                - tensorflow-ngc-hpc
+                - pytorch-ngc
+                - pytorch-ngc-hpc
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
             exclude:
               - dev-mode: true
                 with-mpi: 1
-                image-type: 
-                  - pytorch13-tf210-rocm56
-                  - pytorch20-tf210-rocm56
+                image-type: pytorch13-tf210-rocm56
+              - dev-mode: true
+                with-mpi: 1
+                image-type: pytorch20-tf210-rocm56
+              - dev-mode: true
+                with-mpi: 1
+                image-type: tensorflow-ngc
+              - dev-mode: true
+                with-mpi: 1
+                image-type: tensorflow-ngc-hpc
+              - dev-mode: true
+                with-mpi: 1
+                image-type: pytorch-ngc
+              - dev-mode: true
+                with-mpi: 1
+                image-type: pytorch-ngc-hpc
 
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
@@ -287,8 +313,9 @@ workflows:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
-                - deepspeed-gpu
-                - gpt-neox-deepspeed-gpu
+                - deepspeed
+                - gpt-neox-deepspeed
+                - pytorch-ngc
 
       - publish-cloud-images:
           name: publish-cloud-images-dev
