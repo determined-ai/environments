@@ -144,7 +144,7 @@
       "disk_size": 100,
       "on_host_maintenance": "TERMINATE",
       "machine_type": "n1-standard-1",
-      "accelerator_type": "zones/us-west1-b/acceleratorTypes/nvidia-tesla-k80",
+      "accelerator_type": "zones/us-west1-b/acceleratorTypes/nvidia-tesla-t4",
       "accelerator_count": 1,
       "state_timeout": "20m",
       "image_name": "det-environments{{ user `image_suffix` }}",

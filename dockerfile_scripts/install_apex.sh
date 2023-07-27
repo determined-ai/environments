@@ -13,11 +13,19 @@ if [ "$APEX_GIT" ]; then
     git apply /tmp/det_dockerfile_scripts/apex.patch
     popd
     pip install \
+        -v \
+        --disable-pip-version-check \
+        --no-cache-dir \
+        --no-build-isolation \
         --global-option="--cpp_ext" \
         --global-option="--cuda_ext" \
-        "$APEX_DIR"
+        git+$APEX_GIT
   else
     pip install \
+        -v \
+        --disable-pip-version-check \
+        --no-cache-dir \
+        --no-build-isolation \
         --global-option="--cpp_ext" \
         --global-option="--cuda_ext" \
         git+$APEX_GIT
