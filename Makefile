@@ -149,7 +149,7 @@ build-gpu-cuda-118-base:
 	docker build -f Dockerfile-base-gpu \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.8.0-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_310)" \
-		--build-arg UBUNTU_VERSION=$(UBUNTU_VERSION)" \
+		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
@@ -425,7 +425,6 @@ build-pt2-gpu: build-gpu-cuda-118-base
 		-t $(NGC_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME)-$(VERSION) \
 		.
-
 
 # tf1 and tf2.4 images are not published to NGC due to vulnerabilities.
 .PHONY: publish-tf2-cpu
