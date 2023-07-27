@@ -148,8 +148,8 @@ build-gpu-cuda-113-base:
 build-gpu-cuda-118-base:
 	docker build -f Dockerfile-base-gpu \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.8.0-cudnn8-devel-$(UBUNTU_VERSION)" \
-		--build-arg PYTHON_VERSION="3.10.12" \
-		--build-arg UBUNTU_VERSION=$(PYTHON_VERSION_310)" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_310)" \
+		--build-arg UBUNTU_VERSION=$(UBUNTU_VERSION)" \
 		--build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
@@ -393,7 +393,7 @@ endef
 endif
 
 .PHONY: build-pt2-cpu
-build-pt-cpu: build-cpu-py-310-base
+build-pt2-cpu: build-cpu-py-310-base
 	docker buildx build -f Dockerfile-default-cpu \
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(SHORT_GIT_HASH)" \
@@ -408,7 +408,7 @@ build-pt-cpu: build-cpu-py-310-base
 		.
 
 .PHONY: build-pt2-gpu
-build-pt-gpu: build-gpu-cuda-118-base
+build-pt2-gpu: build-gpu-cuda-118-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH2_PIP_GPU)" \
