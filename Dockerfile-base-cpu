@@ -4,40 +4,8 @@ ARG UBUNTU_VERSION
 RUN rm -f /etc/apt/sources.list.d/*
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PIP_NO_CACHE_DIR=1
 
-RUN mkdir -p /var/run/sshd
-RUN apt-get update \
-	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-		autoconf \
-		automake \
-		autotools-dev \
-		build-essential \
-		ca-certificates \
-		curl \
-		daemontools \
-		libkrb5-dev \
-		libssl-dev \
-		libtool \
-		git \
-		krb5-user \
-		g++ \
-		cmake \
-		make \
-		openssh-client \
-		openssh-server \
-		pkg-config \
-		wget \
-		nfs-common \
-                libnuma1 \
-                libnuma-dev \
-                libpmi2-0-dev \
-		unattended-upgrades \
-	&& unattended-upgrade \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& rm /etc/ssh/ssh_host_ecdsa_key \
-	&& rm /etc/ssh/ssh_host_ed25519_key \
-	&& rm /etc/ssh/ssh_host_rsa_key
-
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
 
 ENV PATH="/opt/conda/bin:${PATH}"
 ARG CONDA="${PATH}"

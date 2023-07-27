@@ -19,6 +19,6 @@ cd /tmp   && \
        ./packages/build-deb-packages.sh -t -k -d && \
     cd / && \
     dpkg -i \
-        /tmp/gdrcopy-$GDR_VER/libgdrapi_$GDR_VER-1_amd64.Ubuntu20_04.deb && \
+        /tmp/gdrcopy-$GDR_VER/libgdrapi_$GDR_VER-1_amd64.*.deb && \
     rm -rf /tmp/gdrcopy-$GDR_VER /tmp/$GDR_TARBALL
 
