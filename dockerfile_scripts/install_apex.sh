@@ -19,7 +19,7 @@ if [ "$APEX_GIT" ]; then
         --no-build-isolation \
         --global-option="--cpp_ext" \
         --global-option="--cuda_ext" \
-        git+$APEX_GIT
+        "$APEX_DIR"
   else
     pip install \
         -v \
