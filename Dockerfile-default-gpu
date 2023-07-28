@@ -43,7 +43,6 @@ RUN if [ "$TORCH_TB_PROFILER_PIP" ]; then python -m pip install $TORCH_TB_PROFIL
 
 ARG TORCH_CUDA_ARCH_LIST
 ARG APEX_GIT
-ARG APEX_PATCH
 RUN /tmp/det_dockerfile_scripts/install_apex.sh
 
 ARG AWS_PLUGIN_INSTALL_DIR=/container/aws
