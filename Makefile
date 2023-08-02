@@ -375,8 +375,8 @@ TORCH2_VERSION := 2.0
 TORCH2_PIP_CPU := torch==2.0.1+cpu torchvision==0.15.2+cpu torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cpu
 TORCH2_PIP_GPU := torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 --index-url https://download.pytorch.org/whl/cu118
 TORCH2_APEX_GIT_URL := https://github.com/determined-ai/apex.git@50ac8425403b98147cbb66aea9a2a27dd3fe7673
-export CPU_PT2_ENVIRONMENT_NAME := $(CPU_PREFIX_310)pytorch-$(TORCH_VERSION)$(CPU_SUFFIX)
-export GPU_PT2_ENVIRONMENT_NAME := $(CUDA_118_PREFIX)pytorch-$(TORCH_VERSION)$(GPU_SUFFIX)
+export CPU_PT2_ENVIRONMENT_NAME := $(CPU_PREFIX_310)pytorch-$(TORCH2_VERSION)$(CPU_SUFFIX)
+export GPU_PT2_ENVIRONMENT_NAME := $(CUDA_118_PREFIX)pytorch-$(TORCH2_VERSION)$(GPU_SUFFIX)
 
 ifeq ($(NGC_PUBLISH),)
 define CPU_PT2_TAGS
