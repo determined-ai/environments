@@ -41,10 +41,10 @@ then
    export CUDA_CACHE_PATH=${CUDA_CACHE_PATH:=${tmp_nvcache_dir}}
 
    export TF_FORCE_GPU_ALLOW_GROWTH=${TF_FORCE_GPU_ALLOW_GROWTH:=true}
-
    # NOTE: Disable memory registration to workaround the current issues
    #       between libfabric and cuda.  When those issus are resolved,
    #       simply set the vaiable to 0 before launching the container.
+   export FI_MR_CACHE_MONITOR=userfaultfd
    export FI_CXI_DISABLE_HOST_REGISTER=${FI_CXI_DISABLE_HOST_REGISTER:=1}
 
    if [ -r /usr/lib/x86_64-linux-gnu/libp11-kit.so.0 ]
