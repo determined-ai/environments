@@ -17,8 +17,10 @@ if [ "$OFI" = "1" ]; then
                 tcsh
 
   # Install AWS_OFI_NCCL
-  AWS_VER=v1.4.0
-  AWS_VER_NUM=1.4.0
+  # AWS_VER=v1.4.0
+  # AWS_VER_NUM=1.4.0
+  AWS_VER=v1.6.0
+  AWS_VER_NUM=1.6.0
   AWS_NAME=aws-ofi-nccl
   AWS_FILE="${AWS_NAME}-${AWS_VER_NUM}"
   # cuda install dir likely dependent on BaseOS (i.e. ubuntu 20.02)
@@ -46,6 +48,7 @@ if [ "$OFI" = "1" ]; then
     AWS_NAME="${AWS_NAME}-${AWS_VER_NUM}"
   else
     AWS_BASE_URL="http://${INTERNAL_AWS_DS}${INTERNAL_AWS_PATH}"
+    AWS_NAME="${AWS_NAME}-pid2"
     AWS_URL="${AWS_BASE_URL}/${AWS_NAME}.tar.gz"
     echo "Using INTERNAL AWS $AWS_URL" 
   fi
@@ -57,7 +60,8 @@ if [ "$OFI" = "1" ]; then
     #    cd ${AWS_FILE}                                && \
     wget -O ${AWS_NAME}.tar.gz ${AWS_URL}         && \
     tar -xzf ${AWS_NAME}.tar.gz                   && \
-    cd ${AWS_NAME}                                && \
+    # cd ${AWS_NAME}                                && \
+    cd aws-ofi-nccl                               && \
     ./autogen.sh                                  && \
     ./configure ${AWS_CONFIG_OPTIONS}             && \
     make                                          && \
