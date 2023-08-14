@@ -48,7 +48,6 @@ if [ "$OFI" = "1" ]; then
     AWS_NAME="${AWS_NAME}-${AWS_VER_NUM}"
   else
     AWS_BASE_URL="http://${INTERNAL_AWS_DS}${INTERNAL_AWS_PATH}"
-    AWS_NAME="${AWS_NAME}-pid2"
     AWS_URL="${AWS_BASE_URL}/${AWS_NAME}.tar.gz"
     echo "Using INTERNAL AWS $AWS_URL" 
   fi
