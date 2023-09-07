@@ -59,8 +59,8 @@ if [ "$OFI" = "1" ]; then
     #    cd ${AWS_FILE}                                && \
     wget -O ${AWS_NAME}.tar.gz ${AWS_URL}         && \
     tar -xzf ${AWS_NAME}.tar.gz                   && \
-    # cd ${AWS_NAME}                                && \
-    cd aws-ofi-nccl                               && \
+    cd ${AWS_NAME}                                && \
+    # cd aws-ofi-nccl                               && \
     ./autogen.sh                                  && \
     ./configure ${AWS_CONFIG_OPTIONS}             && \
     make                                          && \
