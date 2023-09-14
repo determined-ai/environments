@@ -44,7 +44,14 @@ then
    # NOTE: Disable memory registration to workaround the current issues
    #       between libfabric and cuda.  When those issus are resolved,
    #       simply set the vaiable to 0 before launching the container.
+
    export FI_MR_CACHE_MONITOR=userfaultfd
+   # Defines a default memory registration monitor. The monitor checks for virtual to physical memory address changes. Options are:
+   # userfaultfd: This Linux kernel feature is the default, if available on the system.
+   # Note: The requirements for userfaultfd are based on >=4.11 kernel version, Linux distribution => 7.3 RHEL.
+   # memhooks: As a default mechanism, this option operates by intercepting memory allocation and free calls.
+   # disabled: This option disables memory caching.
+
    export FI_CXI_DISABLE_HOST_REGISTER=${FI_CXI_DISABLE_HOST_REGISTER:=1}
 
    if [ -r /usr/lib/x86_64-linux-gnu/libp11-kit.so.0 ]
