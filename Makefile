@@ -158,6 +158,12 @@ build-gpu-cuda-118-base:
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(VERSION) \
 		.
 
+.PHONY: build-gpu-ngc-base
+build-gpu-ngc-base:
+	docker build -f Dockerfile-ngc \
+		--build-arg BASE_IMAGE="nvcr.io/nvidia/pytorch:23.08-py3" \
+		.
+
 export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm
 
 .PHONY: build-pytorch10-tf27-rocm50
