@@ -164,6 +164,13 @@ build-gpu-ngc-base:
 		--build-arg BASE_IMAGE="nvcr.io/nvidia/pytorch:23.08-py3" \
 		.
 
+.PHONY: build-gpu-ngc-deepspeed
+build-gpu-ngc-deepspeed:
+	docker build -f Dockerfile-ngc \
+		--build-arg BASE_IMAGE="nvcr.io/nvidia/pytorch:23.08-py3" \
+		--build-arg DEEPSPEED_PIP="deepspeed==0.10.3" \
+		.
+
 export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm
 
 .PHONY: build-pytorch10-tf27-rocm50
