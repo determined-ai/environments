@@ -2,6 +2,7 @@
 
 set -e
 
+apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev
 # Triton is needed to build deepspeed's sparse_attn operation.
 python -m pip install triton==1.0.0
