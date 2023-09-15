@@ -184,7 +184,7 @@ build-gpu-ngc-base:
 .PHONY: build-gpu-ngc-deepspeed
 build-gpu-ngc-deepspeed:
 	docker build -f Dockerfile-ngc \
-		--build-arg BASE_IMAGE="nvcr.io/nvidia/pytorch:23.08-py3" \
+		--build-arg BASE_IMAGE="nvcr.io/nvidia/pytorch:23.02-py3" \
 		--build-arg DEEPSPEED_PIP="deepspeed==0.10.3" \
 		.
 
