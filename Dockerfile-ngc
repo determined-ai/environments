@@ -69,8 +69,6 @@ RUN mkdir -p /container/bin && \
 ENTRYPOINT ["/container/bin/scrape_libs.sh"]
 CMD ["/bin/bash"]
 
-RUN rm -r /tmp/*
-
 ARG AWS_PLUGIN_INSTALL_DIR=/container/aws
 ARG WITH_AWS_TRACE
 ARG INTERNAL_AWS_DS
