@@ -204,7 +204,10 @@ build-gpt-neox-deepspeed-gpu: build-gpu-cuda-113-base
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg "$(NCCL_BUILD_ARG)" \
-		--build-arg DEEPSPEED_PIP="git+https://github.com/determined-ai/deepspeed.git@eleuther_dai" \
+                --build-arg DEEPSPEED_PIP="git+https://github.com/determined-ai/deepspeed.git@karlonw/PAD-43-fix-for-amd" \
+                --build-arg INTERNAL_AWS_DS="$(INTERNAL_AWS_DS)" \
+                --build-arg INTERNAL_AWS_PATH="$(INTERNAL_AWS_PATH)" \
+                --build-arg "$(OFI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \

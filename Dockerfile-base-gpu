@@ -70,6 +70,7 @@ ARG UCX_INSTALL_DIR=/container/ucx
 ARG OMPI_INSTALL_DIR=/container/ompi
 ARG OFI_INSTALL_DIR=/container/ofi
 ARG OMPI_WITH_CUDA=1
+RUN if [ "$WITH_OFI" = "1" ]; then /tmp/det_dockerfile_scripts/build_ofi.sh; fi
 RUN if [ "$WITH_MPI" = "1" ]; then /tmp/det_dockerfile_scripts/ompi.sh "$UBUNTU_VERSION" "$WITH_OFI" "$OMPI_WITH_CUDA"; fi
 # Make sure OMPI/UCX show up in the right paths
 ARG VERBS_LIB_DIR=/usr/lib/libibverbs

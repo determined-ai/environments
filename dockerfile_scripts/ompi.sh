@@ -14,22 +14,7 @@ fi
 OS_VER=$1
 OFI=$2
 if [ "$OFI" = "1" ]; then
-  # Install OFI
-  OFI_VER=1.15.1
-  OFI_CONFIG_OPTIONS="--prefix ${OFI_INSTALL_DIR}"
-  OFI_SRC_DIR=/tmp/ofi-src
-  OFI_BASE_URL="https://github.com/ofiwg/libfabric/releases/download"
-  OFI_URL="${OFI_BASE_URL}/v${OFI_VER}/libfabric-${OFI_VER}.tar.bz2"
-
-  mkdir -p ${OFI_SRC_DIR}                              && \
-    cd ${OFI_SRC_DIR}                                  && \
-    wget ${OFI_URL}                                    && \
-    tar -xf libfabric-${OFI_VER}.tar.bz2              && \
-    cd libfabric-${OFI_VER}                            && \
-    ./configure ${OFI_CONFIG_OPTIONS}                  && \
-    make install                                       && \
-    cd /tmp                                            && \
-    rm -rf ${OFI_SRC_DIR}
+  # OFI already installed at ${OFI_INSTALL_DIR} va dockerfile_scripts/build_ofi.sh
 
   #OMPI CONFIG ARGS FOR OFI
   OMPI_CONFIG_OPTIONS_VAR="--prefix ${OMPI_INSTALL_DIR} --enable-orterun-prefix-by-default --enable-shared --with-cma --with-pic --enable-mpi-cxx --enable-mpi-thread-multiple --with-libfabric=${OFI_INSTALL_DIR} --without-ucx --with-pmi --with-pmix=internal ${OMPI_WITH_CUDA}"
