@@ -5,9 +5,16 @@ WHOAMI=$(whoami)
 if [ -d /container/aws/lib ]
 then
    # See if we mounted in host libs in the expected location
-   host_dir="/host"
+   host_dir="/det_host"
    if [ -d "$host_dir" ]; then
-       libfabric=`find /host -name libfabric.so 2>/dev/null`
+       # to set these paths based on where we find the libs that
+       # libfabric is dependent upon.
+       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$host_dir/usr/lib64
+       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$host_dir/usr/local/lib64
+   fi # end if /det_host exists
+   host_dir="/det_libfabric"
+   if [ -d "$host_dir" ]; then
+       libfabric=`find $host_dir -name libfabric.so 2>/dev/null`
        libfabric_dir="$(dirname "$libfabric")"
        if [[ ! -z "$libfabric" ]] ; then
            # Need libfabric to be first in the LD_LIBRARY_PATH to
@@ -18,7 +25,7 @@ then
            tmp_dir="/var/tmp"
            tmp_lib_dir="$tmp_dir/${WHOAMI}/detAI/lib"
            mkdir -p $tmp_lib_dir
-           for lib in `/bin/ls $libfabric_dir/ | grep libfabric` ; do
+           for lib in `/bin/ls $libfabric_dir/ | grep -elibfabric -ecxi` ; do
                ln -s $libfabric_dir/$lib $tmp_lib_dir 2>/dev/null
            done
            # Prepend the tmp dir for the host libfabric
@@ -28,10 +35,8 @@ then
            # to set these paths based on where we find the libs that
            # libfabric is dependent upon.
            export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$libfabric_dir
-           export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/host/usr/lib64
-           export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/host/usr/local/lib64
        fi # end if found libfabric.so
-   fi # end if /host exists
+   fi # end if /det_libfabric exists
    export LD_LIBRARY_PATH=/container/aws/lib:$LD_LIBRARY_PATH
 
    tmp_nvcache_dir=$(mktemp -d -p /var/tmp ${WHOAMI}-nvcache-XXXXXXXX)
@@ -92,9 +97,9 @@ then
       export RCCL_DEBUG=${NCCL_DEBUG}
 
       if [ "$WITH_NFS_WORKAROUND" = "1" ]; then
-         export MIOPEN_CACHE_DIR=${MIOPEN_USER_CACHE_PATH}
          export MIOPEN_USER_DB_PATH="/tmp/${WHOAMI}_${SLURM_LOCALID}"
          export MIOPEN_USER_CACHE_PATH="$MIOPEN_USER_DB_PATH/.cache"
+         export MIOPEN_CACHE_DIR=${MIOPEN_USER_CACHE_PATH}
          echo "MIOPEN_USER_DB_PATH: $MIOPEN_USER_DB_PATH, cache dir: $MIOPEN_USER_CACHE_PATH"
          mkdir -p $MIOPEN_USER_DB_PATH
          mkdir -p $MIOPEN_USER_CACHE_PATH/miopen
