@@ -205,6 +205,7 @@ RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
 RUN pip uninstall -y tb-nightly tensorboardX tensorboard
 #RUN pip install numpy==1.22 torch protobuf==3.19.6 torchvision tensorboard==2.10.1
 #RUN pip install numpy==1.22 torch torchvision tensorboard==2.10.1
+RUN pip install tensorboard==2.10.1
 
 RUN pip install pynvml 
 
@@ -223,6 +224,7 @@ RUN ldconfig
 #RUN apt install rocm-libs 
 
 #RUN apt install googletest
+RUN pip install tokenizers==0.13.0 huggingface-hub==0.16.4 
 
 #RUN apt install libgtest-dev && cd /usr/src/gtest && cmake CMakeLists.txt && make && cp lib/*.a /usr/lib
 
