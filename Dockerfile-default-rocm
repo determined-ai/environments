@@ -1,6 +1,5 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
-#RUN sudo sysctl -w kernel.core_pattern="core-%h-%e-%s-%t-%u-%p"
 
 #RUN dpkg -S /opt/ompi
 RUN apt remove -y openmpi ucx
@@ -48,8 +47,7 @@ RUN apt-get update \
 	&& rm /etc/ssh/ssh_host_ecdsa_key \
 	&& rm /etc/ssh/ssh_host_ed25519_key \
 	&& rm /etc/ssh/ssh_host_rsa_key
-#RUN pip install pip install --upgrade pip
-#RUN pip install torch torchvision torchaudio
+RUN pip install pip install --upgrade pip
 #RUN pip install google-auth-oauthlib==0.4.1
 #RUN echo pip install numba --upgrade
 #RUN pip install numpy==1.22
@@ -192,13 +190,6 @@ ENV HOROVOD_GPU_ALLREDUCE=$HOROVOD_GPU_ALLREDUCE
 ENV HOROVOD_GPU_BROADCAST=$HOROVOD_GPU_BROADCAST
 
 RUN if [ "$HOROVOD_PIP" != "0" ]; then pip install "${HOROVOD_PIP}" ; fi
-#RUN if [ "$HOROVOD_PIP" != "0" ]; then TMPDIR=`pwd`\tmp pip install -b `pwd`\build "${HOROVOD_PIP}" ; fi
-
-#RUN /usr/bin/python
-#RUN pip remove torch torchvision torchaudio
-#RUN git clone https://github.com/pytorch/pytorch.git && cd pytorch && git submodule update --init --recursive
-#RUN cd /tmp && pip download horovod && tar xf horovod-*.tar.gz && cd horovod-* &&  ( python3 setup.py build || wget -qO - https://github.com/horovod/horovod/blob/master/horovod/torch/cuda_util.cc > horovod/torch/cuda_util.cc && python3 setup.py build && python3 setup.py install ) 
-#RUN cd /tmp && pip download horovod && tar xf horovod-*.tar.gz && cd horovod-* &&  ( python3 setup.py build || wget -q0 https://raw.githubusercontent.com/horovod/horovod/master/horovod/torch/cuda_util.cc > horovod/torch/cuda_util.cc && python3 setup.py build && python3 setup.py install ) 
 
 RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
 
