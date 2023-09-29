@@ -75,13 +75,20 @@ ARG INTERNAL_AWS_DS
 ARG INTERNAL_AWS_PATH
 RUN if [ "$WITH_OFI" = "1" ]; then /tmp/det_dockerfile_scripts/build_aws.sh "$WITH_OFI" "$WITH_AWS_TRACE"; fi
 
+RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
+
 #USING OFI
 ARG AWS_LIB_DIR=${AWS_PLUGIN_INSTALL_DIR}/lib
 ENV LD_LIBRARY_PATH=${WITH_OFI:+$AWS_LIB_DIR:}$LD_LIBRARY_PATH
 
 RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
 
-ARG DEEPSPEED_PIP
-RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed.sh; fi
+# Set an entrypoint that can scrape up the host libfabric.so and then
+# run the user command. This is intended to enable performant execution
+# on non-IB systems that have a proprietary libfabric.
+RUN mkdir -p /container/bin && \
+    cp /tmp/det_dockerfile_scripts/scrape_libs.sh /container/bin
+ENTRYPOINT ["/container/bin/scrape_libs.sh"]
+CMD ["/bin/bash"]
 
 RUN rm -r /tmp/*
