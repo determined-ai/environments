@@ -2,15 +2,14 @@ ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
 RUN apt remove -y openmpi ucx
-#Let's move any existing /opt/ompi out of the way
-RUN mv /opt/ompi /opt/ompi.0 
-
+#Let's remove existing /opt/ompi; and, link to our version.
+RUN rm -rf /opt/ompi 
 RUN ln -s /container/ompi /opt 
 
 RUN mkdir -p /var/run/sshd
 RUN rm /etc/apt/sources.list.d/rocm.list
 RUN apt-get update \
-	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
                 autoconf \
                 automake \
                 autotools-dev \
@@ -25,25 +24,25 @@ RUN apt-get update \
                 librdmacm1 \
                 libssl-dev \
                 libtool \
-		git \
-		krb5-user \
-		cmake \
-		g++ \
-		make \
-		openssh-client \
-		openssh-server \
-		pkg-config \
-		wget \
-		nfs-common \
+                git \
+                krb5-user \
+                cmake \
+                g++ \
+                make \
+                openssh-client \
+                openssh-server \
+                pkg-config \
+                wget \
+                nfs-common \
                 libnuma1 \
                 libnuma-dev \
                 libpmi2-0-dev \
-		unattended-upgrades \
-	&& unattended-upgrade \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& rm /etc/ssh/ssh_host_ecdsa_key \
-	&& rm /etc/ssh/ssh_host_ed25519_key \
-	&& rm /etc/ssh/ssh_host_rsa_key
+                unattended-upgrades \
+        && unattended-upgrade \
+        && rm -rf /var/lib/apt/lists/* \
+        && rm /etc/ssh/ssh_host_ecdsa_key \
+        && rm /etc/ssh/ssh_host_ed25519_key \
+        && rm /etc/ssh/ssh_host_rsa_key
 RUN pip install pip install --upgrade pip
 
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
@@ -154,10 +153,6 @@ ARG HOROVOD_WITH_MPI=1
 ARG HOROVOD_GPU=ROCM
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH;/opt/rocm/lib:/opt/rocm/hip/lib
 
-#TEST ARGs
-ARG HOROVOD_GPU_ALLREDUCE=NCCL
-ARG HOROVOD_GPU_BROADCAST=NCCL
-
 ENV HOROVOD_PIP $HOROVOD_PIP
 ENV HOROVOD_WITH_TENSORFLOW $HOROVOD_WITH_TENSORFLOW
 ENV HOROVOD_WITH_PYTORCH $HOROVOD_WITH_PYTORCH
@@ -170,10 +165,6 @@ ENV HOROVOD_NCCL_HOME $HOROVOD_NCCL_HOME
 ENV NCCL_LIB_DIR=${HOROVOD_NCCL_HOME}/lib
 ENV HOROVOD_NCCL_LINK=${WITH_OFI:+SHARED}
 ENV LD_LIBRARY_PATH=${WITH_OFI:+$NCCL_LIB_DIR:}$LD_LIBRARY_PATH
-
-#TEST ENVs
-ENV HOROVOD_GPU_ALLREDUCE=$HOROVOD_GPU_ALLREDUCE
-ENV HOROVOD_GPU_BROADCAST=$HOROVOD_GPU_BROADCAST
 
 RUN if [ "$HOROVOD_PIP" != "0" ]; then pip install "${HOROVOD_PIP}" ; fi
 
