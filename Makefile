@@ -175,16 +175,23 @@ build-gpu-cuda-118-base:
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(VERSION) \
 		.
 
+NGC_PYTORCH_PREFIX=nvcr.io/nvidia/pytorch
+NGC_PYTORCH_VERSION=23.08-py3
+NGCPLUS_BASE=pytorch-ngc
+
 .PHONY: build-gpu-ngc-base
 build-gpu-ngc-base:
 	docker build -f Dockerfile-ngc \
-		--build-arg BASE_IMAGE="nvcr.io/nvidia/pytorch:23.08-py3" \
+		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-$(VERSION) \
 		.
 
+# Note: deepspeed doesn't work with NGC...
 .PHONY: build-gpu-ngc-deepspeed
 build-gpu-ngc-deepspeed:
 	docker build -f Dockerfile-ngc \
-		--build-arg BASE_IMAGE="nvcr.io/nvidia/pytorch:23.08-py3" \
+		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
 		--build-arg DEEPSPEED_PIP="deepspeed==0.10.3" \
 		.
 
