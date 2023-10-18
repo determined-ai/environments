@@ -168,7 +168,7 @@ ENV LD_LIBRARY_PATH=${WITH_OFI:+$NCCL_LIB_DIR:}$LD_LIBRARY_PATH
 RUN if [ "$HOROVOD_PIP" != "0" ]; then pip install "${HOROVOD_PIP}" ; fi
 
 RUN pip uninstall -y tb-nightly tensorboardX
-RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
+RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements-rocm.txt
 
 #RUN pip install tensorboard==2.10.1
 
