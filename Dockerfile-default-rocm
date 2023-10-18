@@ -55,14 +55,12 @@ ENV PATH="/opt/conda/envs/py_3.8/bin:${PATH}"
 ARG CONDA="${PATH}"
 
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
-ARG PYTHON_VERSION
 
 # Install fixed version of FFI package for Ubuntu 20.04.
 # This is done after above stuff to make sure we get right version.
 RUN /tmp/det_dockerfile_scripts/install_package_fixes.sh
 
 RUN apt install rocm-libs 
-
 
 #USING OFI
 ARG WITH_MPI=1
@@ -113,7 +111,7 @@ ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM ${WITH_MPI:+1}
 
 
 RUN pip install cloudpickle
-RUN pip install determined==0.22.1 && pip uninstall -y determined
+RUN pip install determined && pip uninstall -y determined
 RUN pip install google-auth-oauthlib
 
 
@@ -131,8 +129,7 @@ RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 # Horovod cannot build with protobuf > 3.20.x
 # latest google-api-python-client requires protobuf >= 3.20.1
 #RUN pip install numpy==1.23.1
-RUN pip install protobuf==3.19.6
-
+#RUN pip install protobuf==3.19.6
 
 ARG TENSORFLOW_PIP
 RUN if [ "$TENSORFLOW_PIP" ]; then pip install $TENSORFLOW_PIP; fi
@@ -170,9 +167,6 @@ RUN if [ "$HOROVOD_PIP" != "0" ]; then pip install "${HOROVOD_PIP}" ; fi
 RUN pip uninstall -y tb-nightly tensorboardX
 RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements-rocm.txt
 
-#RUN pip install tensorboard==2.10.1
-
-#RUN pip install pynvml 
 
 ENV HSA_FORCE_FINE_GRAIN_PCIE=1
 
