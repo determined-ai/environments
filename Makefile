@@ -9,6 +9,7 @@ export DOCKERHUB_REGISTRY := determinedai
 export REGISTRY_REPO := environments
 
 CPU_PREFIX_38 := $(REGISTRY_REPO):py-3.8-
+CPU_PREFIX_39 := $(REGISTRY_REPO):py-3.9-
 CPU_PREFIX_310 := $(REGISTRY_REPO):py-3.10-
 CUDA_111_PREFIX := $(REGISTRY_REPO):cuda-11.1-
 CUDA_112_PREFIX := $(REGISTRY_REPO):cuda-11.2-
@@ -20,6 +21,7 @@ CPU_SUFFIX := -cpu
 GPU_SUFFIX := -gpu
 ARTIFACTS_DIR := /tmp/artifacts
 PYTHON_VERSION_38 := 3.8.12
+PYTHON_VERSION_39 := 3.9.16
 PYTHON_VERSION_310 := 3.10.12
 UBUNTU_VERSION := ubuntu20.04
 UBUNTU_IMAGE_TAG := ubuntu:20.04
@@ -65,6 +67,7 @@ else
 endif
 
 export CPU_PY_38_BASE_NAME := $(CPU_PREFIX_38)base$(CPU_SUFFIX)
+export CPU_PY_39_BASE_NAME := $(CPU_PREFIX_39)base$(CPU_SUFFIX)
 export CPU_PY_310_BASE_NAME := $(CPU_PREFIX_310)base$(CPU_SUFFIX)
 export GPU_CUDA_111_BASE_NAME := $(CUDA_111_PREFIX)base$(GPU_SUFFIX)
 export GPU_CUDA_112_BASE_NAME := $(CUDA_112_PREFIX)base$(GPU_SUFFIX)
@@ -84,6 +87,23 @@ build-cpu-py-38-base:
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_38)" \
+		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
+		--build-arg "$(MPI_BUILD_ARG)" \
+		--build-arg "$(OFI_BUILD_ARG)" \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(VERSION) \
+		--push \
+		.
+
+# Base images.
+.PHONY: build-cpu-py-39-base
+build-cpu-py-39-base:
+	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+	docker buildx create --name builder --driver docker-container --use
+	docker buildx build -f Dockerfile-base-cpu \
+	    --platform "$(PLATFORMS)" \
+		--build-arg BASE_IMAGE="$(UBUNTU_IMAGE_TAG)" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_39)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
@@ -123,7 +143,7 @@ build-gpu-cuda-111-base:
 build-gpu-cuda-112-base:
 	docker build -f Dockerfile-base-gpu \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.2.2-cudnn8-devel-$(UBUNTU_VERSION)" \
-		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_38)" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_39)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_112_BASE_NAME)-$(SHORT_GIT_HASH) \
@@ -134,7 +154,7 @@ build-gpu-cuda-112-base:
 build-gpu-cuda-113-base:
 	docker build -f Dockerfile-base-gpu \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.3.1-cudnn8-devel-$(UBUNTU_VERSION)" \
-		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_38)" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_39)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
@@ -232,7 +252,7 @@ export GPU_TF28_ENVIRONMENT_NAME := $(CUDA_112_PREFIX)tf-2.8$(GPU_SUFFIX)
 build-tf28-cpu: build-cpu-py-38-base
 	docker buildx build -f Dockerfile-default-cpu \
 		--platform "$(PLATFORMS)" \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="tensorflow-cpu==2.8.4" \
 		--build-arg HOROVOD_PIP="horovod==0.24.2" \
 		--build-arg HOROVOD_WITH_PYTORCH=0 \
@@ -265,9 +285,9 @@ TORCH_PIP_CPU := torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cp
 TORCH_PIP_GPU := torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 HOROVOD_PIP_COMMAND := horovod==0.28.1
 
-export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX_38)pytorch-$(TORCH_VERSION)-tf-$(TF2_VERSION_SHORT)$(CPU_SUFFIX)
+export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX_39)pytorch-$(TORCH_VERSION)-tf-$(TF2_VERSION_SHORT)$(CPU_SUFFIX)
 export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-$(TORCH_VERSION)-tf-$(TF2_VERSION_SHORT)$(GPU_SUFFIX)
-export CPU_PT_ENVIRONMENT_NAME := $(CPU_PREFIX_38)pytorch-$(TORCH_VERSION)$(CPU_SUFFIX)
+export CPU_PT_ENVIRONMENT_NAME := $(CPU_PREFIX_39)pytorch-$(TORCH_VERSION)$(CPU_SUFFIX)
 export GPU_PT_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-$(TORCH_VERSION)$(GPU_SUFFIX)
 
 ifeq ($(NGC_PUBLISH),)
@@ -295,10 +315,10 @@ endef
 endif
 
 .PHONY: build-tf2-cpu
-build-tf2-cpu: build-cpu-py-38-base
+build-tf2-cpu: build-cpu-py-39-base
 	docker buildx build -f Dockerfile-default-cpu \
 	    --platform "$(PLATFORMS)" \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="$(TF2_PIP_CPU)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_CPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
@@ -311,10 +331,10 @@ build-tf2-cpu: build-cpu-py-38-base
 		.
 
 .PHONY: build-pt-cpu
-build-pt-cpu: build-cpu-py-38-base
+build-pt-cpu: build-cpu-py-39-base
 	docker buildx build -f Dockerfile-default-cpu \
 	    --platform "$(PLATFORMS)" \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_CPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
