@@ -128,8 +128,6 @@ RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 # google-api-python-client -> google-api-core -> googleapis-common-protos -> protobuf
 # Horovod cannot build with protobuf > 3.20.x
 # latest google-api-python-client requires protobuf >= 3.20.1
-#RUN pip install numpy==1.23.1
-#RUN pip install protobuf==3.19.6
 
 ARG TENSORFLOW_PIP
 RUN if [ "$TENSORFLOW_PIP" ]; then pip install $TENSORFLOW_PIP; fi
@@ -179,8 +177,6 @@ ENV ROCM_DIR $ROCM_DIR
 RUN if [ "$WITH_OFI" = "1" ]; then /tmp/det_dockerfile_scripts/build_aws_rocm.sh "$WITH_OFI" "$WITH_AWS_TRACE" "$WITH_MPICH"; fi
 ENV LD_LIBRARY_PATH=${WITH_OFI:+$AWS_PLUGIN_INSTALL_DIR:}$LD_LIBRARY_PATH
 RUN ldconfig
-
-#RUN pip install tokenizers==0.13.0 huggingface-hub==0.16.4 
 
 ENV PATH=$OMPI_PATH_DIR:$OFI_INSTALL_DIR:$PATH
 # Reset entrypoint.
