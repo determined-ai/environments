@@ -195,7 +195,8 @@ workflows:
                 - tf28-gpu
                 - pt-gpu
                 - pt2-gpu
-                - pytorch10-tf27-rocm50
+                - pytorch13-tf210-rocm56
+                - pytorch20-tf210-rocm56
             exclude:
               - with-mpi: 1
                 image-type: pytorch10-tf27-rocm50
