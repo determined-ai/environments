@@ -36,8 +36,10 @@ then
        else 
 	       echo "libfabric not found within $host_dir." >&2
        fi # end if found libfabric.so
+   else echo "no suitable mounts available." >&2
    fi # end if /det_libfabric exists
    # See if we mounted in host libs in the expected location
+
    host_dir="/det_host"
    if [ ! -d "$host_dir" ]; then
    	host_dir="/host"
