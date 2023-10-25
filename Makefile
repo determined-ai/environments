@@ -518,11 +518,11 @@ endif
 
 .PHONY: publish-pytorch13-tf210-rocm56
 publish-pytorch13-tf210-rocm56:
-	scripts/publish-docker.sh pytorch13-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh pytorch13-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-pytorch20-tf210-rocm56
 publish-pytorch20-tf210-rocm56:
-	scripts/publish-docker.sh pytorch13-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh pytorch20-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
 publish-cloud-images:
