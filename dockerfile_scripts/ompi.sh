@@ -15,7 +15,7 @@ OS_VER=$1
 OFI=$2
 if [ "$OFI" = "1" ]; then
   # Install OFI
-  OFI_VER=1.15.1
+  OFI_VER=1.19.0
   OFI_CONFIG_OPTIONS="--prefix ${OFI_INSTALL_DIR}"
   OFI_SRC_DIR=/tmp/ofi-src
   OFI_BASE_URL="https://github.com/ofiwg/libfabric/releases/download"

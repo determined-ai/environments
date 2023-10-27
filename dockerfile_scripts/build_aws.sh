@@ -17,19 +17,26 @@ if [ "$OFI" = "1" ]; then
                 tcsh
 
   # Install AWS_OFI_NCCL
-  AWS_VER=v1.4.0
-  AWS_VER_NUM=1.4.0
+#  AWS_VER=v1.4.0
+#  AWS_VER_NUM=1.4.0
+  AWS_VER=v1.6.0
+  AWS_VER_NUM=1.6.0
   AWS_NAME=aws-ofi-nccl
   AWS_FILE="${AWS_NAME}-${AWS_VER_NUM}"
   # cuda install dir likely dependent on BaseOS (i.e. ubuntu 20.02)
   # in case this changes in the future
   cuda_ver_str=`echo $CUDA_VERSION | awk -F "." '{print $1"."$2}'`
-  CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/x86_64-linux"
+  CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/sbsa-linux"
   GDRCOPY_HOME="/usr"
 
+  # AWS_CONFIG_OPTIONS="--prefix ${AWS_PLUGIN_INSTALL_DIR} \
+  # 	  --with-libfabric=${OFI_INSTALL_DIR}            \
+  # 	  --with-nccl=${HOROVOD_NCCL_HOME}               \
+  # 	  --with-mpi=${OMPI_INSTALL_DIR}                 \
+  # 	  --with-gdrcopy=${GDRCOPY_HOME}                 \
+  # 	  --with-cuda=${CUDA_DIR} ${WITH_AWS_TRACE}"
   AWS_CONFIG_OPTIONS="--prefix ${AWS_PLUGIN_INSTALL_DIR} \
 	  --with-libfabric=${OFI_INSTALL_DIR}            \
-	  --with-nccl=${HOROVOD_NCCL_HOME}               \
 	  --with-mpi=${OMPI_INSTALL_DIR}                 \
 	  --with-gdrcopy=${GDRCOPY_HOME}                 \
 	  --with-cuda=${CUDA_DIR} ${WITH_AWS_TRACE}"
@@ -55,8 +62,10 @@ if [ "$OFI" = "1" ]; then
     #    wget -O "${AWS_FILE}.tar.gz" ${AWS_URL}       && \
     #    tar -xzf ${AWS_FILE}.tar.gz                   && \
     #    cd ${AWS_FILE}                                && \
-    wget -O ${AWS_NAME}.tar.gz ${AWS_URL}         && \
-    tar -xzf ${AWS_NAME}.tar.gz                   && \
+#    wget -O ${AWS_NAME}.tar.gz ${AWS_URL}         && \
+#    wget ${AWS_URL}/${AWS_VER}.tar.gz && \
+    wget ${AWS_URL} && \
+    tar -xzf ${AWS_VER}.tar.gz                   && \
     cd ${AWS_NAME}                                && \
     ./autogen.sh                                  && \
     ./configure ${AWS_CONFIG_OPTIONS}             && \

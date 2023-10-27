@@ -161,6 +161,39 @@ build-gpu-cuda-118-base:
 NGC_PYTORCH_PREFIX=nvcr.io/nvidia/pytorch
 NGC_PYTORCH_VERSION=23.08-py3
 NGCPLUS_BASE=pytorch-ngc
+NGC_GH_PYTORCH_VERSION=23.09-py3
+NGCPLUS_GH_BASE=pytorch-gh-ngc
+NGCPLUS_GH_DS=pytorch-gh-ds-ngc
+
+.PHONY: build-gpu-ngc-gh-base
+build-gpu-ngc-gh-base:
+	docker build -f Dockerfile-ngc \
+		--build-arg BASE_IMAGE="nvcr.io/nvidia/pytorch:23.09-py3" \
+		--build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
+		--build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
+		--build-arg INTERNAL_AWS_DS="$(INTERNAL_AWS_DS)" \
+		--build-arg INTERNAL_AWS_PATH="$(INTERNAL_AWS_PATH)" \
+		--build-arg "$(MPI_BUILD_ARG)" \
+		--build-arg "$(OFI_BUILD_ARG)" \
+		--build-arg "$(NCCL_BUILD_ARG)" \
+		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
+		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
+		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
+		--build-arg HOROVOD_GPU_OPERATIONS="$(HOROVOD_GPU_OPERATIONS)" \
+		--build-arg HOROVOD_GPU_ALLREDUCE="$(HOROVOD_GPU_ALLREDUCE)" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-$(NGC_GH_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-$(NGC_GH_PYTORCH_VERSION)-$(VERSION) \
+		.
+
+.PHONY: build-gpu-ngc-gh-deepspeed
+build-gpu-ngc-gh-deepspeed: build-gpu-ngc-gh-base
+	docker build -f Dockerfile-ngc-ds \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-$(NGC_GH_PYTORCH_VERSION)-$(VERSION)" \
+                --build-arg DEEPSPEED_PIP="deepspeed==0.11.1"   \
+                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-$(NGC_GH_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-$(NGC_GH_PYTORCH_VERSION)-$(VERSION) \
+		.
+
 
 .PHONY: build-gpu-ngc-base
 build-gpu-ngc-base:

@@ -1,0 +1,10 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+
+ARG DEEPSPEED_PIP
+RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed.sh; fi
+
+RUN rm -r /tmp/*
+
