@@ -159,6 +159,7 @@ build-gpu-cuda-118-base:
 		.
 
 export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm
+export TF_PROFILER_PIP := tensorboard-plugin-profile
 
 .PHONY: build-pytorch10-tf27-rocm50
 build-pytorch10-tf27-rocm50:
@@ -267,7 +268,6 @@ TF2_PIP_GPU := tensorflow==$(TF2_VERSION)
 TORCH_PIP_CPU := torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html
 TORCH_PIP_GPU := torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 HOROVOD_PIP_COMMAND := horovod==0.28.1
-TF_PROFILER_PIP := tensorboard-plugin-profile
 
 export CPU_TF2_ENVIRONMENT_NAME := $(CPU_PREFIX_38)pytorch-$(TORCH_VERSION)-tf-$(TF2_VERSION_SHORT)$(CPU_SUFFIX)
 export GPU_TF2_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-$(TORCH_VERSION)-tf-$(TF2_VERSION_SHORT)$(GPU_SUFFIX)
