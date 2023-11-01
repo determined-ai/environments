@@ -214,7 +214,7 @@ workflows:
               use-nvidia-runtime:
                 - true
               ci-image:
-                - linux-cuda-12:default
+                - linux-cuda-11:default
               ci-resource_class:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
@@ -283,7 +283,7 @@ workflows:
                 - true
               dev-mode: [true]
               ci-image:
-                - linux-cuda-12:default
+                - linux-cuda-11:default
               ci-resource_class:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
