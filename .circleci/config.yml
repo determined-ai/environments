@@ -195,13 +195,10 @@ workflows:
                 - tf28-gpu
                 - pt-gpu
                 - pt2-gpu
-                - pytorch13-tf210-rocm56
-                - pytorch20-tf210-rocm56
+                - pytorch10-tf27-rocm50
             exclude:
               - with-mpi: 1
-                image-type: 
-                  - pytorch13-tf210-rocm56
-                  - pytorch20-tf210-rocm56
+                image-type: pytorch10-tf27-rocm50
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
           context: determined-production
@@ -214,9 +211,9 @@ workflows:
               use-nvidia-runtime:
                 - true
               ci-image:
-                - linux-cuda-11:default
+                - ubuntu-2004-cuda-11.4:202110-01
               ci-resource_class:
-                - gpu.nvidia.small.multi
+                - gpu.nvidia.small
               with-mpi: [0]
               image-type:
                 - deepspeed-gpu
@@ -260,15 +257,11 @@ workflows:
                 - tf28-gpu
                 - pt-gpu
                 - pt2-gpu
-                - pytorch13-tf210-rocm56
-                - pytorch20-tf210-rocm56
+                - pytorch10-tf27-rocm50
             exclude:
               - dev-mode: true
                 with-mpi: 1
-                image-type: 
-                  - pytorch13-tf210-rocm56
-                  - pytorch20-tf210-rocm56
-                  
+                image-type: pytorch10-tf27-rocm50
 
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
@@ -283,9 +276,9 @@ workflows:
                 - true
               dev-mode: [true]
               ci-image:
-                - linux-cuda-11:default
+                - ubuntu-2004-cuda-11.4:202110-01
               ci-resource_class:
-                - gpu.nvidia.small.multi
+                - gpu.nvidia.small
               with-mpi: [0]
               image-type:
                 - deepspeed-gpu
