@@ -211,9 +211,9 @@ workflows:
               use-nvidia-runtime:
                 - true
               ci-image:
-                - ubuntu-2004-cuda-11.4:202110-01
+                - linux-cuda-11:default
               ci-resource_class:
-                - gpu.nvidia.small
+                - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
                 - deepspeed-gpu
@@ -276,9 +276,9 @@ workflows:
                 - true
               dev-mode: [true]
               ci-image:
-                - ubuntu-2004-cuda-11.4:202110-01
+                - linux-cuda-11:default
               ci-resource_class:
-                - gpu.nvidia.small
+                - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
                 - deepspeed-gpu
