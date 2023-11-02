@@ -157,7 +157,13 @@ build-gpu-cuda-118-base:
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(VERSION) \
 		.
-export ROCM56_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_56_PREFIX)pytorch-1.3-tf-2.10-rocm
+
+ifeq ($(WITH_MPICH),1)
+ROCM56_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-mpich
+else
+ROCM56_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-ompi
+endif
+export ROCM56_TORCH13_TF_ENVIRONMENT_NAME := $(ROCM_56_PREFIX)$(ROCM56_TORCH13_MPI)
 .PHONY: build-pytorch13-tf210-rocm56
 build-pytorch13-tf210-rocm56:
 	docker build -f Dockerfile-default-rocm \
@@ -165,11 +171,17 @@ build-pytorch13-tf210-rocm56:
 		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
 		--build-arg HOROVOD_PIP="horovod==0.28.1" \
 		--build-arg WITH_MPICH=$(WITH_MPICH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
-export ROCM56_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_56_PREFIX)pytorch-2.0-tf-2.10-rocm
+
+ifeq ($(WITH_MPICH),1)
+ROCM56_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-mpich
+else
+ROCM56_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-ompi
+endif
+export ROCM56_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_56_PREFIX)$(ROCM56_TORCH_MPI)
 .PHONY: build-pytorch20-tf210-rocm56
 build-pytorch20-tf210-rocm56:
 	docker build -f Dockerfile-default-rocm \
@@ -506,11 +518,11 @@ endif
 
 .PHONY: publish-pytorch13-tf210-rocm56
 publish-pytorch13-tf210-rocm56:
-	scripts/publish-docker.sh pytorch13-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh pytorch13-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-pytorch20-tf210-rocm56
 publish-pytorch20-tf210-rocm56:
-	scripts/publish-docker.sh pytorch13-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh pytorch20-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
 publish-cloud-images:

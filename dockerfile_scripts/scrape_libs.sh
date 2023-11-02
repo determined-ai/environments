@@ -4,15 +4,13 @@ WHOAMI=$(whoami)
 # Only scrape host libs if AWS/NCCL/OFI was built for this image
 if [ -d /container/aws/lib ]
 then
-   # See if we mounted in host libs in the expected location
-   host_dir="/det_host"
-   if [ -d "$host_dir" ]; then
-       # to set these paths based on where we find the libs that
-       # libfabric is dependent upon.
-       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$host_dir/usr/lib64
-       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$host_dir/usr/local/lib64
-   fi # end if /det_host exists
    host_dir="/det_libfabric"
+   if [ ! -d "$host_dir" ]; then
+     host_dir="/det_host"
+     if [ ! -d "$host_dir" ]; then
+       host_dir="/host"
+     fi
+   fi
    if [ -d "$host_dir" ]; then
        libfabric=`find $host_dir -name libfabric.so 2>/dev/null`
        libfabric_dir="$(dirname "$libfabric")"
@@ -35,8 +33,23 @@ then
            # to set these paths based on where we find the libs that
            # libfabric is dependent upon.
            export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$libfabric_dir
+       else 
+	       echo "libfabric not found within $host_dir." >&2
        fi # end if found libfabric.so
+   else echo "no suitable mounts available." >&2
    fi # end if /det_libfabric exists
+   # See if we mounted in host libs in the expected location
+
+   host_dir="/det_host"
+   if [ ! -d "$host_dir" ]; then
+   	host_dir="/host"
+   fi
+   if [ -d "$host_dir" ]; then
+       # to set these paths based on where we find the libs that
+       # libfabric is dependent upon.
+       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$host_dir/usr/lib64
+       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$host_dir/usr/local/lib64
+   fi # end if /det_host exists
    export LD_LIBRARY_PATH=/container/aws/lib:$LD_LIBRARY_PATH
 
    tmp_nvcache_dir=$(mktemp -d -p /var/tmp ${WHOAMI}-nvcache-XXXXXXXX)

@@ -1,20 +1,15 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
-#RUN sudo sysctl -w kernel.core_pattern="core-%h-%e-%s-%t-%u-%p"
 
-#RUN dpkg -S /opt/ompi
 RUN apt remove -y openmpi ucx
-#RUN mv /opt/ompi /opt/ompi.0 && mv /opt/ucx /opt/ucx.0
-RUN mv /opt/ompi /opt/ompi.0 
-#RUN ln -s /container/ompi /opt && ln -s /container/ucx /opt
+#Let's remove existing /opt/ompi; and, link to our version.
+RUN rm -rf /opt/ompi 
 RUN ln -s /container/ompi /opt 
-#RUN ls /opt/ompi && exit 99
 
 RUN mkdir -p /var/run/sshd
-#RUN pip install torch torchvision torchaudio
 RUN rm /etc/apt/sources.list.d/rocm.list
 RUN apt-get update \
-	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
                 autoconf \
                 automake \
                 autotools-dev \
@@ -29,60 +24,48 @@ RUN apt-get update \
                 librdmacm1 \
                 libssl-dev \
                 libtool \
-		git \
-		krb5-user \
-		cmake \
-		g++ \
-		make \
-		openssh-client \
-		openssh-server \
-		pkg-config \
-		wget \
-		nfs-common \
+                git \
+                krb5-user \
+                cmake \
+                g++ \
+                make \
+                openssh-client \
+                openssh-server \
+                pkg-config \
+                wget \
+                nfs-common \
                 libnuma1 \
                 libnuma-dev \
                 libpmi2-0-dev \
-		unattended-upgrades \
-	&& unattended-upgrade \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& rm /etc/ssh/ssh_host_ecdsa_key \
-	&& rm /etc/ssh/ssh_host_ed25519_key \
-	&& rm /etc/ssh/ssh_host_rsa_key
-#RUN pip install pip install --upgrade pip
-#RUN pip install torch torchvision torchaudio
-#RUN pip install google-auth-oauthlib==0.4.1
-#RUN echo pip install numba --upgrade
-#RUN pip install numpy==1.22
-#RUN pip install numpy==1.23.1
+                unattended-upgrades \
+        && unattended-upgrade \
+        && rm -rf /var/lib/apt/lists/* \
+        && rm /etc/ssh/ssh_host_ecdsa_key \
+        && rm /etc/ssh/ssh_host_ed25519_key \
+        && rm /etc/ssh/ssh_host_rsa_key
+RUN pip install pip install --upgrade pip
+
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
-ARG WITH_NCCL
 # Install debuild util, etc. for later compiling GDRcopy libraries
-#RUN if [ "$WITH_NCCL" = "1" ]; then apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y devscripts debhelper; fi
 
 # Install GDRcopy so OMPI, NCCL, AWS plugin, etc, can see it
-#RUN if [ "$WITH_NCCL" = "1" ]; then /tmp/det_dockerfile_scripts/build_gdrcopy.sh; fi
 
 ENV PATH="/opt/conda/envs/py_3.8/bin:${PATH}"
-#ENV PATH="/opt/conda/bin:${PATH}"
+
 ARG CONDA="${PATH}"
 
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
-ARG PYTHON_VERSION
-#RUN /tmp/det_dockerfile_scripts/install_python.sh ${PYTHON_VERSION}
 
 # Install fixed version of FFI package for Ubuntu 20.04.
 # This is done after above stuff to make sure we get right version.
-#RUN ls /tmp/det_dockerfile_scripts/
 RUN /tmp/det_dockerfile_scripts/install_package_fixes.sh
 
 RUN apt install rocm-libs 
-
 
 #USING OFI
 ARG WITH_MPI=1
 ARG WITH_OFI=1
 ARG WITH_MPICH
-#RUN if [ "$WITH_MPICH" = "1" ];then exit 1; fi
 ARG UCX_INSTALL_DIR=/container/ucx
 ARG OMPI_INSTALL_DIR=/container/ompi
 ARG MPICH_INSTALL_DIR=/container/mpich
@@ -90,6 +73,7 @@ ARG OFI_INSTALL_DIR=/container/ofi
 ARG OMPI_WITH_CUDA=0
 ARG OMPI_WITH_ROCM=1
 RUN if [ "$WITH_MPI" = "1" ]; then /tmp/det_dockerfile_scripts/ompi_rocm.sh "$UBUNTU_VERSION" "$WITH_OFI" "$OMPI_WITH_ROCM" "$WITH_MPICH"; fi
+
 # Make sure OMPI/UCX show up in the right paths
 ARG VERBS_LIB_DIR=/usr/lib/libibverbs
 ARG UCX_LIB_DIR=${UCX_INSTALL_DIR}/lib:${UCX_INSTALL_DIR}/lib64
@@ -103,7 +87,6 @@ ARG MPICH_PATH_DIR=${MPICH_INSTALL_DIR}/bin
 
 # Set up UCX_LIBS and OFI_LIBS
 ENV UCX_LIBS="${VERBS_LIB_DIR}:${UCX_LIB_DIR}:${OMPI_LIB_DIR}:"
-#ENV OFI_LIBS="${VERBS_LIB_DIR}:${OFI_LIB_DIR}:${OMPI_LIB_DIR}:"
 ENV OFI_LIBS="${VERBS_LIB_DIR}:${OFI_LIB_DIR}:${MPICH_LIB_DIR}:"
 
 # If WITH_OFI is true, then set EXTRA_LIBS to OFI libs, else set to empty string
@@ -116,7 +99,6 @@ ENV EXTRA_LIBS="${EXTRA_LIBS:-${UCX_LIBS}}"
 ENV LD_LIBRARY_PATH=${WITH_MPI:+$EXTRA_LIBS}$LD_LIBRARY_PATH
 
 #USING OFI
-#ENV PATH=${WITH_OFI:+$PATH:${WITH_MPI:+$OFI_PATH_DIR:$OMPI_PATH_DIR}}
 ENV PATH=${WITH_OFI:+$PATH:${WITH_MPI:+$OFI_PATH_DIR:$MPICH_PATH_DIR}}
 
 #USING UCX
@@ -129,7 +111,7 @@ ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM ${WITH_MPI:+1}
 
 
 RUN pip install cloudpickle
-RUN pip install determined==0.22.1 && pip uninstall -y determined
+RUN pip install determined && pip uninstall -y determined
 RUN pip install google-auth-oauthlib
 
 
@@ -146,10 +128,6 @@ RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 # google-api-python-client -> google-api-core -> googleapis-common-protos -> protobuf
 # Horovod cannot build with protobuf > 3.20.x
 # latest google-api-python-client requires protobuf >= 3.20.1
-#RUN pip install protobuf==3.20.1
-RUN pip install numpy==1.23.1
-RUN pip install protobuf==3.19.6
-
 
 ARG TENSORFLOW_PIP
 RUN if [ "$TENSORFLOW_PIP" ]; then pip install $TENSORFLOW_PIP; fi
@@ -169,11 +147,6 @@ ARG HOROVOD_WITH_MPI=1
 ARG HOROVOD_GPU=ROCM
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH;/opt/rocm/lib:/opt/rocm/hip/lib
 
-#TEST ARGs
-ARG HOROVOD_GPU_ALLREDUCE=NCCL
-ARG HOROVOD_GPU_BROADCAST=NCCL
-#RUN pip install mxnet
-RUN echo "${HOROVOD_PIP}"
 ENV HOROVOD_PIP $HOROVOD_PIP
 ENV HOROVOD_WITH_TENSORFLOW $HOROVOD_WITH_TENSORFLOW
 ENV HOROVOD_WITH_PYTORCH $HOROVOD_WITH_PYTORCH
@@ -187,27 +160,11 @@ ENV NCCL_LIB_DIR=${HOROVOD_NCCL_HOME}/lib
 ENV HOROVOD_NCCL_LINK=${WITH_OFI:+SHARED}
 ENV LD_LIBRARY_PATH=${WITH_OFI:+$NCCL_LIB_DIR:}$LD_LIBRARY_PATH
 
-#TEST ENVs
-ENV HOROVOD_GPU_ALLREDUCE=$HOROVOD_GPU_ALLREDUCE
-ENV HOROVOD_GPU_BROADCAST=$HOROVOD_GPU_BROADCAST
-
 RUN if [ "$HOROVOD_PIP" != "0" ]; then pip install "${HOROVOD_PIP}" ; fi
-#RUN if [ "$HOROVOD_PIP" != "0" ]; then TMPDIR=`pwd`\tmp pip install -b `pwd`\build "${HOROVOD_PIP}" ; fi
 
-#RUN /usr/bin/python
-#RUN pip remove torch torchvision torchaudio
-#RUN git clone https://github.com/pytorch/pytorch.git && cd pytorch && git submodule update --init --recursive
-#RUN cd /tmp && pip download horovod && tar xf horovod-*.tar.gz && cd horovod-* &&  ( python3 setup.py build || wget -qO - https://github.com/horovod/horovod/blob/master/horovod/torch/cuda_util.cc > horovod/torch/cuda_util.cc && python3 setup.py build && python3 setup.py install ) 
-#RUN cd /tmp && pip download horovod && tar xf horovod-*.tar.gz && cd horovod-* &&  ( python3 setup.py build || wget -q0 https://raw.githubusercontent.com/horovod/horovod/master/horovod/torch/cuda_util.cc > horovod/torch/cuda_util.cc && python3 setup.py build && python3 setup.py install ) 
+RUN pip uninstall -y tb-nightly tensorboardX
+RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements-rocm.txt
 
-RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
-
-RUN pip uninstall -y tb-nightly tensorboardX tensorboard
-#RUN pip install numpy==1.22 torch protobuf==3.19.6 torchvision tensorboard==2.10.1
-#RUN pip install numpy==1.22 torch torchvision tensorboard==2.10.1
-RUN pip install tensorboard==2.10.1
-
-RUN pip install pynvml 
 
 ENV HSA_FORCE_FINE_GRAIN_PCIE=1
 
@@ -221,20 +178,7 @@ RUN if [ "$WITH_OFI" = "1" ]; then /tmp/det_dockerfile_scripts/build_aws_rocm.sh
 ENV LD_LIBRARY_PATH=${WITH_OFI:+$AWS_PLUGIN_INSTALL_DIR:}$LD_LIBRARY_PATH
 RUN ldconfig
 
-#RUN apt install rocm-libs 
-
-#RUN apt install googletest
-RUN pip install tokenizers==0.13.0 huggingface-hub==0.16.4 
-
-#RUN apt install libgtest-dev && cd /usr/src/gtest && cmake CMakeLists.txt && make && cp lib/*.a /usr/lib
-
-#RUN cd /tmp && git clone https://github.com/ROCmSoftwarePlatform/rccl.git && { mkdir rccl/build && cd rccl/build && CXX=/opt/rocm/bin/hipcc cmake -DCMAKE_PREFIX_PATH=/opt/rocm/ .. && make -j 12 && make package && dpkg -i *.deb; }
-#RUN rm -r /tmp/*
-#RUN cd /tmp && git clone https://github.com/ROCmSoftwarePlatform/rccl.git && { cd rccl; ./install.sh -d -t -i --npkit-enable --debug ; }
-
-##Stilli added to end?
 ENV PATH=$OMPI_PATH_DIR:$OFI_INSTALL_DIR:$PATH
-#RUN rm -r /tmp/*
 # Reset entrypoint.
 
 # Set an entrypoint that can scrape up the host libfabric.so and then 
@@ -242,14 +186,12 @@ ENV PATH=$OMPI_PATH_DIR:$OFI_INSTALL_DIR:$PATH
 # on non-IB systems that have a proprietary libfabric.
 
 RUN mkdir -p /container/bin && cp /tmp/det_dockerfile_scripts/scrape_libs.sh /container/bin
-#RUN cp /tmp/det_dockerfile_scripts/nfs_wrapper.sh /conatiner/bin/wrapper.sh 
-#RUN if [ "$WITH_NFS_WORKAROUND" != "1" ]; then echo "#/bin/bash" > /usr/bin/wrapper.sh; echo 'exec "${@}"' >> /usr/bin/wrapper.sh; fi
+
 ARG WITH_RCCL=1
 ENV WITH_RCCL=$WITH_RCCL
 ARG WITH_NFS_WORKAROUND=1
 ENV WITH_NFS_WORKAROUND=$WITH_NFS_WORKAROUND
 
-#ENTRYPOINT ["/usr/bin/wrapper.sh"]
 ENTRYPOINT ["/container/bin/scrape_libs.sh"]
 CMD ["/bin/bash"]
 USER root
