@@ -14,7 +14,7 @@
     state: present
     update_cache: yes
   with_items:
-    - deb https://nvidia.github.io/libnvidia-container/ubuntu18.04/amd64 /
+    - deb https://nvidia.github.io/libnvidia-container/stable/ubuntu18.04/amd64 /
     - deb https://nvidia.github.io/nvidia-container-runtime/ubuntu18.04/amd64 /
     - deb https://nvidia.github.io/nvidia-docker/ubuntu18.04/amd64 /
 
