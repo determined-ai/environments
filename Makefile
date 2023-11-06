@@ -25,8 +25,6 @@ PYTHON_VERSION_39 := 3.9.16
 PYTHON_VERSION_310 := 3.10.12
 UBUNTU_VERSION := ubuntu20.04
 UBUNTU_IMAGE_TAG := ubuntu:20.04
-UBUNTU_VERSION_22_04 := ubuntu22.04
-UBUNTU_IMAGE_TAG_22_04 := ubuntu:22.04
 UBUNTU_VERSION_1804 := ubuntu18.04
 PLATFORM_LINUX_ARM_64 := linux/arm64
 PLATFORM_LINUX_AMD_64 := linux/amd64
@@ -169,7 +167,7 @@ build-gpu-cuda-113-base:
 .PHONY: build-gpu-cuda-118-base
 build-gpu-cuda-118-base:
 	docker build -f Dockerfile-base-gpu \
-		--build-arg BASE_IMAGE="nvidia/cuda:11.8.0-cudnn8-devel-$(UBUNTU_VERSION_22_04)" \
+		--build-arg BASE_IMAGE="nvidia/cuda:11.8.0-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_310)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
