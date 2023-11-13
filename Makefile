@@ -176,7 +176,7 @@ build-gpu-cuda-118-base:
 		.
 
 NGC_PYTORCH_PREFIX=nvcr.io/nvidia/pytorch
-NGC_PYTORCH_VERSION=23.08-py3
+NGC_PYTORCH_VERSION=23.10-py3
 NGCPLUS_BASE=pytorch-ngc
 
 .PHONY: build-gpu-ngc-base
