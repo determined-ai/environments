@@ -46,9 +46,6 @@ RUN apt-get update \
 RUN pip install pip install --upgrade pip
 
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
-# Install debuild util, etc. for later compiling GDRcopy libraries
-
-# Install GDRcopy so OMPI, NCCL, AWS plugin, etc, can see it
 
 ENV PATH="/opt/conda/envs/py_3.8/bin:${PATH}"
 
