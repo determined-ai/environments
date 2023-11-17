@@ -2,46 +2,12 @@ ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
 RUN mkdir -p /var/run/sshd
-RUN apt-get update \
-	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-		autoconf \
-		automake \
-		autotools-dev \
-		build-essential \
-		ca-certificates \
-		curl \
-		daemontools \
-		ibverbs-providers \
-		libibverbs1 \
-		libkrb5-dev \
-		librdmacm1 \
-		libssl-dev \
-		libtool \
-		git \
-		krb5-user \
-		g++ \
-		cmake \
-		make \
-		openssh-client \
-		openssh-server \
-		pkg-config \
-		wget \
-		nfs-common \
-                libnuma1 \
-                libnuma-dev \
-                libpmi2-0-dev \
-		unattended-upgrades \
-	&& unattended-upgrade \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& rm /etc/ssh/ssh_host_ecdsa_key \
-	&& rm /etc/ssh/ssh_host_ed25519_key \
-	&& rm /etc/ssh/ssh_host_rsa_key \
-   && ln -s /usr/include/slurm-wlm /usr/include/slurm
-		
+
+# Copy various shell scripts that group dependencies for install
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
-# Install debuild util, etc. for later compiling GDRcopy libraries
-# RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y devscripts debhelper
+# Install os-level packages
+RUN /tmp/det_dockerfile_scripts/install_os_packages.sh
 
 # Install GDRcopy so OMPI, NCCL, AWS plugin, etc, can see it
 # RUN /tmp/det_dockerfile_scripts/build_gdrcopy.sh
@@ -52,6 +18,7 @@ COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 # installed.
 RUN python -m pip install determined && python -m pip uninstall -y determined
 
+# Install jupyter notebook requirements
 RUN python -m pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
 ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
 ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
