@@ -4,7 +4,9 @@ FROM ${BASE_IMAGE}
 RUN mkdir -p /var/run/sshd
 
 # Copy various shell scripts that group dependencies for install
+# Then, make sure that these scripts have execute permissions
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+RUN chmod -R 777 /tmp
 
 # Install os-level packages
 RUN /tmp/det_dockerfile_scripts/install_os_packages.sh
@@ -55,7 +57,7 @@ RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspe
 
 # Copy Liam's permissions setting code from Lore project
 # Make sure permissions are okay for nonroot and cleanup.
-RUN chmod -R 777 /usr/local/lib/python3.10/dist-packages/smart* && chmod -R 777 /tmp
+RUN chmod -R 777 /usr/local/lib/python3.10/dist-packages/smart*
 # LL_NOTE: need to figure out why nvidia sets user to 1000 for the ngc container
 # that we are building from and whether there are any issues to us not doing the same
 # when building this container.
