@@ -19,7 +19,7 @@ jobs:
   check-version:
     runs-on: ubuntu-latest
   outputs:
-    version-exit:${{ steps.validate.outputs.version_exit }}
+    version_exit: ${{ steps.validate.outputs.version_exit }}
   steps:
     - name: Checkout
       uses: actions/checkout@v4
