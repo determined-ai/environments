@@ -1,0 +1,33 @@
+---
+name: "Check VERSION"
+
+on:
+  push:
+    branches:
+      - "main"
+      - "pre_commit_check"
+  pull_request_target: {}
+
+env:
+  OSS_VERSION_FILE: https://raw.githubusercontent.com/determined-ai/determined/main/VERSION
+
+permissions:
+  pull-requests: read
+  contents: read
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+  outputs:
+    version-exit:${{ steps.version.outputs.version_exit }}
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Get OSS Version
+      run: |
+        export OSS_VERSION=$(curl ${{ env.OSS_VERSION_FILE }} | grep -oE '^[0-9.]*')
+    - name: Validate Environments Version
+      run: |
+        export ENVIRONMENTS_VERSION=$(grep -oE '^[0-9.]*' VERSION)
+        source scripts/compare-versions.sh
+        vercomp $OSS_VERSION $ENVIRONMENTS_VERSION
