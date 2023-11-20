@@ -2,7 +2,8 @@
 vercomp () {
     if [[ $1 == $2 ]]
     then
-        exit 0
+        echo 0
+        return
     fi
     local IFS=.
     local i ver1=($1) ver2=($2)
@@ -18,10 +19,13 @@ vercomp () {
             # fill empty fields in ver2 with zeros
             ver2[i]=0
         fi
+        # only raise 1 when output is invalid
         if ((10#${ver1[i]} > 10#${ver2[i]}))
         then
-            exit 1
+            echo 1
+            return
         fi
     done
-    exit 0
+    echo 0
+    return
 }
