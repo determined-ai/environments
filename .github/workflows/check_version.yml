@@ -19,7 +19,7 @@ jobs:
   check-version:
     runs-on: ubuntu-latest
   outputs:
-    version-exit:${{ steps.version.outputs.version_exit }}
+    version-exit:${{ steps.validate.outputs.version_exit }}
   steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -27,7 +27,8 @@ jobs:
       run: |
         export OSS_VERSION=$(curl ${{ env.OSS_VERSION_FILE }} | grep -oE '^[0-9.]*')
     - name: Validate Environments Version
+      id: validate
       run: |
         export ENVIRONMENTS_VERSION=$(grep -oE '^[0-9.]*' VERSION)
         source scripts/compare-versions.sh
-        vercomp $OSS_VERSION $ENVIRONMENTS_VERSION
+        vercomp $OSS_VERSION $ENVIRONMENTS_VERSION >> $GITHUB_OUTPUT
