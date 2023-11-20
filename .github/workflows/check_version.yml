@@ -32,20 +32,17 @@ jobs:
           export ENVIRONMENTS_VERSION=$(grep -oE '^[0-9.]*' VERSION)
           source scripts/compare-versions.sh
           vercomp $OSS_VERSION $ENVIRONMENTS_VERSION
-      - name: Check Failure
+      - name: Failure Message
         if: ${{ failure() }}
         run: |
-          cat <<"EOF" 1>&2
-
-          ********
+          echo "********
 
           This branch has an invalid VERSION file.
 
-          Given VERSION: $ENVIRONMENTS_VERSION
+          Given Version: $ENVIRONMENTS_VERSION
           Minimum Expected Version: $OSS_VERSION
 
           Please check that VERSION in your branch is up-to-date.
 
-          ********
-
-          EOF
+          ********"
+          exit 1
