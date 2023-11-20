@@ -16,10 +16,8 @@ permissions:
   contents: read
 
 jobs:
-  check-version:
+  compare-versions:
     runs-on: ubuntu-latest
-    outputs:
-      version_exit: ${{ steps.validate.outputs.version_exit }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,4 +31,4 @@ jobs:
           # compare oss dev version with environments version
           export ENVIRONMENTS_VERSION=$(grep -oE '^[0-9.]*' VERSION)
           source scripts/compare-versions.sh
-          vercomp $OSS_VERSION $ENVIRONMENTS_VERSION >> $GITHUB_OUTPUT
+          vercomp $OSS_VERSION $ENVIRONMENTS_VERSION | exit
