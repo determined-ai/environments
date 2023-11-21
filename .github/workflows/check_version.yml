@@ -21,18 +21,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Get OSS Version
+      - name: Get Determined OSS Version
         run: |
-          # read OSS version file and get the current dev version
+          # read determined OSS version file and get the current dev version
           export OSS_VERSION="$(curl ${{ env.OSS_VERSION_FILE }} | grep -oE '^[0-9.]*')"
+          echo "OSS_VERSION=$OSS_VERSION" >> ${{ github.env }}
+      - name: Get Environments Version
+        run: |
+          # read environments version file
+          export ENVIRONMENTS_VERSION="$(grep -oE '^[0-9.]*' VERSION)"
+          echo "ENVIRONMENTS_VERSION=$ENVIRONMENTS_VERSION" >> ${{ github.env }}
       - name: Validate Environments Version
         id: validate
         run: |
           # compare oss dev version with environments version
-          export ENVIRONMENTS_VERSION="$(grep -oE '^[0-9.]*' VERSION)"
           source scripts/compare-versions.sh
           export RESULT="$(vercomp $OSS_VERSION $ENVIRONMENTS_VERSION)"
-          if [ RESULT -eq 1 ]
+          if [ $RESULT -eq 1 ]
           then
           echo "********
 
