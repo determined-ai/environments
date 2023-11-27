@@ -187,12 +187,21 @@ build-gpu-ngc-base:
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-$(VERSION) \
 		.
 
-# Note: deepspeed doesn't work with NGC...
 .PHONY: build-gpu-ngc-deepspeed
 build-gpu-ngc-deepspeed:
 	docker build -f Dockerfile-ngc \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
 		--build-arg DEEPSPEED_PIP="deepspeed==0.11.1" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-deepspeed-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-deepspeed-$(VERSION) \
+		.
+
+.PHONY: build-gpu-ngc-hpc-deepspeed
+build-gpu-ngc-hpc-base:
+   docker build -f Dockerfile-ngc \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-deepspeed-$(SHORT_GIT_HASH)" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-hpc-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-hpc-$(VERSION) \
 		.
 
 export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm
