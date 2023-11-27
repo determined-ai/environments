@@ -8,8 +8,8 @@ RUN mkdir -p /var/run/sshd
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 RUN chmod -R 777 /tmp
 
-# Install os-level packages
-RUN /tmp/det_dockerfile_scripts/install_os_packages.sh
+# Install deb packages
+RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
 
 # We uninstall these packages after installing. This ensures that we can
 # successfully install these packages into containers running as non-root.
@@ -27,7 +27,7 @@ RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
 
 RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
 
-# Set an entrypoint that can scrape up the host libfabric.so and then 
+# Set an entrypoint that can scrape up the host libfabric.so and then
 # run the user command. This is intended to enable performant execution
 # on non-IB systems that have a proprietary libfabric.
 RUN mkdir -p /container/bin && \
