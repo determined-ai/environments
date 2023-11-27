@@ -11,9 +11,6 @@ RUN chmod -R 777 /tmp
 # Install os-level packages
 RUN /tmp/det_dockerfile_scripts/install_os_packages.sh
 
-# Install GDRcopy so OMPI, NCCL, AWS plugin, etc, can see it
-# RUN /tmp/det_dockerfile_scripts/build_gdrcopy.sh
-
 # We uninstall these packages after installing. This ensures that we can
 # successfully install these packages into containers running as non-root.
 # `pip` does not uninstall dependencies, so we still have all the dependencies
