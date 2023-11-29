@@ -43,7 +43,7 @@ RUN apt-get update \
         && rm /etc/ssh/ssh_host_ecdsa_key \
         && rm /etc/ssh/ssh_host_ed25519_key \
         && rm /etc/ssh/ssh_host_rsa_key
-RUN pip install pip install --upgrade pip
+#RUN pip install pip install --upgrade pip
 
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
@@ -189,6 +189,16 @@ ENV WITH_RCCL=$WITH_RCCL
 ARG WITH_NFS_WORKAROUND=1
 ENV WITH_NFS_WORKAROUND=$WITH_NFS_WORKAROUND
 
+ARG DEEPSPEED_PIP
+ENV DEEPSPEED_PIP=$DEEPSPEED_PIP
+ENV DEEPDEEP=1
+
+
+RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& git clone https://github.com/ROCmSoftwarePlatform/triton.git && cd triton && git checkout triton-mlir && cd python && pip3 install ninja cmake && pip install -e .;fi
+RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& python -m pip install  pydantic==1.10.11 && git clone https://github.com/ROCmSoftwarePlatform/DeepSpeed.git && cd DeepSpeed && python3 setup.py  build && python3 setup.py install && python -m deepspeed.env_report; fi
+RUN if [ -n "$DEEPSPEED_PIP" ]; then python -m deepspeed.env_report ; fi
+RUN if [ -n "$DEEPSPEED_PIP" ]; then python -m deepspeed.env_report ; fi
+ 
 ENTRYPOINT ["/container/bin/scrape_libs.sh"]
 CMD ["/bin/bash"]
 USER root

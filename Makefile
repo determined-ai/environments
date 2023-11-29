@@ -167,7 +167,7 @@ export ROCM57_TORCH13_TF_ENVIRONMENT_NAME := $(ROCM_57_PREFIX)$(ROCM57_TORCH13_M
 .PHONY: build-pytorch13-tf210-rocm57
 build-pytorch13-tf210-rocm57:
 	docker build -f Dockerfile-default-rocm \
-		--build-arg BASE_IMAGE="rocm/pytorch:rocm5.6_ubuntu20.04_py3.8_pytorch_1.13.1"\
+		--build-arg BASE_IMAGE="rocm/pytorch:rocm5.7_ubuntu20.04_py3.9_pytorch_1.13.1"\
 		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
 		--build-arg HOROVOD_PIP="horovod==0.28.1" \
 		--build-arg WITH_MPICH=$(WITH_MPICH) \
@@ -198,6 +198,23 @@ export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-deepspee
 export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-gpt-neox-deepspeed$(GPU_SUFFIX)
 export TORCH_PIP_DEEPSPEED_GPU := torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 export TORCH_TB_PROFILER_PIP := torch-tb-profiler==0.4.1
+
+export ROCM57_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_57_PREFIX)pytorch-2.0-tf-2.10-rocm-deepspeed
+.PHONY: build-pytorch20-tf210-rocm57-deepspeed
+build-pytorch20-tf210-rocm57-deepspeed:
+	docker build --shm-size='1gb' -f Dockerfile-default-rocm \
+                --build-arg BASE_IMAGE="rocm/pytorch:rocm5.7_ubuntu20.04_py3.9_pytorch_2.0.1" \
+                --build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
+                --build-arg HOROVOD_PIP="horovod==0.28.1" \
+                --build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
+                --build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
+                --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
+                --build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
+                --build-arg DEEPSPEED_PIP="deepspeed==$(DEEPSPEED_VERSION)" \
+                --build-arg WITH_MPICH=$(WITH_MPICH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM57_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM57_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
+                .
 
 # This builds deepspeed environment off of upstream microsoft/DeepSpeed.
 .PHONY: build-deepspeed-gpu
