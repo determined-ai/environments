@@ -258,6 +258,7 @@ workflows:
                 - pt-gpu
                 - pt2-gpu
                 - pytorch10-tf27-rocm50
+                - ngc-base
             exclude:
               - dev-mode: true
                 with-mpi: 1
@@ -283,6 +284,7 @@ workflows:
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
+                - ngc-deepspeed
 
       - publish-cloud-images:
           name: publish-cloud-images-dev
