@@ -198,7 +198,7 @@ build-gpu-ngc-pytorch-deepspeed:
 
 .PHONY: build-gpu-ngc-hpc-deepspeed
 build-gpu-ngc-pytorch-hpc-base:
-	docker build -f Dockerfile-ngc-hpc-pytorch \
+	docker build -f Dockerfile-ngc-pytorch-hpc \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-deepspeed-$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-hpc-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-hpc-$(VERSION) \
