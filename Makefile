@@ -181,7 +181,7 @@ NGCPLUS_BASE=pytorch-ngc
 
 .PHONY: build-gpu-ngc-base
 build-gpu-ngc-base:
-	docker build -f Dockerfile-ngc \
+	docker build -f Dockerfile-ngc-pytorch \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-$(VERSION) \
@@ -189,7 +189,7 @@ build-gpu-ngc-base:
 
 .PHONY: build-gpu-ngc-deepspeed
 build-gpu-ngc-deepspeed:
-	docker build -f Dockerfile-ngc \
+	docker build -f Dockerfile-ngc-pytorch \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
 		--build-arg DEEPSPEED_PIP="deepspeed==0.11.1" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-deepspeed-$(SHORT_GIT_HASH) \
@@ -198,7 +198,7 @@ build-gpu-ngc-deepspeed:
 
 .PHONY: build-gpu-ngc-hpc-deepspeed
 build-gpu-ngc-hpc-base:
-   docker build -f Dockerfile-ngc \
+	docker build -f Dockerfile-ngc-hpc-pytorch \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-deepspeed-$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-hpc-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-hpc-$(VERSION) \
