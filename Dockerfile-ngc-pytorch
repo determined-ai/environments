@@ -48,7 +48,6 @@ ARG DEEPSPEED_PIP
 RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed.sh; fi
 
 # Make sure permissions are okay for nonroot and cleanup.
-RUN chmod -R 777 /usr/local/lib/python3.10/dist-packages/smart*
 RUN chown root:root /usr/lib
 
 RUN rm -r /tmp/*
