@@ -17,6 +17,9 @@ RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
 # installed.
 RUN python -m pip install determined && python -m pip uninstall -y determined
 
+# Install additional pytorch requriements
+RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements-torch.txt
+
 # Install jupyter notebook requirements
 RUN python -m pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
 ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
