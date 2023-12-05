@@ -207,14 +207,14 @@ build-gpu-ngc-pytorch-hpc:
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-hpc-$(VERSION) \
 		.
 
-.PHONY: build-gpu-ngc-tensorflow:
+.PHONY: build-gpu-ngc-tensorflow
 	docker build -f Dockerfile-ngc-tensorflow-base \
 		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(VERSION) \
 		.
 
-.PHONY: build-gpu-ngc-tensorflow-hpc:
+.PHONY: build-gpu-ngc-tensorflow-hpc
 	docker build -f Dockerfile-ngc-tensorflow-hpc \
 		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(SHORT_GIT_HASH) \
