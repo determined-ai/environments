@@ -176,15 +176,18 @@ build-gpu-cuda-118-base:
 		.
 
 NGC_PYTORCH_PREFIX=nvcr.io/nvidia/pytorch
+NGC_TENSORFLOW_PREFIX=nvcr.io/nvidia/tensorflow
 NGC_PYTORCH_VERSION=23.10-py3
-NGCPLUS_BASE=pytorch-ngc
+NGC_TENSORFLOW_VERSION=23.11-tf2-py3
+NGCPLUS_BASE_PYTORCH=pytorch-ngc
+NGCPLUS_BASE_TENSORFLOW=tensorflow-ngc
 
 .PHONY: build-gpu-ngc-base
 build-gpu-ngc-pytorch-base:
 	docker build -f Dockerfile-ngc-pytorch \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
-		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-$(VERSION) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-$(VERSION) \
 		.
 
 .PHONY: build-gpu-ngc-deepspeed
@@ -192,16 +195,32 @@ build-gpu-ngc-pytorch-deepspeed:
 	docker build -f Dockerfile-ngc-pytorch \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
 		--build-arg DEEPSPEED_PIP="deepspeed==0.11.1" \
-		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-deepspeed-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-deepspeed-$(VERSION) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-deepspeed-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-deepspeed-$(VERSION) \
 		.
 
 .PHONY: build-gpu-ngc-hpc-deepspeed
 build-gpu-ngc-pytorch-hpc-base:
 	docker build -f Dockerfile-ngc-pytorch-hpc \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-deepspeed-$(SHORT_GIT_HASH)" \
-		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-hpc-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-hpc-$(VERSION) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-hpc-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_PYTORCH)-$(NGC_PYTORCH_VERSION)-hpc-$(VERSION) \
+		.
+
+.PHONY:
+build-gpu-ngc-tensorflow:
+	docker build -f Dockerfile-ngc-tensorflow \
+		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(VERSION) \
+		.
+
+.PHONY:
+build-gpu-ngc-tensorflow:
+	docker build -f Dockerfile-ngc-tensorflow-hpc \
+		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(VERSION) \
 		.
 
 export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm

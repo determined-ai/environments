@@ -1,0 +1,18 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+# Copy various shell scripts that group dependencies for install
+# Then, make sure that these scripts have execute permissions
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+RUN chmod -R 777 /tmp
+
+RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
+
+# Set an entrypoint that can scrape up the host libfabric.so and then
+# run the user command. This is intended to enable performant execution
+# on non-IB systems that have a proprietary libfabric.
+RUN mkdir -p /container/bin && \
+    cp /tmp/det_dockerfile_scripts/scrape_libs.sh /container/bin
+ENTRYPOINT ["/container/bin/scrape_libs.sh"]
+
+RUN rm -r /tmp/*

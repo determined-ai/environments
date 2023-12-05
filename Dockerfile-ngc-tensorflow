@@ -1,0 +1,50 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+RUN mkdir -p /var/run/sshd
+
+# Copy various shell scripts that group dependencies for install
+# Then, make sure that these scripts have execute permissions
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+RUN chmod -R 777 /tmp
+
+# Install deb packages
+RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
+
+# We uninstall these packages after installing. This ensures that we can
+# successfully install these packages into containers running as non-root.
+# `pip` does not uninstall dependencies, so we still have all the dependencies
+# installed.
+RUN python -m pip install determined && python -m pip uninstall -y determined
+
+# Install jupyter notebook requirements
+RUN python -m pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
+ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
+ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
+ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
+
+RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
+
+CMD ["/bin/bash"]
+
+ARG AWS_PLUGIN_INSTALL_DIR=/container/aws
+ARG WITH_AWS_TRACE
+ARG INTERNAL_AWS_DS
+ARG INTERNAL_AWS_PATH
+RUN if [ "$WITH_OFI" = "1" ]; then /tmp/det_dockerfile_scripts/build_aws.sh "$WITH_OFI" "$WITH_AWS_TRACE"; fi
+
+RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
+
+#USING OFI
+ARG AWS_LIB_DIR=${AWS_PLUGIN_INSTALL_DIR}/lib
+ENV LD_LIBRARY_PATH=${WITH_OFI:+$AWS_LIB_DIR:}$LD_LIBRARY_PATH
+
+RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
+
+ARG DEEPSPEED_PIP
+RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed.sh; fi
+
+# Make sure permissions are okay for nonroot and cleanup.
+RUN chown root:root /usr/lib
+
+RUN rm -r /tmp/*
