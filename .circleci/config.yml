@@ -251,17 +251,17 @@ workflows:
               image-type:
                 - tf2-cpu
                 - tf28-cpu
-                - pt-cpu
-                - pt2-cpu
+                - pytorch-cpu
+                - pytorch2-cpu
                 - tf2-gpu
                 - tf28-gpu
-                - pt-gpu
-                - pt2-gpu
-                - pytorch10-tf27-rocm50
+                - pytorch-gpu
+                - pytorch2-gpu
+                - pytorch-tf-rocm50
             exclude:
               - dev-mode: true
                 with-mpi: 1
-                image-type: pytorch10-tf27-rocm50
+                image-type: pytorch-tf-rocm
 
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
@@ -281,8 +281,8 @@ workflows:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
-                - deepspeed-gpu
-                - gpt-neox-deepspeed-gpu
+                - pytorch-deepspeed
+                - gpt-neox-deepspeed
 
       - publish-cloud-images:
           name: publish-cloud-images-dev
