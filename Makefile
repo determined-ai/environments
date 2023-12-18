@@ -1,6 +1,4 @@
 SHELL := /bin/bash -o pipefail
-VERSION := $(shell cat VERSION)
-VERSION_DASHES := $(subst .,-,$(VERSION))
 SHORT_GIT_HASH := $(shell git rev-parse --short HEAD)
 
 NGC_REGISTRY := nvcr.io/isv-ngc-partner/determined
@@ -417,81 +415,79 @@ build-pytorch2-gpu: build-gpu-cuda-118-base
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME)-$(VERSION) \
 		-t $(NGC_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
 # tf1 and tf2.4 images are not published to NGC due to vulnerabilities.
 .PHONY: publish-tf2-cpu
 publish-tf2-cpu:
-	scripts/publish-docker.sh tf2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
-	scripts/publish-docker.sh tf2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
+	scripts/publish-docker.sh tf2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
+	scripts/publish-docker.sh tf2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
 
 .PHONY: publish-tf2-gpu
 publish-tf2-gpu:
-	scripts/publish-docker.sh tf2-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh tf2-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf2-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf2-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-docker.sh tf2-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+	scripts/publish-docker.sh tf2-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) 
 endif
 
 .PHONY: publish-pytorch-cpu
 publish-pytorch-cpu:
-	scripts/publish-docker.sh pt-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
-	scripts/publish-docker.sh pt-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PT_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
+	scripts/publish-docker.sh pytorch-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
+	scripts/publish-docker.sh pytorch-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PT_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
 
 .PHONY: publish-pytorch-gpu
 publish-pytorch-gpu:
-	scripts/publish-docker.sh pt-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh pt-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh pytorch-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh pytorch-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-docker.sh pt-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+	scripts/publish-docker.sh pytorch-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) 
 endif
 
 .PHONY: publish-pytorch2-cpu
 publish-pytorch2-cpu:
-	scripts/publish-docker.sh pt2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
-	scripts/publish-docker.sh pt2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PT2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
+	scripts/publish-docker.sh pytorch2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
+	scripts/publish-docker.sh pytorch2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PT2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
 
 .PHONY: publish-pytorch22-gpu
 publish-pytorch2-gpu:
-	scripts/publish-docker.sh pt2-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh pt2-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh pytorch2-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh pytorch2-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-docker.sh pt2-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+	scripts/publish-docker.sh pytorch2-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) 
 endif
 
 .PHONY: publish-deepspeed
 publish-deepspeed:
-	scripts/publish-docker.sh deepspeed-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh deepspeed-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-docker.sh deepspeed-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+	scripts/publish-docker.sh deepspeed-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) 
 endif
 
 .PHONY: publish-gpt-neox-deepspeed
 publish-gpt-neox-deepspeed:
-	scripts/publish-docker.sh gpt-neox-deepspeed-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh gpt-neox-deepspeed-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-docker.sh gpt-neox-deepspeed-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+	scripts/publish-docker.sh gpt-neox-deepspeed-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) 
 endif
 
 .PHONY: publish-tf28-cpu
 publish-tf28-cpu:
-	scripts/publish-docker.sh tf28-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
-	scripts/publish-docker.sh tf28-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF28_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
+	scripts/publish-docker.sh tf28-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
+	scripts/publish-docker.sh tf28-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF28_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
 
 .PHONY: publish-tf28-gpu
 publish-tf28-gpu:
-	scripts/publish-docker.sh tf28-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_112_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-	scripts/publish-docker.sh tf28-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_TF28_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf28-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_112_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh tf28-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_TF28_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-docker.sh tf28-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_TF28_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+	scripts/publish-docker.sh tf28-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_TF28_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) 
 endif
 
 .PHONY: publish-pytorch-tf-rocm50
 publish-pytorch-tf-rocm50:
-	scripts/publish-docker.sh pytorch10-tf27-rocm50-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh pytorch10-tf27-rocm50-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
 publish-cloud-images:
