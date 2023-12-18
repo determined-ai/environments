@@ -4,46 +4,46 @@ images:
 	 	pytorch_version: 1.10
 	 	tensorflow_version: 2.7.1
 	 	horovod_version: 0.25.0
-	 	python_version: 3.7
-	 	ubuntu_version: 18.04
+        python_version: 3.7
+        ubuntu_version: 18.04
 	- pytorch-deepspeed:
 	 	pytorch_version: 1.10.2
 	 	deepspeed_version: 0.8.3
-	 	python_version: 3.9.16
-	 	ubuntu_version: 20.04
+        python_version: 3.9.16
+        ubuntu_version: 20.04
 	- gpt-neox-deepspeed:
 	 	pytorch_version: 1.10.2
 	 	deepspeed_version: 0.8.3+https://github.com/determined-ai/deepspeed.git@eleuther_dai
-	 	python_version: 3.9.16
-	 	ubuntu_version: 20.04
-	- tf28-cpu:
-	 	tensorflow_version: 2.8.4
-	 	horovod_version: 0.24.2
-	- tf28-gpu:
-	 	tensorflow_version: 2.8.3
-	 	horovod_version: 0.24.2
-	 	ubuntu_version: 20.04
-	- tf2-cpu:
-	 	tensorflow_version: 2.11.1
-	 	horovod_version: 0.28.1
-	 	ubuntu_version: 20.04
-	- tf2-gpu:
-	 	tensorflow_version: 2.11.1
-	 	horovod_version: 0.28.1
-	 	ubuntu_version: 20.04
-	- pytorch-cpu:
-	 	pytorch_version: 1.12
-	 	horovod_version: 0.28.1
-	 	ubuntu_version: 20.04
-	- pytorch-gpu:
-	 	pytorch_version: 1.12
-	 	horovod_version: 0.28.1
-	 	ubuntu_version: 20.04
-	- pytorch2-cpu:
-	 	pytorch_version: 2.0
-	 	horovod_version: 0.28.1
-	 	ubuntu_version: 20.04
-	- pytorch2-gpu:
-	 	pytorch_version: 2.0
-	 	horovod_version: 0.28.1
-	 	ubuntu_version: 20.04
+        python_version: 3.9.16
+        ubuntu_version: 20.04
+    - tf28-cpu:
+        tensorflow_version: 2.8.4
+        horovod_version: 0.24.2
+    - tf28-gpu:
+        tensorflow_version: 2.8.3
+        horovod_version: 0.24.2
+        ubuntu_version: 20.04
+    - tf2-cpu:
+        tensorflow_version: 2.11.1
+        horovod_version: 0.28.1
+        ubuntu_version: 20.04
+    - tf2-gpu:
+        tensorflow_version: 2.11.1
+        horovod_version: 0.28.1
+        ubuntu_version: 20.04
+    - pytorch-cpu:
+        pytorch_version: 1.12
+        horovod_version: 0.28.1
+        ubuntu_version: 20.04
+    - pytorch-gpu:
+        pytorch_version: 1.12
+        horovod_version: 0.28.1
+        ubuntu_version: 20.04
+    - pytorch2-cpu:
+        pytorch_version: 2.0
+        horovod_version: 0.28.1
+        ubuntu_version: 20.04
+    - pytorch2-gpu:
+        pytorch_version: 2.0
+        horovod_version: 0.28.1
+        ubuntu_version: 20.04
