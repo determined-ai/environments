@@ -437,26 +437,26 @@ ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf2-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 endif
 
-.PHONY: publish-pt-cpu
-publish-pt-cpu:
+.PHONY: publish-pytorch-cpu
+publish-pytorch-cpu:
 	scripts/publish-docker.sh pt-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
 	scripts/publish-docker.sh pt-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PT_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
 
-.PHONY: publish-pt-gpu
-publish-pt-gpu:
+.PHONY: publish-pytorch-gpu
+publish-pytorch-gpu:
 	scripts/publish-docker.sh pt-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh pt-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh pt-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_PT_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 endif
 
-.PHONY: publish-pt2-cpu
-publish-pt2-cpu:
+.PHONY: publish-pytorch2-cpu
+publish-pytorch2-cpu:
 	scripts/publish-docker.sh pt2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
 	scripts/publish-docker.sh pt2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PT2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR) --no-push
 
-.PHONY: publish-pt2-gpu
-publish-pt2-gpu:
+.PHONY: publish-pytorch22-gpu
+publish-pytorch2-gpu:
 	scripts/publish-docker.sh pt2-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh pt2-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
@@ -490,8 +490,8 @@ ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf28-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_TF28_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 endif
 
-.PHONY: publish-pytorch10-tf27-rocm50
-publish-pytorch10-tf27-rocm50:
+.PHONY: publish-pytorch-tf27-rocm50
+publish-pytorch-tf27-rocm50:
 	scripts/publish-docker.sh pytorch10-tf27-rocm50-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
