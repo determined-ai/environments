@@ -1,11 +1,12 @@
 git_hash: <git_hash_here>
 images:
-	- pytorch10-tf27-rocm50:
+	- pytorch-tf-rocm50:
 	 	pytorch_version: 1.10
 	 	tensorflow_version: 2.7.1
 	 	horovod_version: 0.25.0
 	 	python_version: 3.7
 	 	ubuntu_version: 18.04
+	 	rocm_version: 5.0
 	- pytorch-deepspeed:
 	 	pytorch_version: 1.10.2
 	 	deepspeed_version: 0.8.3

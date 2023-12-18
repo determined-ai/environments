@@ -15,7 +15,6 @@ CUDA_111_PREFIX := $(REGISTRY_REPO):cuda-11.1-
 CUDA_112_PREFIX := $(REGISTRY_REPO):cuda-11.2-
 CUDA_113_PREFIX := $(REGISTRY_REPO):cuda-11.3-
 CUDA_118_PREFIX := $(REGISTRY_REPO):cuda-11.8-
-ROCM_50_PREFIX := $(REGISTRY_REPO):rocm-5.0-
 
 CPU_SUFFIX := -cpu
 GPU_SUFFIX := -gpu
@@ -171,12 +170,12 @@ build-gpu-cuda-118-base:
 		-t $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(SHORT_GIT_HASH) \
 		.
 
-export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-tf-rocm
+export ROCM50_TORCH_TF_ENVIRONMENT_NAME := pytorch-tf-rocm
 export TF_PROFILER_PIP := tensorboard-plugin-profile
 export TORCH_TB_PROFILER_PIP := torch-tb-profiler==0.4.1
 
-.PHONY: build-pytorch-tf27-rocm50
-build-pytorch-tf27-rocm50:
+.PHONY: build-pytorch-tf-rocm50
+build-pytorch-tf-rocm50:
 	docker build -f Dockerfile-default-rocm \
 		--build-arg BASE_IMAGE="amdih/pytorch:rocm5.0_ubuntu18.04_py3.7_pytorch_1.10.0" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
@@ -296,7 +295,7 @@ define CPU_PT_TAGS
 endef
 endif
 
-.PHONY: build-pytorch-cpu
+.PHONY: build-tf2-cpu
 build-tf2-cpu: build-cpu-py-39-base
 	docker buildx build -f Dockerfile-default-cpu \
 	    --platform "$(PLATFORMS)" \
@@ -353,8 +352,8 @@ build-tf2-gpu: build-gpu-cuda-113-base
 		-t $(NGC_REGISTRY)/$(GPU_TF2_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		.
 
-.PHONY: build-pt-gpu
-build-pt-gpu: build-gpu-cuda-113-base
+.PHONY: build-pytorch-gpu
+build-pytorch-gpu: build-gpu-cuda-113-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_GPU)" \
@@ -390,7 +389,7 @@ endef
 endif
 
 .PHONY: build-pytorch2-cpu
-build-pt2-cpu: build-cpu-py-310-base
+build-pytorch2-cpu: build-cpu-py-310-base
 	docker buildx build -f Dockerfile-default-cpu \
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(SHORT_GIT_HASH)" \
@@ -405,7 +404,7 @@ build-pt2-cpu: build-cpu-py-310-base
 		.
 
 .PHONY: build-pytorch2-gpu
-build-pt2-gpu: build-gpu-cuda-118-base
+build-pytorch2-gpu: build-gpu-cuda-118-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH2_PIP_GPU)" \
@@ -490,8 +489,8 @@ ifneq ($(NGC_PUBLISH),)
 	scripts/publish-docker.sh tf28-gpu-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_TF28_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 endif
 
-.PHONY: publish-pytorch-tf27-rocm50
-publish-pytorch-tf27-rocm50:
+.PHONY: publish-pytorch-tf-rocm50
+publish-pytorch-tf-rocm50:
 	scripts/publish-docker.sh pytorch10-tf27-rocm50-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM50_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
