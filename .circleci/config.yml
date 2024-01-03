@@ -197,6 +197,8 @@ workflows:
                 - pt2-gpu
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
+                - ngc-pytorch
+                - ngc-tensorflow
             exclude:
               - with-mpi: 1
                 image-type: 
@@ -219,8 +221,9 @@ workflows:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
-                - deepspeed-gpu
-                - gpt-neox-deepspeed-gpu
+                - deepspeed
+                - gpt-neox-deepspeed
+                - ngc-deepspeed
       - publish-cloud-images:
           context: determined-production
           filters:
@@ -263,6 +266,7 @@ workflows:
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
                 - ngc-pytorch
+                - ngc-tensorflow
             exclude:
               - dev-mode: true
                 with-mpi: 1
@@ -288,8 +292,8 @@ workflows:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
-                - deepspeed-gpu
-                - gpt-neox-deepspeed-gpu
+                - deepspeed
+                - gpt-neox-deepspeed
                 - ngc-deepspeed
 
       - publish-cloud-images:
