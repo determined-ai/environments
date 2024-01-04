@@ -41,6 +41,9 @@ RUN if [ "$TF_CUDA_SYM" ]; then ln -s /usr/local/cuda/lib64/libcusolver.so.11 /o
 ARG TORCH_TB_PROFILER_PIP
 RUN if [ "$TORCH_TB_PROFILER_PIP" ]; then python -m pip install $TORCH_TB_PROFILER_PIP; fi
 
+ARG TF_PROFILER_PIP
+RUN if [ "$TF_PROFILER_PIP" ]; then python -m pip install $TF_PROFILER_PIP; fi
+
 ARG TORCH_CUDA_ARCH_LIST
 ARG APEX_GIT
 RUN /tmp/det_dockerfile_scripts/install_apex.sh

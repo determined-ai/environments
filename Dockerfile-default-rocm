@@ -129,6 +129,12 @@ RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 ARG TENSORFLOW_PIP
 RUN if [ "$TENSORFLOW_PIP" ]; then pip install $TENSORFLOW_PIP; fi
 
+ARG TORCH_TB_PROFILER_PIP
+RUN if [ "$TORCH_TB_PROFILER_PIP" ]; then pip install $TORCH_TB_PROFILER_PIP; fi
+
+ARG TF_PROFILER_PIP
+RUN if [ "$TF_PROFILER_PIP" ]; then python -m pip install $TF_PROFILER_PIP; fi
+
 # Reset these because we set GPU_OPERATIONS later.
 ENV HOROVOD_GPU_BROADCAST=
 ENV HOROVOD_GPU_ALLREDUCE=
