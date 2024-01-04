@@ -197,6 +197,8 @@ workflows:
                 - pt2-gpu
                 - ngc-pytorch
                 - ngc-tensorflow
+                - pytorch13-tf210-rocm56
+                - pytorch20-tf210-rocm56
             exclude:
               - with-mpi: 1
                 image-type: 
@@ -263,6 +265,8 @@ workflows:
                 - pt2-gpu
                 - ngc-pytorch
                 - ngc-tensorflow
+                - pytorch13-tf210-rocm56
+                - pytorch20-tf210-rocm56
             exclude:
               - dev-mode: true
                 with-mpi: 1
