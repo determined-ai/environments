@@ -424,8 +424,7 @@ build-pytorch2-cpu: build-cpu-py-310-base
 .PHONY: build-pytorch2-gpu
 build-pytorch2-gpu: build-gpu-cuda-118-base
 	docker build -f Dockerfile-default-gpu \
-		--build-arg BASE_IMAGE="$(DOCKERH
-		UB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH2_PIP_GPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
