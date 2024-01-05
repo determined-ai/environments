@@ -195,8 +195,6 @@ workflows:
                 - tf28-gpu
                 - pt-gpu
                 - pt2-gpu
-                - pytorch13-tf210-rocm56
-                - pytorch20-tf210-rocm56
                 - ngc-pytorch
                 - ngc-tensorflow
             exclude:
@@ -263,8 +261,6 @@ workflows:
                 - tf28-gpu
                 - pt-gpu
                 - pt2-gpu
-                - pytorch13-tf210-rocm56
-                - pytorch20-tf210-rocm56
                 - ngc-pytorch
                 - ngc-tensorflow
             exclude:
