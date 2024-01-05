@@ -287,7 +287,7 @@ workflows:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
-                - pytorch-deepspeed
+                - deepspeed
                 - gpt-neox-deepspeed
 
       - publish-cloud-images:

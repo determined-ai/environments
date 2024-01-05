@@ -1,12 +1,5 @@
 git_hash: <git_hash_here>
 images:
-	- pytorch-tf-rocm50:
-	 	pytorch_version: 1.10
-	 	tensorflow_version: 2.7.1
-	 	horovod_version: 0.25.0
-	 	python_version: 3.7
-	 	ubuntu_version: 18.04
-	 	rocm_version: 5.0
 	- pytorch-deepspeed:
 	 	pytorch_version: 1.10.2
 	 	deepspeed_version: 0.8.3
@@ -48,3 +41,17 @@ images:
 	 	pytorch_version: 2.0
 	 	horovod_version: 0.28.1
 	 	ubuntu_version: 20.04
+	- pytorch13-tf210-rocm56:
+	 	pytorch_version: 1.13.1
+	 	tensorflow_version: 2.10.1.540
+	 	horovod_version: 0.28.1
+	 	python_version: 3.8
+	 	ubuntu_version: 20.04
+	 	rocm_version: 5.6
+	- pytorch20-tf210-rocm56:
+	 	pytorch_version: 2.0.1
+	 	tensorflow_version: 2.10.1.540
+	 	horovod_version: 0.28.1
+	 	python_version: 3.8
+	 	ubuntu_version: 20.04
+	 	rocm_version: 5.6

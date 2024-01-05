@@ -204,7 +204,7 @@ build-pytorch20-tf210-rocm56:
 		.
 
 DEEPSPEED_VERSION := 0.8.3
-export GPU_DEEPSPEED_ENVIRONMENT_NAME := pytorch-deepspeed
+export GPU_DEEPSPEED_ENVIRONMENT_NAME := deepspeed
 export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := gpt-neox-deepspeed
 export TORCH_PIP_DEEPSPEED_GPU := torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 
@@ -250,8 +250,8 @@ define CPU_TF28_TAGS
 endef
 endif
 
-export CPU_TF28_ENVIRONMENT_NAME := tf-2.8$(CPU_SUFFIX)
-export GPU_TF28_ENVIRONMENT_NAME := tf-2.8$(GPU_SUFFIX)
+export CPU_TF28_ENVIRONMENT_NAME := tf28$(CPU_SUFFIX)
+export GPU_TF28_ENVIRONMENT_NAME := tf28$(GPU_SUFFIX)
 
 .PHONY: build-tf28-cpu
 build-tf28-cpu: build-cpu-py-38-base
@@ -290,10 +290,10 @@ TORCH_PIP_CPU := torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cp
 TORCH_PIP_GPU := torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 HOROVOD_PIP_COMMAND := horovod==0.28.1
 
-export CPU_TF2_ENVIRONMENT_NAME := tf2-$(CPU_SUFFIX)
-export GPU_TF2_ENVIRONMENT_NAME := tf2-$(GPU_SUFFIX)
-export CPU_PT_ENVIRONMENT_NAME := pytorch-$(CPU_SUFFIX)
-export GPU_PT_ENVIRONMENT_NAME := pytorch-$(GPU_SUFFIX)
+export CPU_TF2_ENVIRONMENT_NAME := tf2$(CPU_SUFFIX)
+export GPU_TF2_ENVIRONMENT_NAME := tf2$(GPU_SUFFIX)
+export CPU_PT_ENVIRONMENT_NAME := pytorch$(CPU_SUFFIX)
+export GPU_PT_ENVIRONMENT_NAME := pytorch$(GPU_SUFFIX)
 
 ifeq ($(NGC_PUBLISH),)
 define CPU_TF2_TAGS
@@ -392,8 +392,8 @@ TORCH2_VERSION := 2.0
 TORCH2_PIP_CPU := torch==2.0.1+cpu torchvision==0.15.2+cpu torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cpu
 TORCH2_PIP_GPU := torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 --index-url https://download.pytorch.org/whl/cu118
 TORCH2_APEX_GIT_URL := https://github.com/determined-ai/apex.git@50ac8425403b98147cbb66aea9a2a27dd3fe7673
-export CPU_PT2_ENVIRONMENT_NAME := pytorch2-$(CPU_SUFFIX)
-export GPU_PT2_ENVIRONMENT_NAME := pytorch2-$(GPU_SUFFIX)
+export CPU_PT2_ENVIRONMENT_NAME := pytorch2$(CPU_SUFFIX)
+export GPU_PT2_ENVIRONMENT_NAME := pytorch2$(GPU_SUFFIX)
 
 ifeq ($(NGC_PUBLISH),)
 define CPU_PT2_TAGS
@@ -424,7 +424,8 @@ build-pytorch2-cpu: build-cpu-py-310-base
 .PHONY: build-pytorch2-gpu
 build-pytorch2-gpu: build-gpu-cuda-118-base
 	docker build -f Dockerfile-default-gpu \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(SHORT_GIT_HASH)" \
+		--build-arg BASE_IMAGE="$(DOCKERH
+		UB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH2_PIP_GPU)" \
 		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
@@ -470,7 +471,7 @@ publish-pytorch2-cpu:
 	scripts/publish-docker.sh pytorch2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
 	scripts/publish-docker.sh pytorch2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PT2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
 
-.PHONY: publish-pytorch22-gpu
+.PHONY: publish-pytorch2-gpu
 publish-pytorch2-gpu:
 	scripts/publish-docker.sh pytorch2-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 	scripts/publish-docker.sh pytorch2-gpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_PT2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
