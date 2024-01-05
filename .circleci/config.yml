@@ -195,10 +195,13 @@ workflows:
                 - tf28-gpu
                 - pt-gpu
                 - pt2-gpu
-                - pytorch10-tf27-rocm50
+                - pytorch13-tf210-rocm56
+                - pytorch20-tf210-rocm56
             exclude:
               - with-mpi: 1
-                image-type: pytorch10-tf27-rocm50
+                image-type: 
+                  - pytorch13-tf210-rocm56
+                  - pytorch20-tf210-rocm56
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
           context: determined-production
@@ -257,11 +260,14 @@ workflows:
                 - tf28-gpu
                 - pytorch-gpu
                 - pytorch2-gpu
-                - pytorch-tf-rocm50
+                - pytorch13-tf210-rocm56
+                - pytorch20-tf210-rocm56
             exclude:
               - dev-mode: true
                 with-mpi: 1
-                image-type: pytorch-tf-rocm
+                image-type: 
+                  - pytorch13-tf210-rocm56
+                  - pytorch20-tf210-rocm56
 
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
