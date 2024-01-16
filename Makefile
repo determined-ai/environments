@@ -9,7 +9,7 @@ export DOCKERHUB_REGISTRY := determinedai
 export REGISTRY_REPO := environments
 
 CPU_PREFIX_38 := $(REGISTRY_REPO):py-3.8-
-CPU_PREFIX_39  := $(REGISTRY_REPO):py-3.9-
+CPU_PREFIX_39 := $(REGISTRY_REPO):py-3.9-
 CPU_PREFIX_310 := $(REGISTRY_REPO):py-3.10-
 CUDA_111_PREFIX := $(REGISTRY_REPO):cuda-11.1-
 CUDA_112_PREFIX := $(REGISTRY_REPO):cuda-11.2-
@@ -263,10 +263,6 @@ build-ngc-tensorflow-hpc:
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE_TENSORFLOW)-$(NGC_TENSORFLOW_VERSION)-$(VERSION) \
 		.
-
-export ROCM50_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_50_PREFIX)pytorch-1.10-tf-2.7-rocm
-export TF_PROFILER_PIP := tensorboard-plugin-profile
-export TORCH_TB_PROFILER_PIP := torch-tb-profiler==0.4.1
 
 ifeq ($(WITH_MPICH),1)
 ROCM56_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-mpich
