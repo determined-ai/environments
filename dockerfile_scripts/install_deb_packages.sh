@@ -1,3 +1,5 @@
+RUN mkdir -p /var/run/sshd
+
 apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 		autoconf \

@@ -1,8 +1,6 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
-RUN mkdir -p /var/run/sshd
-
 # Copy various shell scripts that group dependencies for install
 # Then, make sure that these scripts have execute permissions
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
