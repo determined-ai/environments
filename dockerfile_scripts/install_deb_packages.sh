@@ -25,13 +25,13 @@ apt-get update \
 		pkg-config \
 		wget \
 		nfs-common \
-                libnuma1 \
-                libnuma-dev \
-                libpmi2-0-dev \
+    libnuma1 \
+    libnuma-dev \
+    libpmi2-0-dev \
 		unattended-upgrades \
 	&& unattended-upgrade \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& rm /etc/ssh/ssh_host_ecdsa_key \
 	&& rm /etc/ssh/ssh_host_ed25519_key \
 	&& rm /etc/ssh/ssh_host_rsa_key \
-   && ln -s /usr/include/slurm-wlm /usr/include/slurm
+  && ln -s /usr/include/slurm-wlm /usr/include/slurm

@@ -4,7 +4,9 @@ FROM ${BASE_IMAGE}
 # Copy various shell scripts that group dependencies for install
 # Then, make sure that these scripts have execute permissions
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
-RUN chmod -R 777 /tmp
+RUN chmod -R 777 /tmp/det_dockerfile_scripts/build_aws.sh \
+    /tmp/det_dockerfile_scripts/install_libnss_determined.sh \
+    /tmp/det_dockerfile_scripts/scrape_libs.sh
 
 ARG AWS_PLUGIN_INSTALL_DIR=/container/aws
 ARG WITH_AWS_TRACE

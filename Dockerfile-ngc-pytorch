@@ -6,7 +6,11 @@ RUN mkdir -p /var/run/sshd
 # Copy various shell scripts that group dependencies for install
 # Then, make sure that these scripts have execute permissions
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
-RUN chmod -R 777 /tmp
+RUN chmod -R 777 /tmp/det_dockerfile_scripts/install_deb_packages.sh \
+    /tmp/det_dockerfile_scripts/notebook-requirements.txt \
+    /tmp/det_dockerfile_scripts/add_det_nobody_user.sh \
+    /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh \
+    /tmp/det_dockerfile_scripts/install_deepspeed.sh
 
 # Install deb packages
 RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
