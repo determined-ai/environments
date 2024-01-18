@@ -195,10 +195,13 @@ workflows:
                 - tf28-gpu
                 - pt-gpu
                 - pt2-gpu
-                - pytorch10-tf27-rocm50
+                - ngc-pytorch
+                - ngc-tensorflow
             exclude:
               - with-mpi: 1
-                image-type: pytorch10-tf27-rocm50
+                image-type: 
+                  - pytorch13-tf210-rocm56
+                  - pytorch20-tf210-rocm56
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
           context: determined-production
@@ -216,8 +219,9 @@ workflows:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
-                - deepspeed-gpu
-                - gpt-neox-deepspeed-gpu
+                - deepspeed
+                - gpt-neox-deepspeed
+                - ngc-deepspeed
       - publish-cloud-images:
           context: determined-production
           filters:
@@ -257,12 +261,14 @@ workflows:
                 - tf28-gpu
                 - pt-gpu
                 - pt2-gpu
-                - pytorch10-tf27-rocm50
-                - ngc-base
+                - ngc-pytorch
+                - ngc-tensorflow
             exclude:
               - dev-mode: true
                 with-mpi: 1
-                image-type: pytorch10-tf27-rocm50
+                image-type: 
+                  - pytorch13-tf210-rocm56
+                  - pytorch20-tf210-rocm56
 
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
@@ -282,8 +288,8 @@ workflows:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
-                - deepspeed-gpu
-                - gpt-neox-deepspeed-gpu
+                - deepspeed
+                - gpt-neox-deepspeed
                 - ngc-deepspeed
 
       - publish-cloud-images:

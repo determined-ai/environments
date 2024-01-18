@@ -4,9 +4,18 @@ FROM ${BASE_IMAGE}
 # Copy various shell scripts that group dependencies for install
 # Then, make sure that these scripts have execute permissions
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
-RUN chmod -R 777 /tmp
+RUN chmod -R 777 /tmp/det_dockerfile_scripts/build_aws.sh \
+    /tmp/det_dockerfile_scripts/scrape_libs.sh
 
-RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
+ARG AWS_PLUGIN_INSTALL_DIR=/container/aws
+ARG WITH_AWS_TRACE
+ARG INTERNAL_AWS_DS
+ARG INTERNAL_AWS_PATH
+RUN if [ "$WITH_OFI" = "1" ]; then /tmp/det_dockerfile_scripts/build_aws.sh "$WITH_OFI" "$WITH_AWS_TRACE"; fi
+
+#USING OFI
+ARG AWS_LIB_DIR=${AWS_PLUGIN_INSTALL_DIR}/lib
+ENV LD_LIBRARY_PATH=${WITH_OFI:+$AWS_LIB_DIR:}$LD_LIBRARY_PATH
 
 # Set an entrypoint that can scrape up the host libfabric.so and then
 # run the user command. This is intended to enable performant execution

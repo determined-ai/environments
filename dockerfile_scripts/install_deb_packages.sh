@@ -1,3 +1,5 @@
+RUN mkdir -p /var/run/sshd
+
 apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 		autoconf \
@@ -34,4 +36,4 @@ apt-get update \
 	&& rm /etc/ssh/ssh_host_ecdsa_key \
 	&& rm /etc/ssh/ssh_host_ed25519_key \
 	&& rm /etc/ssh/ssh_host_rsa_key \
-   && ln -s /usr/include/slurm-wlm /usr/include/slurm
+        && ln -s /usr/include/slurm-wlm /usr/include/slurm
