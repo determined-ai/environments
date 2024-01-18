@@ -38,6 +38,8 @@ RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements
 ARG DEEPSPEED_PIP
 RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed.sh; fi
 
+RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
+
 # Make sure permissions are okay for nonroot and cleanup.
 RUN chown root:root /usr/lib
 
