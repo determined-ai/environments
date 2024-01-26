@@ -17,8 +17,10 @@ if [ "$OFI" = "1" ]; then
                 tcsh
 
   # Install AWS_OFI_NCCL
-  AWS_VER=v1.4.0
-  AWS_VER_NUM=1.4.0
+  #AWS_VER=v1.4.0
+  #AWS_VER_NUM=1.4.0
+  AWS_VER=v1.6.0
+  AWS_VER_NUM=1.6.0
   AWS_NAME=aws-ofi-nccl
   AWS_FILE="${AWS_NAME}-${AWS_VER_NUM}"
   # cuda install dir likely dependent on BaseOS (i.e. ubuntu 20.02)
@@ -27,9 +29,14 @@ if [ "$OFI" = "1" ]; then
   CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/x86_64-linux"
   GDRCOPY_HOME="/usr"
 
+#  AWS_CONFIG_OPTIONS="--prefix ${AWS_PLUGIN_INSTALL_DIR} \
+#	  --with-libfabric=${OFI_INSTALL_DIR}            \
+#	  --with-nccl=${HOROVOD_NCCL_HOME}               \
+#	  --with-mpi=${OMPI_INSTALL_DIR}                 \
+#	  --with-gdrcopy=${GDRCOPY_HOME}                 \
+#	  --with-cuda=${CUDA_DIR} ${WITH_AWS_TRACE}"
   AWS_CONFIG_OPTIONS="--prefix ${AWS_PLUGIN_INSTALL_DIR} \
 	  --with-libfabric=${OFI_INSTALL_DIR}            \
-	  --with-nccl=${HOROVOD_NCCL_HOME}               \
 	  --with-mpi=${OMPI_INSTALL_DIR}                 \
 	  --with-gdrcopy=${GDRCOPY_HOME}                 \
 	  --with-cuda=${CUDA_DIR} ${WITH_AWS_TRACE}"
