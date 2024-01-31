@@ -194,9 +194,6 @@ workflows:
                 - pt-gpu
                 - pt2-gpu
                 - tensorflow-ngc
-                - tensorflow-ngc-hpc
-                - pytorch-ngc
-                - pytorch-ngc-hpc
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
             exclude:
@@ -206,12 +203,6 @@ workflows:
                 image-type: pytorch20-tf210-rocm56
               - with-mpi: 1
                 image-type: tensorflow-ngc
-              - with-mpi: 1
-                image-type: tensorflow-ngc-hpc
-              - with-mpi: 1
-                image-type: pytorch-ngc
-              - with-mpi: 1
-                image-type: pytorch-ngc-hpc
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
           context: determined-production
@@ -270,9 +261,6 @@ workflows:
                 - pt-gpu
                 - pt2-gpu
                 - tensorflow-ngc
-                - tensorflow-ngc-hpc
-                - pytorch-ngc
-                - pytorch-ngc-hpc
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
             exclude:
@@ -285,15 +273,6 @@ workflows:
               - dev-mode: true
                 with-mpi: 1
                 image-type: tensorflow-ngc
-              - dev-mode: true
-                with-mpi: 1
-                image-type: tensorflow-ngc-hpc
-              - dev-mode: true
-                with-mpi: 1
-                image-type: pytorch-ngc
-              - dev-mode: true
-                with-mpi: 1
-                image-type: pytorch-ngc-hpc
 
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev

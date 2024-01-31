@@ -187,6 +187,7 @@ NGC_PYTORCH_VERSION := 23.12-py3
 NGC_TENSORFLOW_VERSION := 23.12-tf2-py3
 NGC_DEEPSPEED_VERSION := 0.13.0
 
+# build hpc together since hpc is dependent on the normal build
 .PHONY: build-pytorch-ngc
 build-pytorch-ngc:
 	docker build -f Dockerfile-pytorch-ngc \
@@ -194,9 +195,6 @@ build-pytorch-ngc:
 		--build-arg DEEPSPEED_PIP="deepspeed==$(NGC_DEEPSPEED_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH) \
 		.
-
-.PHONY: build-pytorch-ngc-hpc
-build-pytorch-ngc-hpc:
 	docker build -f Dockerfile-ngc-hpc \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc-hpc:$(SHORT_GIT_HASH) \
@@ -208,9 +206,6 @@ build-tensorflow-ngc:
 		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH) \
 		.
-
-.PHONY: build-tensorflow-ngc-hpc
-build-tensorflow-ngc-hpc:
 	docker build -f Dockerfile-ngc-hpc \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc:$(SHORT_GIT_HASH) \
@@ -527,17 +522,11 @@ publish-pytorch20-tf210-rocm56:
 .PHONY: publish-pytorch-ngc
 publish-pytorch-ngc:
 	scripts/publish-versionless-docker.sh pytorch-ngc $(DOCKERHUB_REGISTRY)/pytorch-ngc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-
-.PHONY: publish-pytorch-ngc-hpc
-publish-pytorch-ngc-hpc:
 	scripts/publish-versionless-docker.sh pytorch-ngc-hpc $(DOCKERHUB_REGISTRY)/pytorch-ngc-hpc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tensorflow-ngc
 publish-tensorflow-ngc:
 	scripts/publish-versionless-docker.sh tensorflow-ngc $(DOCKERHUB_REGISTRY)/tensorflow-ngc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-
-.PHONY: publish-tensorflow-ngc-hpc
-publish-tensorflow-ngc-hpc:
 	scripts/publish-versionless-docker.sh tensorflow-ngc-hpc $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
