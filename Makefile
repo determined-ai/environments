@@ -198,7 +198,7 @@ build-pytorch-ngc:
 .PHONY: build-pytorch-ngc-hpc
 build-pytorch-ngc-hpc:
 	docker build -f Dockerfile-ngc-hpc \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_BASE)-$(NGC_PYTORCH_VERSION)-$(SHORT_GIT_HASH)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc-hpc:$(SHORT_GIT_HASH) \
 		.
 
@@ -212,7 +212,7 @@ build-tensorflow-ngc:
 .PHONY: build-tensorflow-ngc-hpc
 build-tensorflow-ngc-hpc:
 	docker build -f Dockerfile-ngc-hpc \
-		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc:$(SHORT_GIT_HASH) \
 		.
 
