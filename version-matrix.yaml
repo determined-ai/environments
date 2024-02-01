@@ -1,0 +1,11 @@
+images:
+	- pytorch-ngc:
+	 	ngc_version: 23.12-py3
+	 	deepspeed_version: 0.13.0
+	- pytorch-ngc-hpc:
+	 	ngc_version: 23.12-py3
+	 	deepspeed_version: 0.13.0
+	- tensorflow-ngc:
+     	ngc_version: 23.12-tf2-py3
+	- tensorflow-ngc-hpc:
+     	ngc_version: 23.12-tf2-py3

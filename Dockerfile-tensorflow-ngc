@@ -26,4 +26,7 @@ RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
 
 RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 
+# NGC has nonroot files in /usr/lib
+RUN chown root:root /usr/lib
+
 RUN rm -r /tmp/*
