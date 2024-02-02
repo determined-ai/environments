@@ -26,15 +26,10 @@ ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
 ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
 
 RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
-
+RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
 RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 
 ARG DEEPSPEED_PIP
 RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed.sh; fi
-
-RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
-
-# NGC has nonroot files in /usr/lib
-RUN chown root:root /usr/lib
 
 RUN rm -r /tmp/*
