@@ -242,8 +242,6 @@ build-pytorch20-tf210-rocm56:
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
 		.
 
-export TF_PROFILER_PIP := tensorboard-plugin-profile
-export TORCH_TB_PROFILER_PIP := torch-tb-profiler==0.4.1
 DEEPSPEED_VERSION := 0.8.3
 export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-deepspeed-$(DEEPSPEED_VERSION)$(GPU_SUFFIX)
 export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-gpt-neox-deepspeed$(GPU_SUFFIX)
