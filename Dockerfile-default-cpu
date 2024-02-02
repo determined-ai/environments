@@ -23,15 +23,14 @@ RUN if [ "$TENSORFLOW_PIP" ]; then \
 RUN if [ "$TORCH_PIP" ]; then \
         if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
             TORCH_AARCH64_PIP=$(printf '%s' "$TORCH_PIP" | sed 's/+cpu//g') \
-            && pip install $TORCH_AARCH64_PIP; \
+            && pip install $TORCH_AARCH64_PIP \; \
         else \
             pip install $TORCH_PIP; \
         fi; \
+    pip install -r /tmp/det_dockerfile_scripts/additional-requirements-torch.txt;
     fi
 RUN if [ "$TORCHVISION_PIP" ]; then pip install $TORCHVISION_PIP; fi
 
-ARG TORCH_TB_PROFILER_PIP
-RUN if [ "$TORCH_TB_PROFILER_PIP" ]; then pip install $TORCH_TB_PROFILER_PIP; fi
 
 ARG TF_PROFILER_PIP
 RUN if [ "$TF_PROFILER_PIP" ]; then python -m pip install $TF_PROFILER_PIP; fi
