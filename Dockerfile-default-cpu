@@ -16,8 +16,8 @@ RUN if [ "$TENSORFLOW_PIP" ]; then \
             && pip install $TENSORFLOW_AARCH64_PIP \
         else \
             pip install $TENSORFLOW_PIP \
-        fi \
-	&& pip install -r /tmp/det_dockerfile_scripts/additional-requirements-tf.txt; \
+        fi; \
+	pip install -r /tmp/det_dockerfile_scripts/additional-requirements-tf.txt; \
 	else \
 		export HOROVOD_WITH_TENSORFLOW=0; \
     fi
@@ -27,7 +27,7 @@ RUN if [ "$TORCH_PIP" ]; then \
             && pip install $TORCH_AARCH64_PIP \
         else \
             pip install $TORCH_PIP \
-        fi \
+        fi; \
     && pip install -r /tmp/det_dockerfile_scripts/additional-requirements-torch.txt; \
     fi
 RUN if [ "$TORCHVISION_PIP" ]; then pip install $TORCHVISION_PIP; fi
