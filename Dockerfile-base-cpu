@@ -57,6 +57,7 @@ ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM ${WITH_MPI:+1}
 # successfully install these packages into containers running as non-root.
 # `pip` does not uninstall dependencies, so we still have all the dependencies
 # installed.
+RUN pip install --upgrade pip
 RUN pip install determined && pip uninstall -y determined
 
 RUN pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
