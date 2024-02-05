@@ -154,7 +154,7 @@ build-gpu-cuda-112-base:
 build-gpu-cuda-113-base:
 	docker build -f Dockerfile-base-gpu \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.3.1-cudnn8-devel-$(UBUNTU_VERSION)" \
-		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_310)" \
+		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_39)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
