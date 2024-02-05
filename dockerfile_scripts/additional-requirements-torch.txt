@@ -1,1 +1,1 @@
-torch-tb-profiler
+torch-tb-profiler==0.4.3
