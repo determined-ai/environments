@@ -2,8 +2,7 @@
 
 set -e
 
-apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev
+apt-get update -y && DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev
 
 #Older versions of deepspeed require pinned pydantic version
 python -m pip install pydantic==1.10.11
