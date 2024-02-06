@@ -18,8 +18,8 @@ RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
 RUN python -m pip install determined && python -m pip uninstall -y determined
 
 RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements-tf.txt \
-    -r /tmp/det_dockerfile_scripts/notebook-requirements.txt \
-    -r /tmp/det_dockerfile_scripts/additional-requirements.txt
+    -r /tmp/det_dockerfile_scripts/additional-requirements.txt \
+    -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
 
 ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
 ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
