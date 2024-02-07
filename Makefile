@@ -182,14 +182,12 @@ NGC_PYTORCH_PREFIX := nvcr.io/nvidia/pytorch
 NGC_TENSORFLOW_PREFIX := nvcr.io/nvidia/tensorflow
 NGC_PYTORCH_VERSION := 23.12-py3
 NGC_TENSORFLOW_VERSION := 23.12-tf2-py3
-NGC_DEEPSPEED_VERSION := 0.13.0
 
 # build hpc together since hpc is dependent on the normal build
 .PHONY: build-pytorch-ngc
 build-pytorch-ngc:
 	docker build -f Dockerfile-pytorch-ngc \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
-		--build-arg DEEPSPEED_PIP="deepspeed==$(NGC_DEEPSPEED_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH) \
 		.
 	docker build -f Dockerfile-ngc-hpc \
