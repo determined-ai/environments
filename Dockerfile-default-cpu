@@ -10,16 +10,16 @@ ARG TENSORFLOW_PIP
 ARG TORCH_PIP
 ARG TORCHVISION_PIP
 RUN if [ "$TENSORFLOW_PIP" ]; then \
-		export HOROVOD_WITH_TENSORFLOW=1 && \
+        export HOROVOD_WITH_TENSORFLOW=1 && \
         if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
             TENSORFLOW_AARCH64_PIP=$(printf '%s' "$TENSORFLOW_PIP" | sed 's/cpu/aarch64/') \
             && pip install $TENSORFLOW_AARCH64_PIP; \
         else \
             pip install $TENSORFLOW_PIP; \
         fi; \
-      pip install -r /tmp/det_dockerfile_scripts/additional-requirements-tf.txt; \
-	else \
-		export HOROVOD_WITH_TENSORFLOW=0; \
+        pip install -r /tmp/det_dockerfile_scripts/additional-requirements-tf.txt; \
+    else \
+        export HOROVOD_WITH_TENSORFLOW=0; \
     fi
 RUN if [ "$TORCH_PIP" ]; then \
         if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
@@ -28,7 +28,7 @@ RUN if [ "$TORCH_PIP" ]; then \
         else \
             pip install $TORCH_PIP; \
         fi; \
-      pip install -r /tmp/det_dockerfile_scripts/additional-requirements-torch.txt; \
+        pip install -r /tmp/det_dockerfile_scripts/additional-requirements-torch.txt; \
     fi
 RUN if [ "$TORCHVISION_PIP" ]; then pip install $TORCHVISION_PIP; fi
 

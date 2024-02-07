@@ -27,16 +27,16 @@ ARG TORCH_PIP
 ARG TORCHVISION_PIP
 
 RUN if [ "$TENSORFLOW_PIP" ]; then \
-		export HOROVOD_WITH_TENSORFLOW=1 \
-		&& python -m pip install $TENSORFLOW_PIP \
-      && python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements-tf.txt; \
-	else \
-		export HOROVOD_WITH_TENSORFLOW=0; \
-	fi
+        export HOROVOD_WITH_TENSORFLOW=1 \
+        && python -m pip install $TENSORFLOW_PIP \
+        && python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements-tf.txt; \
+    else \
+        export HOROVOD_WITH_TENSORFLOW=0; \
+    fi
 RUN if [ "$TORCH_PIP" ]; then  \
-    python -m pip install $TORCH_PIP \
-    && python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements-torch.txt; \
-fi
+        python -m pip install $TORCH_PIP \
+        && python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements-torch.txt; \
+    fi
 RUN if [ "$TORCHVISION_PIP" ]; then python -m pip install $TORCHVISION_PIP; fi
 
 ARG TF_CUDA_SYM
