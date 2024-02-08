@@ -14,10 +14,13 @@ pip install accelerate==0.22.0 arrow==1.2.3 datasets==2.14.5 huggingface-hub==0.
 export DS_BUILD_SPARSE_ATTN=0
 export DS_BUILD_EVOFORMER_ATTN=0
 cuda_ver_str=`echo $CUDA_VERSION | awk -F "." '{print $1"."$2}'`
-#export CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/sbsa-linux"
-#export CUDA_HOME="/usr/local/cuda-$cuda_ver_str/targets/sbsa-linux"
-#export CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/sbsa-linux"
-export CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/x86_64-linux"
+
+ARCH_TYPE=`uname -m`
+if [ $ARCH_TYPE == "x86_64" ]; then
+  export CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/x86_64-linux"
+elif [ $ARCH_TYPE == "aarch64" ]; then
+  export CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/sbsa-linux"
+fi
 
 #export CUDA_HOME="/usr/local/cuda-12.2/compat"
 #Remove 5.2 from TORCH_CUDA_ARCH_LIST, it is no longer supported by deepspeed

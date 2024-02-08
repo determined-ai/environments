@@ -200,12 +200,13 @@ RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements
 # when building this container.
 RUN chown root /usr/lib && chgrp root /usr/lib
 
+# This only matter if we are targetting the H100s/GH nodes
 # Force it to use a precompiled version of the aws ofi plugin
-COPY ./aws-libs.tar /tmp
-RUN tar -C /tmp -xf /tmp/aws-libs.tar && \
+RUN if [ "$WITH_GH" = "1" ]; then cp ./aws-libs.tar /tmp; fi
+RUN if [ "$WITH_GH" = "1" ]; then tar -C /tmp -xf /tmp/aws-libs.tar && \
     mv /tmp/aws-libs/libnccl-net.* /container/aws/lib && \
     chown -R root:root /container/aws && \
-    chmod -R go+rX /container/aws
+    chmod -R go+rX /container/aws; fi
 
 RUN rm -r /tmp/*
 

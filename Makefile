@@ -187,14 +187,14 @@ NGC_TENSORFLOW_VERSION := 23.12-tf2-py3
 NGC_DEEPSPEED_VERSION := 0.13.0
 
 NGC_GH_PYTORCH_VERSION=23.09-py3
-NGCPLUS_GH_BASE=pytorch-gh-ngc
+NGCPLUS_GH_BASE=pytorch-gh-ngc-base
 NGCPLUS_GH_DS=pytorch-gh-ds-ngc
 
 HOROVOD_PIP_COMMAND := horovod==0.28.1
 
 .PHONY: build-gpu-ngc-gh-base
 build-gpu-ngc-gh-base:
-	docker build --network=host -f Dockerfile-ngc \
+	docker build -f Dockerfile-ngc \
 	        --build-arg BASE_IMAGE="nvcr.io/nvidia/pytorch:23.09-py3" \
                 --build-arg TENSORFLOW_PIP="$(TF2_PIP_GPU)" \
                 --build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
@@ -215,7 +215,7 @@ build-gpu-ngc-gh-base:
 
 .PHONY: build-gpu-ngc-gh-deepspeed
 build-gpu-ngc-gh-deepspeed: build-gpu-ngc-gh-base
-	docker build --network=host -f Dockerfile-ngc-ds \
+	docker build -f Dockerfile-ngc-ds \
                 --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-$(NGC_GH_PYTORCH_VERSION)-$(VERSION)" \
                 --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0;9.0" \
                 --build-arg DEEPSPEED_PIP="deepspeed==0.11.1"   \
@@ -223,11 +223,11 @@ build-gpu-ngc-gh-deepspeed: build-gpu-ngc-gh-base
                 -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-$(NGC_GH_PYTORCH_VERSION)-$(VERSION) \
                 .
 
-NGCPLUS_TF_BASE=tf-ngc
+NGCPLUS_TF_BASE=tf-ngc-base
 NGC_GH_TF_VERSION=tf2-py3
 .PHONY: build-gpu-ngc-tf-gh-base
 build-gpu-ngc-tf-gh-base:
-	docker build --network=host -f Dockerfile-ngc-tf \
+	docker build -f Dockerfile-ngc-tf \
                 --no-cache \
                 --build-arg BASE_IMAGE="nvcr.io/nvidia/tensorflow:23.10-tf2-py3" \
                 --build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
@@ -248,7 +248,7 @@ build-gpu-ngc-tf-gh-base:
 
 .PHONY: build-gpu-ngc-py38-gh-base
 build-gpu-ngc-py38-gh-base:
-	docker build --network=host -f Dockerfile-ngc-py38 \
+	docker build -f Dockerfile-ngc-py38 \
                 --build-arg BASE_IMAGE="nvcr.io/nvidia/pytorch:23.03-py3" \
                 --build-arg TENSORFLOW_PIP="$(TF2_PIP_GPU)" \
                 --build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
@@ -269,7 +269,7 @@ build-gpu-ngc-py38-gh-base:
 
 .PHONY: build-gpu-ngc-py38-gh-deepspeed
 build-gpu-ngc-py38-gh-deepspeed: build-gpu-ngc-py38-gh-base
-	docker build --network=host -f Dockerfile-ngc-ds \
+	docker build -f Dockerfile-ngc-ds \
                 --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_VERSION)-$(VERSION)" \
                 --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0;9.0" \
                 --build-arg DEEPSPEED_PIP="git+https://github.com/EleutherAI/DeeperSpeed@v2.0"   \
