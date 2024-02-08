@@ -17,15 +17,21 @@ if [ "$OFI" = "1" ]; then
                 tcsh
 
   # Install AWS_OFI_NCCL
-  AWS_VER=v1.4.0
-  AWS_VER_NUM=1.4.0
+  AWS_VER=v1.6.0
+  AWS_VER_NUM=1.6.0
   AWS_NAME=aws-ofi-nccl
   AWS_FILE="${AWS_NAME}-${AWS_VER_NUM}"
   # cuda install dir likely dependent on BaseOS (i.e. ubuntu 20.02)
   # in case this changes in the future
   cuda_ver_str=`echo $CUDA_VERSION | awk -F "." '{print $1"."$2}'`
-  CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/x86_64-linux"
   GDRCOPY_HOME="/usr"
+
+  ARCH_TYPE=`uname -m`
+  if [ $ARCH_TYPE == "x86_64" ]; then
+    CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/x86_64-linux"
+  elif [ $ARCH_TYPE == "aarch64" ]; then
+    CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/sbsa-linux"
+  fi
 
   AWS_CONFIG_OPTIONS="--prefix ${AWS_PLUGIN_INSTALL_DIR} \
 	  --with-libfabric=${OFI_INSTALL_DIR}            \

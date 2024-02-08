@@ -15,6 +15,10 @@ export DS_BUILD_SPARSE_ATTN=0
 export DS_BUILD_EVOFORMER_ATTN=0
 cuda_ver_str=`echo $CUDA_VERSION | awk -F "." '{print $1"."$2}'`
 
+#Remove 5.2 from TORCH_CUDA_ARCH_LIST, it is no longer supported by deepspeed
+export TORCH_CUDA_ARCH_LIST=`echo $TORCH_CUDA_ARCH_LIST|sed 's/5.2 //'`
+#python -m pip install $DEEPSPEED_PIP --no-binary deepspeed
+
 ARCH_TYPE=`uname -m`
 if [ $ARCH_TYPE == "x86_64" ]; then
   export CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/x86_64-linux"
@@ -22,9 +26,12 @@ elif [ $ARCH_TYPE == "aarch64" ]; then
   export CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/sbsa-linux"
 fi
 
-#export CUDA_HOME="/usr/local/cuda-12.2/compat"
-#Remove 5.2 from TORCH_CUDA_ARCH_LIST, it is no longer supported by deepspeed
-export TORCH_CUDA_ARCH_LIST=`echo $TORCH_CUDA_ARCH_LIST|sed 's/5.2 //'`
-python -m pip install $DEEPSPEED_PIP --no-binary deepspeed
-python -m deepspeed.env_report
 
+git clone https://github.com/EleutherAI/gpt-neox.git
+pip install -r gpt-neox/requirements/requirements.txt
+python -m deepspeed.env_report
+pip install -r gpt-neox/requirements/requirements-wandb.txt
+pip install -r gpt-neox/requirements/requirements-tensorboard.txt
+MAX_JOBS=16 pip install -r gpt-neox/requirements/requirements-flashattention.txt
+#pip install -r gpt-neox/requirements/requirements-sparseattention.txt
+python gpt-neox/megatron/fused_kernels/setup.py install
