@@ -218,7 +218,6 @@ workflows:
                 - linux-cuda-11:default
               ci-resource_class:
                 - gpu.nvidia.small.multi
-              with-mpi: [0]
               image-type:
                 - deepspeed
                 - gpt-neox-deepspeed
@@ -290,7 +289,6 @@ workflows:
                 - linux-cuda-11:default
               ci-resource_class:
                 - gpu.nvidia.small.multi
-              with-mpi: [0]
               image-type:
                 - deepspeed
                 - gpt-neox-deepspeed

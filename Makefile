@@ -484,16 +484,16 @@ endif
 
 .PHONY: publish-deepspeed
 publish-deepspeed:
-	scripts/publish-docker.sh deepspeed-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh deepspeed $(DOCKERHUB_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-docker.sh deepspeed-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+	scripts/publish-docker.sh deepspeed $(NGC_REGISTRY)/$(GPU_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 endif
 
 .PHONY: publish-gpt-neox-deepspeed
 publish-gpt-neox-deepspeed:
-	scripts/publish-docker.sh gpt-neox-deepspeed-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh gpt-neox-deepspeed $(DOCKERHUB_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-docker.sh gpt-neox-deepspeed-$(WITH_MPI) $(NGC_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+	scripts/publish-docker.sh gpt-neox-deepspeed $(NGC_REGISTRY)/$(GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
 endif
 
 .PHONY: publish-pytorch-ngc
@@ -503,11 +503,11 @@ publish-pytorch-ngc:
 
 .PHONY: publish-pytorch13-tf210-rocm56
 publish-pytorch13-tf210-rocm56:
-	scripts/publish-docker.sh pytorch13-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh pytorch13-tf210-rocm56 $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-pytorch20-tf210-rocm56
 publish-pytorch20-tf210-rocm56:
-	scripts/publish-docker.sh pytorch20-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-docker.sh pytorch20-tf210-rocm56 $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tensorflow-ngc
 publish-tensorflow-ngc:
