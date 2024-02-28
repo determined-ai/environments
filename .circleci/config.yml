@@ -214,12 +214,10 @@ workflows:
             parameters:
               with-mpi: [0, 1]
               image-type:
-                - tf2-cpu
-                - pt-cpu
-                - pt2-cpu
-                - tf2-gpu
-                - pt-gpu
-                - pt2-gpu
+                - tensorflow-cpu
+                - pytorch-cpu
+                - tensorflow-cuda
+                - pytorch-cuda
                 - tensorflow-ngc
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
@@ -247,7 +245,6 @@ workflows:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
-                - deepspeed
                 - gpt-neox-deepspeed
                 - pytorch-ngc
       - build-and-publish-docker:
@@ -295,12 +292,10 @@ workflows:
               dev-mode: [true]
               with-mpi: [0, 1]
               image-type:
-                - tf2-cpu
-                - pt-cpu
-                - pt2-cpu
-                - tf2-gpu
-                - pt-gpu
-                - pt2-gpu
+                - tensorflow-cpu
+                - pytorch-cpu
+                - tensorflow-cuda
+                - pytorch-cuda
                 - tensorflow-ngc
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
@@ -333,7 +328,6 @@ workflows:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
-                - deepspeed
                 - gpt-neox-deepspeed
                 - pytorch-ngc
 
