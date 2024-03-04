@@ -83,6 +83,9 @@ jobs:
       with-mpi:
         type: integer
         default: 0
+      with-ofi:
+        type: integer
+        default: 0
     machine:
       image: <<parameters.ci-image>>
     resource_class: <<parameters.ci-resource_class>>
@@ -124,15 +127,15 @@ jobs:
                 password: ${NGC_API_KEY}
             - run:
                 no_output_timeout: 30m
-                command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
-            - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+                command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> WITH_OFI=<<parameters.with-ofi>>
+            - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> WITH_OFI=<<parameters.with-ofi>>
       - when:
           condition: <<parameters.dev-mode>>
           steps:
             - run:
                 no_output_timeout: 30m
-                command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
-            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+                command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> WITH_OFI=<<parameters.with-ofi>>
+            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> WITH_OFI=<<parameters.with-ofi>>
       - store_artifacts:
           path: /tmp/artifacts
 
@@ -177,7 +180,7 @@ workflows:
   publish:
     jobs:
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>
           context: determined-production
           filters:
             branches:
@@ -197,13 +200,18 @@ workflows:
                 - pt2-gpu
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
+            parameters:
+              with-ofi: 1
+              with-mpi: 1
+              image-type:
+                - tf2-gpu
             exclude:
               - with-mpi: 1
                 image-type: 
                   - pytorch13-tf210-rocm56
                   - pytorch20-tf210-rocm56
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>
           context: determined-production
           filters:
             branches:
@@ -218,6 +226,7 @@ workflows:
               ci-resource_class:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
+              with-ofi: [0]
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
@@ -241,7 +250,7 @@ workflows:
           filters: *upstream-feature-branch
 
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
@@ -262,6 +271,12 @@ workflows:
                 - pt2-gpu
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
+            parameters:
+              dev-mode: [true]
+              with-ofi: 1
+              with-mpi: 1
+              image-type:
+                - tf2-gpu
             exclude:
               - dev-mode: true
                 with-mpi: 1
@@ -270,7 +285,7 @@ workflows:
                   - pytorch20-tf210-rocm56
 
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
@@ -286,6 +301,7 @@ workflows:
               ci-resource_class:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
+              with-ofi: [0]
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
