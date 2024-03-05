@@ -189,6 +189,7 @@ workflows:
             alias: build-docker-all-cpu
             parameters:
               with-mpi: [0, 1]
+              with-ofi: 1
               image-type:
                 - tf2-cpu
                 - tf28-cpu
@@ -200,11 +201,6 @@ workflows:
                 - pt2-gpu
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
-            parameters:
-              with-ofi: 1
-              with-mpi: 1
-              image-type:
-                - tf2-gpu
             exclude:
               - with-mpi: 1
                 image-type: 
@@ -260,6 +256,7 @@ workflows:
             parameters:
               dev-mode: [true]
               with-mpi: [0, 1]
+              with-ofi: 1
               image-type:
                 - tf2-cpu
                 - tf28-cpu
@@ -271,12 +268,6 @@ workflows:
                 - pt2-gpu
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
-            parameters:
-              dev-mode: [true]
-              with-ofi: 1
-              with-mpi: 1
-              image-type:
-                - tf2-gpu
             exclude:
               - dev-mode: true
                 with-mpi: 1
