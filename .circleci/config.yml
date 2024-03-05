@@ -180,7 +180,7 @@ workflows:
   publish:
     jobs:
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
           context: determined-production
           filters:
             branches:
@@ -211,7 +211,7 @@ workflows:
                   - pytorch13-tf210-rocm56
                   - pytorch20-tf210-rocm56
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
           context: determined-production
           filters:
             branches:
@@ -250,7 +250,7 @@ workflows:
           filters: *upstream-feature-branch
 
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>-dev
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
@@ -285,7 +285,7 @@ workflows:
                   - pytorch20-tf210-rocm56
 
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>-dev
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
