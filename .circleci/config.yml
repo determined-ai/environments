@@ -189,7 +189,7 @@ workflows:
             alias: build-docker-all-cpu
             parameters:
               with-mpi: [0, 1]
-              with-ofi: 1
+              with-ofi: [1]
               image-type:
                 - tf2-cpu
                 - tf28-cpu
@@ -256,7 +256,7 @@ workflows:
             parameters:
               dev-mode: [true]
               with-mpi: [0, 1]
-              with-ofi: 1
+              with-ofi: [1]
               image-type:
                 - tf2-cpu
                 - tf28-cpu
