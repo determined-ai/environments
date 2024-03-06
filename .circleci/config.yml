@@ -85,7 +85,7 @@ jobs:
         default: 0
       with-ofi:
         type: string
-        default: WITH_OFI=1
+        default: null
     machine:
       image: <<parameters.ci-image>>
     resource_class: <<parameters.ci-resource_class>>
