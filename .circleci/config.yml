@@ -194,15 +194,18 @@ workflows:
                 - pt-gpu
                 - pt2-gpu
                 - tensorflow-ngc
-                - pytorch13-tf210-rocm56
-                - pytorch20-tf210-rocm56
+                - pytorch13-tf210-rocm57
+                - pytorch20-tf210-rocm57
+                - pytorch13-tf210-rocm60
+                - pytorch20-tf210-rocm60
             exclude:
               - with-mpi: 1
-                image-type: pytorch13-tf210-rocm56
-              - with-mpi: 1
-                image-type: pytorch20-tf210-rocm56
-              - with-mpi: 1
-                image-type: tensorflow-ngc
+                image-type: 
+                  - pytorch13-tf210-rocm57
+                  - pytorch20-tf210-rocm57
+                  - pytorch13-tf210-rocm60
+                  - pytorch20-tf210-rocm60
+                  - tensorflow-ngc
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
           context: determined-production
@@ -261,18 +264,19 @@ workflows:
                 - pt-gpu
                 - pt2-gpu
                 - tensorflow-ngc
-                - pytorch13-tf210-rocm56
-                - pytorch20-tf210-rocm56
+                - pytorch13-tf210-rocm57
+                - pytorch20-tf210-rocm57
+                - pytorch13-tf210-rocm60
+                - pytorch20-tf210-rocm60
             exclude:
               - dev-mode: true
                 with-mpi: 1
-                image-type: pytorch13-tf210-rocm56
-              - dev-mode: true
-                with-mpi: 1
-                image-type: pytorch20-tf210-rocm56
-              - dev-mode: true
-                with-mpi: 1
-                image-type: tensorflow-ngc
+                image-type: 
+                  - pytorch13-tf210-rocm57
+                  - pytorch20-tf210-rocm57
+                  - pytorch13-tf210-rocm60
+                  - pytorch20-tf210-rocm60
+                  - tensorflow-ngc
 
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
