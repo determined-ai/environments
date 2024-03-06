@@ -85,7 +85,7 @@ jobs:
         default: 0
       with-ofi:
         type: string
-        default: ""
+        default: null
     machine:
       image: <<parameters.ci-image>>
     resource_class: <<parameters.ci-resource_class>>
@@ -189,7 +189,7 @@ workflows:
             alias: build-docker-all-cpu
             parameters:
               with-mpi: [0, 1]
-              with-ofi: ""
+              with-ofi: null
               image-type:
                 - tf2-cpu
                 - tf28-cpu
@@ -222,7 +222,7 @@ workflows:
               ci-resource_class:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
-              with-ofi: ""
+              with-ofi: null
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
@@ -270,7 +270,7 @@ workflows:
             parameters:
               dev-mode: [true]
               with-mpi: [0, 1]
-              with-ofi: ""
+              with-ofi: null
               image-type:
                 - tf2-cpu
                 - tf28-cpu
@@ -306,7 +306,7 @@ workflows:
               ci-resource_class:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
-              with-ofi: ""
+              with-ofi: null
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
