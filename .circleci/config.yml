@@ -84,8 +84,8 @@ jobs:
         type: integer
         default: 0
       with-ofi:
-        type: string
-        default: NO_OFI
+        type: integer
+        default: 0
     machine:
       image: <<parameters.ci-image>>
     resource_class: <<parameters.ci-resource_class>>
@@ -127,15 +127,15 @@ jobs:
                 password: ${NGC_API_KEY}
             - run:
                 no_output_timeout: 30m
-                command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> <<parameters.with-ofi>>
-            - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> <<parameters.with-ofi>>
+                command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> WITH_OFI=<<parameters.with-ofi>>
+            - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> WITH_OFI=<<parameters.with-ofi>>
       - when:
           condition: <<parameters.dev-mode>>
           steps:
             - run:
                 no_output_timeout: 30m
-                command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> <<parameters.with-ofi>>
-            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> <<parameters.with-ofi>>
+                command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> WITH_OFI=<<parameters.with-ofi>>
+            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> WITH_OFI=<<parameters.with-ofi>>
       - store_artifacts:
           path: /tmp/artifacts
 
@@ -234,7 +234,7 @@ workflows:
             alias: build-docker-all-hpc
             parameters:
               with-mpi: [1]
-              with-ofi: [WITH_OFI=1]
+              with-ofi: [1]
               image-type:
                 - tf2-gpu
       - publish-cloud-images:
@@ -318,7 +318,7 @@ workflows:
             parameters:
               dev-mode: [true]
               with-mpi: [1]
-              with-ofi: [WITH_OFI=1]
+              with-ofi: [1]
               image-type:
                 - tf2-gpu
 
