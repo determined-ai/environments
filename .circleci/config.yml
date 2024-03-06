@@ -189,6 +189,7 @@ workflows:
             alias: build-docker-all-cpu
             parameters:
               with-mpi: [0, 1]
+              with-ofi: null
               image-type:
                 - tf2-cpu
                 - tf28-cpu
@@ -221,11 +222,12 @@ workflows:
               ci-resource_class:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
+              with-ofi: null
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>
           context: determined-production
           filters:
             branches:
@@ -268,6 +270,7 @@ workflows:
             parameters:
               dev-mode: [true]
               with-mpi: [0, 1]
+              with-ofi: null
               image-type:
                 - tf2-cpu
                 - tf28-cpu
@@ -303,12 +306,13 @@ workflows:
               ci-resource_class:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
+              with-ofi: null
               image-type:
                 - deepspeed-gpu
                 - gpt-neox-deepspeed-gpu
 
       - build-and-publish-docker:
-          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>-dev
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
           context: determined-production
           filters: *upstream-feature-branch
           requires:
