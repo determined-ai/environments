@@ -39,6 +39,15 @@ RUN apt-get update \
 		
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
+ARG WITH_NCCL
+# Make it look for the system nccl, which hopefully is the newer one we built
+# and installed
+
+ENV HOROVOD_NCCL_HOME=${WITH_NCCL:+"/container/nccl"}
+ENV HOROVOD_NCCL_LINK=${WITH_NCCL:+SHARED}
+
+RUN if [ -n "${WITH_NCCL}" ]; then /tmp/det_dockerfile_scripts/build_nccl.sh; fi
+
 ARG WITH_MPI
 ARG WITH_OFI
 ARG UCX_INSTALL_DIR=/container/ucx

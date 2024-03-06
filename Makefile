@@ -188,7 +188,8 @@ NGC_PYTORCH_VERSION := 23.12-py3
 NGC_TENSORFLOW_VERSION := 23.12-tf2-py3
 NGC_DEEPSPEED_VERSION := 0.13.0
 
-NGC_GH_PYTORCH_VERSION=23.09-py3
+NGC_GH_PYTORCH_VERSION=23.10-py3
+NGC_GH_PYTORCH_38_VERSION=22.12-py3
 NGCPLUS_GH_BASE=pytorch-gh-ngc-base
 NGCPLUS_GH_DS=pytorch-gh-ds-ngc
 
@@ -197,7 +198,7 @@ HOROVOD_PIP_COMMAND := horovod==0.28.1
 .PHONY: build-gpu-ngc-gh-base
 build-gpu-ngc-gh-base:
 	docker build -f Dockerfile-ngc \
-	        --build-arg BASE_IMAGE="nvcr.io/nvidia/pytorch:23.09-py3" \
+		--build-arg BASE_IMAGE=$(NGC_PYTORCH_PREFIX):$(NGC_GH_PYTORCH_VERSION) \
                 --build-arg TENSORFLOW_PIP="$(TF2_PIP_GPU)" \
                 --build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
                 --build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
@@ -231,7 +232,7 @@ NGC_GH_TF_VERSION=tf2-py3
 build-gpu-ngc-tf-gh-base:
 	docker build -f Dockerfile-ngc-tf \
                 --no-cache \
-                --build-arg BASE_IMAGE="nvcr.io/nvidia/tensorflow:23.10-tf2-py3" \
+                --build-arg BASE_IMAGE=$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION) \
                 --build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
                 --build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
                 --build-arg INTERNAL_AWS_DS="$(INTERNAL_AWS_DS)" \
@@ -251,7 +252,7 @@ build-gpu-ngc-tf-gh-base:
 .PHONY: build-gpu-ngc-py38-gh-base
 build-gpu-ngc-py38-gh-base:
 	docker build -f Dockerfile-ngc-py38 \
-                --build-arg BASE_IMAGE="nvcr.io/nvidia/pytorch:23.03-py3" \
+                --build-arg BASE_IMAGE=$(NGC_PYTORCH_PREFIX):$(NGC_GH_PYTORCH_38_VERSION) \
                 --build-arg TENSORFLOW_PIP="$(TF2_PIP_GPU)" \
                 --build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
                 --build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
@@ -265,28 +266,28 @@ build-gpu-ngc-py38-gh-base:
                 --build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
                 --build-arg HOROVOD_GPU_OPERATIONS="$(HOROVOD_GPU_OPERATIONS)" \
                 --build-arg HOROVOD_GPU_ALLREDUCE="$(HOROVOD_GPU_ALLREDUCE)" \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_VERSION)-$(VERSION) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION) \
                 .
 
 .PHONY: build-gpu-ngc-py38-gh-deepspeed
 build-gpu-ngc-py38-gh-deepspeed: build-gpu-ngc-py38-gh-base
 	docker build -f Dockerfile-ngc-ds \
-                --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_VERSION)-$(VERSION)" \
+                --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION)" \
                 --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0;9.0" \
                 --build-arg DEEPSPEED_PIP="git+https://github.com/EleutherAI/DeeperSpeed@v2.0"   \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-$(NGC_GH_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-$(NGC_GH_PYTORCH_VERSION)-$(VERSION) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION) \
                 .
 
 .PHONY: build-gpu-ngc-py38-gh-neox
 build-gpu-ngc-py38-gh-neox: build-gpu-ngc-py38-gh-base
 	docker build -f Dockerfile-ngc-neox \
-                --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_VERSION)-$(VERSION)" \
+                --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION)" \
                 --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0;9.0" \
                 --build-arg DEEPSPEED_PIP="git+https://github.com/EleutherAI/DeeperSpeed@v2.0"   \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-neox-$(NGC_GH_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-neox-$(NGC_GH_PYTORCH_VERSION)-$(VERSION) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-neox-$(NGC_GH_PYTORCH_38_VERSION)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-neox-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION) \
                 .
 
 # build hpc together since hpc is dependent on the normal build
