@@ -27,22 +27,20 @@ ARG TORCH_PIP
 ARG TORCHVISION_PIP
 
 RUN if [ "$TENSORFLOW_PIP" ]; then \
-		export HOROVOD_WITH_TENSORFLOW=1 \
-		&& python -m pip install $TENSORFLOW_PIP; \
-	else \
-		export HOROVOD_WITH_TENSORFLOW=0; \
-	fi
-RUN if [ "$TORCH_PIP" ]; then python -m pip install $TORCH_PIP; fi
+        export HOROVOD_WITH_TENSORFLOW=1 \
+        && python -m pip install $TENSORFLOW_PIP \
+        && python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements-tf.txt; \
+    else \
+        export HOROVOD_WITH_TENSORFLOW=0; \
+    fi
+RUN if [ "$TORCH_PIP" ]; then  \
+        python -m pip install $TORCH_PIP \
+        && python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements-torch.txt; \
+    fi
 RUN if [ "$TORCHVISION_PIP" ]; then python -m pip install $TORCHVISION_PIP; fi
 
 ARG TF_CUDA_SYM
 RUN if [ "$TF_CUDA_SYM" ]; then ln -s /usr/local/cuda/lib64/libcusolver.so.11 /opt/conda/lib/python3.8/site-packages/tensorflow/python/libcusolver.so.10; fi
-
-ARG TORCH_TB_PROFILER_PIP
-RUN if [ "$TORCH_TB_PROFILER_PIP" ]; then python -m pip install $TORCH_TB_PROFILER_PIP; fi
-
-ARG TF_PROFILER_PIP
-RUN if [ "$TF_PROFILER_PIP" ]; then python -m pip install $TF_PROFILER_PIP; fi
 
 ARG TORCH_CUDA_ARCH_LIST
 ARG APEX_GIT
