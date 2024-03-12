@@ -85,7 +85,7 @@ jobs:
         default: 0
       with-ofi:
         type: string
-        default: NO_OFI=
+        default: HPC_OFI=
     machine:
       image: <<parameters.ci-image>>
     resource_class: <<parameters.ci-resource_class>>
@@ -234,7 +234,7 @@ workflows:
             alias: build-docker-all-hpc
             parameters:
               with-mpi: [1]
-              with-ofi: [WITH_OFI=1]
+              with-ofi: [WITH_OFI=1 WITH_NCCL=1]
               image-type:
                 - tf2-gpu
       - publish-cloud-images:
