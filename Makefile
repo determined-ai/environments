@@ -28,6 +28,7 @@ HOROVOD_GPU_OPERATIONS := NCCL
 
 ifeq "$(WITH_MPI)" "1"
 # 	Don't bother supporting or building arm64+mpi builds.
+   HPC_SUFFIX := -hpc
 	PLATFORMS := $(PLATFORM_LINUX_AMD_64)
 	HOROVOD_WITH_MPI := 1
 	HOROVOD_WITHOUT_MPI := 0
@@ -84,8 +85,6 @@ build-cpu-py-39-base:
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME)-$(VERSION) \
-		--push \
 		.
 
 .PHONY: build-cpu-py-310-base
@@ -99,9 +98,7 @@ build-cpu-py-310-base:
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(VERSION) \
-		--push \
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(SHORT_GIT_HASH)
 		.
 
 .PHONY: build-cuda-113-base
@@ -134,28 +131,32 @@ NGC_PYTORCH_PREFIX := nvcr.io/nvidia/pytorch
 NGC_TENSORFLOW_PREFIX := nvcr.io/nvidia/tensorflow
 NGC_PYTORCH_VERSION := 24.03-py3
 NGC_TENSORFLOW_VERSION := 24.03-tf2-py3
+NGC_PYTORCH_REPO := pytorch-ngc-dev
+NGC_PYTORCH_HPC_REPO := pytorch-ngc-hpc-dev
+NGC_TF_REPO := tensorflow-ngc-dev
+NGC_TF_HPC_REPO := tensorflow-ngc-hpc-dev
 
 # build hpc together since hpc is dependent on the normal build
 .PHONY: build-pytorch-ngc
 build-pytorch-ngc:
 	docker build -f Dockerfile-pytorch-ngc \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
-		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) \
 		.
 	docker build -f Dockerfile-ngc-hpc \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH)" \
-		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc-hpc:$(SHORT_GIT_HASH) \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH)" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) \
 		.
 
 .PHONY: build-tensorflow-ngc
 build-tensorflow-ngc:
 	docker build -f Dockerfile-tensorflow-ngc \
 		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
-		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) \
 		.
 	docker build -f Dockerfile-ngc-hpc \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH)" \
-		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc:$(SHORT_GIT_HASH) \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/NGC_TF_REPO:$(SHORT_GIT_HASH)" \
+		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO):$(SHORT_GIT_HASH) \
 		.
 
 ifeq ($(WITH_MPICH),1)
@@ -171,8 +172,7 @@ build-pytorch13-tf210-rocm56:
 		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
 		--build-arg HOROVOD_PIP="horovod==0.28.1" \
 		--build-arg WITH_MPICH=$(WITH_MPICH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
 		.
 
 ifeq ($(WITH_MPICH),1)
@@ -188,8 +188,7 @@ build-pytorch20-tf210-rocm56:
 		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
 		--build-arg HOROVOD_PIP="horovod==0.28.1" \
                 --build-arg WITH_MPICH=$(WITH_MPICH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
 		.
 
 DEEPSPEED_VERSION := 0.8.3
@@ -207,8 +206,8 @@ build-deepspeed-gpt-neox: build-cuda-113-base
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg "$(NCCL_BUILD_ARG)" \
 		--build-arg DEEPSPEED_PIP="git+https://github.com/determined-ai/deepspeed.git@eleuther_dai" \
-		-t $(DOCKERHUB_REGISTRY)/$(GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
 		.
 
 TORCH_VERSION := 1.12
@@ -220,17 +219,17 @@ TORCH_PIP_CPU := torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0+cp
 TORCH_PIP_CUDA := torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 HOROVOD_PIP_COMMAND := horovod==0.28.1
 
-export CPU_TF_ENVIRONMENT_NAME := $(CPU_PREFIX_39)pytorch-$(TORCH_VERSION)-tf-$(TF_VERSION_SHORT)$(CPU_SUFFIX)
-export CUDA_TF_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-$(TORCH_VERSION)-tf-$(TF_VERSION_SHORT)$(CUDA_SUFFIX)
+export CPU_TF_ENVIRONMENT_NAME := pytorch-tensorflow$(CPU_SUFFIX)$(HPC_SUFFIX)-dev
+export CUDA_TF_ENVIRONMENT_NAME := pytorch-tensorflow$(CUDA_SUFFIX)$(HPC_SUFFIX)-dev
 
 ifeq ($(NGC_PUBLISH),)
 define CPU_TF_TAGS
--t $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH)
 endef
 else
 define CPU_TF_TAGS
--t $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
--t $(NGC_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+-t $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
+-t $(NGC_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH)
 endef
 endif
 
@@ -267,8 +266,8 @@ build-tensorflow-cuda: build-cuda-113-base
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
 		--build-arg HOROVOD_GPU_OPERATIONS="$(HOROVOD_GPU_OPERATIONS)" \
 		--build-arg HOROVOD_GPU_ALLREDUCE="$(HOROVOD_GPU_ALLREDUCE)" \
-		-t $(DOCKERHUB_REGISTRY)/$(CUDA_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(NGC_REGISTRY)/$(CUDA_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+		-t $(DOCKERHUB_REGISTRY)/$(CUDA_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
+		-t $(NGC_REGISTRY)/$(CUDA_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
 		.
 
 # torch 2.0 recipes
@@ -276,17 +275,17 @@ TORCH2_VERSION := 2.0
 TORCH2_PIP_CPU := torch==2.0.1+cpu torchvision==0.15.2+cpu torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cpu
 TORCH2_PIP_CUDA := torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 --index-url https://download.pytorch.org/whl/cu118
 TORCH2_APEX_GIT_URL := https://github.com/determined-ai/apex.git@50ac8425403b98147cbb66aea9a2a27dd3fe7673
-export CPU_PYTORCH_ENVIRONMENT_NAME := $(CPU_PREFIX_310)pytorch-$(TORCH2_VERSION)$(CPU_SUFFIX)
-export CUDA_PYTORCH_ENVIRONMENT_NAME := $(CUDA_118_PREFIX)pytorch-$(TORCH2_VERSION)$(CUDA_SUFFIX)
+export CPU_PYTORCH_ENVIRONMENT_NAME := pytorch$(CPU_SUFFIX)$(HPC_SUFFIX)-dev
+export CUDA_PYTORCH_ENVIRONMENT_NAME := pytorch$(CUDA_SUFFIX)$(HPC_SUFFIX)-dev
 
 ifeq ($(NGC_PUBLISH),)
 define CPU_PYTORCH_TAGS
--t $(DOCKERHUB_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+-t $(DOCKERHUB_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH)
 endef
 else
 define CPU_PYTORCH_TAGS
--t $(DOCKERHUB_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
--t $(NGC_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+-t $(DOCKERHUB_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
+-t $(NGC_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH)
 endef
 endif
 
@@ -322,25 +321,21 @@ build-pytorch-cuda: build-cuda-118-base
 # tf1 and tf2.4 images are not published to NGC due to vulnerabilities.
 .PHONY: publish-tensorflow-cpu
 publish-tensorflow-cpu:
-	scripts/publish-versionless-docker.sh tf2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_38_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
-	scripts/publish-versionless-docker.sh tf2-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
+	scripts/publish-versionless-docker.sh tensorflow-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tensorflow-cuda
 publish-tensorflow-cuda:
-	scripts/publish-versionless-docker.sh tensorflow-cuda-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CUDA_113_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 	scripts/publish-versionless-docker.sh tensorflow-cuda-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CUDA_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-versionless-docker.sh tensorflow-cuda-$(WITH_MPI) $(NGC_REGISTRY)/$(CUDA_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION)
+	scripts/publish-versionless-docker.sh tensorflow-cuda-$(WITH_MPI) $(NGC_REGISTRY)/$(CUDA_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH)
 endif
 
 .PHONY: publish-pytorch-cpu
 publish-pytorch-cpu:
-	scripts/publish-versionless-docker.sh pytorch-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
 	scripts/publish-versionless-docker.sh pytorch-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
 
 .PHONY: publish-pytorch-cuda
 publish-pytorch-cuda:
-	scripts/publish-versionless-docker.sh pytorch-cuda-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CUDA_CUDA_118_BASE_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 	scripts/publish-versionless-docker.sh pytorch-cuda-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CUDA_PYTORCH_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
 	scripts/publish-versionless-docker.sh pytorch-cuda-$(WITH_MPI) $(NGC_REGISTRY)/$(CUDA_PYTORCH_ENVIRONMENT_NAME) $(SHORT_GIT_HASH)
@@ -355,21 +350,21 @@ endif
 
 .PHONY: publish-pytorch-ngc
 publish-pytorch-ngc:
-	scripts/publish-versionless-docker.sh pytorch-ngc $(DOCKERHUB_REGISTRY)/pytorch-ngc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-	scripts/publish-versionless-docker.sh pytorch-ngc-hpc $(DOCKERHUB_REGISTRY)/pytorch-ngc-hpc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-versionless-docker.sh pytorch-ngc $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-versionless-docker.sh pytorch-ngc-hpc $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
 .PHONY: publish-pytorch13-tf210-rocm56
 publish-pytorch13-tf210-rocm56:
-	scripts/publish-docker.sh pytorch13-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-versionless-docker.sh  pytorch13-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
 .PHONY: publish-pytorch20-tf210-rocm56
 publish-pytorch20-tf210-rocm56:
-	scripts/publish-docker.sh pytorch20-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+	scripts/publish-versionless-docker.sh  pytorch20-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tensorflow-ngc
 publish-tensorflow-ngc:
-	scripts/publish-versionless-docker.sh tensorflow-ngc $(DOCKERHUB_REGISTRY)/tensorflow-ngc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-	scripts/publish-versionless-docker.sh tensorflow-ngc-hpc $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-versionless-docker.sh tensorflow-ngc $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-versionless-docker.sh tensorflow-ngc-hpc $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
 publish-cloud-images:
