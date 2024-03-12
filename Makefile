@@ -98,7 +98,7 @@ build-cpu-py-310-base:
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
-		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(SHORT_GIT_HASH)
+		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(SHORT_GIT_HASH) \
 		.
 
 .PHONY: build-cuda-113-base
@@ -172,7 +172,7 @@ build-pytorch13-tf210-rocm56:
 		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
 		--build-arg HOROVOD_PIP="horovod==0.28.1" \
 		--build-arg WITH_MPICH=$(WITH_MPICH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		.
 
 ifeq ($(WITH_MPICH),1)
@@ -188,7 +188,7 @@ build-pytorch20-tf210-rocm56:
 		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
 		--build-arg HOROVOD_PIP="horovod==0.28.1" \
                 --build-arg WITH_MPICH=$(WITH_MPICH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH)
+		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		.
 
 DEEPSPEED_VERSION := 0.8.3
