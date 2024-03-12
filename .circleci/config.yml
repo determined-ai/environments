@@ -318,7 +318,7 @@ workflows:
             parameters:
               dev-mode: [true]
               with-mpi: [1]
-              with-ofi: [WITH_OFI=1]
+              with-ofi: [WITH_OFI=1 WITH_NCCL=1]
               image-type:
                 - tf2-gpu
 
