@@ -83,6 +83,9 @@ jobs:
       with-mpi:
         type: integer
         default: 0
+      with-ofi:
+        type: integer
+        default: 0
     machine:
       image: <<parameters.ci-image>>
     resource_class: <<parameters.ci-resource_class>>
@@ -122,17 +125,41 @@ jobs:
                 repository: nvcr.io
                 username: ${NGC_API_USERNAME}
                 password: ${NGC_API_KEY}
-            - run:
-                no_output_timeout: 30m
-                command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
-            - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+            - unless:
+                condition:
+                 equal: [ 1, <<parameters.with-ofi>> ]
+                steps:
+                - run: 
+                   no_output_timeout: 30m
+                   command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+                - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+            - when:
+                condition:
+                  equal: [ 1, <<parameters.with-ofi>> ]
+                steps:
+                - run:
+                   no_output_timeout: 30m
+                   command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
+                - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
       - when:
           condition: <<parameters.dev-mode>>
           steps:
-            - run:
-                no_output_timeout: 30m
-                command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
-            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+            - unless:
+                condition:
+                  equal: [ 1, <<parameters.with-ofi>> ]
+                steps:
+                - run:
+                   no_output_timeout: 30m
+                   command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+                - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+            - when:
+                condition:
+                  equal: [ 1, <<parameters.with-ofi>> ]
+                steps:
+                - run:
+                   no_output_timeout: 30m
+                   command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
+                - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
       - store_artifacts:
           path: /tmp/artifacts
 
@@ -223,6 +250,19 @@ workflows:
                 - deepspeed
                 - gpt-neox-deepspeed
                 - pytorch-ngc
+      - build-and-publish-docker:
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>
+          context: determined-production
+          filters:
+            branches:
+              only: main
+          matrix:
+            alias: build-docker-all-ofi
+            parameters:
+              with-mpi: [1]
+              with-ofi: [1]
+              image-type:
+                - tf2-gpu
       - publish-cloud-images:
           context: determined-production
           filters:
@@ -231,6 +271,7 @@ workflows:
           requires:
             - build-docker-all-cpu
             - build-docker-all-gpu
+            - build-docker-all-ofi
 
   publish-dev:
     jobs:
@@ -296,6 +337,21 @@ workflows:
                 - gpt-neox-deepspeed
                 - pytorch-ngc
 
+      - build-and-publish-docker:
+          name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>-dev
+          context: determined-production
+          filters: *upstream-feature-branch
+          requires:
+            - request-publish-dev-docker
+          matrix:
+            alias: build-docker-all-ofi
+            parameters:
+              dev-mode: [true]
+              with-mpi: [1]
+              with-ofi: [1]
+              image-type:
+                - tf2-gpu
+
       - publish-cloud-images:
           name: publish-cloud-images-dev
           context: determined-production
@@ -303,5 +359,6 @@ workflows:
           requires:
             - build-docker-all-cpu
             - build-docker-all-gpu
+            - build-docker-all-ofi
             - request-publish-dev-cloud
           dev-mode: true
