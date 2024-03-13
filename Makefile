@@ -85,7 +85,7 @@ build-cpu-py-39-base:
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME)-$(SHORT_GIT_HASH) \
-		--load \
+		--push \
 		.
 
 .PHONY: build-cpu-py-310-base
@@ -100,7 +100,7 @@ build-cpu-py-310-base:
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(SHORT_GIT_HASH) \
-		--load \
+		--push \
 		.
 
 .PHONY: build-cuda-113-base
