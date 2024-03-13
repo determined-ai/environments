@@ -313,6 +313,34 @@ build-tensorflow-ngc:
 		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc:$(SHORT_GIT_HASH) \
 		.
 
+NGC_PYTORCH_PREFIX := nvcr.io/nvidia/pytorch
+NGC_TENSORFLOW_PREFIX := nvcr.io/nvidia/tensorflow
+NGC_PYTORCH_VERSION := 23.12-py3
+NGC_TENSORFLOW_VERSION := 23.12-tf2-py3
+
+# build hpc together since hpc is dependent on the normal build
+.PHONY: build-pytorch-ngc
+build-pytorch-ngc:
+	docker build -f Dockerfile-pytorch-ngc \
+		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH) \
+		.
+	docker build -f Dockerfile-ngc-hpc \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH)" \
+		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc-hpc:$(SHORT_GIT_HASH) \
+		.
+
+.PHONY: build-tensorflow-ngc
+build-tensorflow-ngc:
+	docker build -f Dockerfile-tensorflow-ngc \
+		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH) \
+		.
+	docker build -f Dockerfile-ngc-hpc \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH)" \
+		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc:$(SHORT_GIT_HASH) \
+		.
+
 ifeq ($(WITH_MPICH),1)
 ROCM57_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-mpich
 else
@@ -710,6 +738,11 @@ publish-pytorch13-tf210-rocm57:
 .PHONY: publish-pytorch20-tf210-rocm57
 publish-pytorch20-tf210-rocm57:
 	scripts/publish-docker.sh pytorch20-tf210-rocm57-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM57_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+
+.PHONY: publish-tensorflow-ngc
+publish-tensorflow-ngc:
+	scripts/publish-versionless-docker.sh tensorflow-ngc $(DOCKERHUB_REGISTRY)/tensorflow-ngc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-versionless-docker.sh tensorflow-ngc-hpc $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tensorflow-ngc
 publish-tensorflow-ngc:
