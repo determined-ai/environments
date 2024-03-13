@@ -325,13 +325,13 @@ build-pytorch-cuda: build-cuda-118-base
 # tf1 and tf2.4 images are not published to NGC due to vulnerabilities.
 .PHONY: publish-tensorflow-cpu
 publish-tensorflow-cpu:
-	scripts/publish-versionless-docker.sh tensorflow-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-versionless-docker.sh tensorflow-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME ) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tensorflow-cuda
 publish-tensorflow-cuda:
-	scripts/publish-versionless-docker.sh tensorflow-cuda-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CUDA_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-versionless-docker.sh tensorflow-cuda-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CUDA_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-versionless-docker.sh tensorflow-cuda-$(WITH_MPI) $(NGC_REGISTRY)/$(CUDA_TF2_ENVIRONMENT_NAME) $(SHORT_GIT_HASH)
+	scripts/publish-versionless-docker.sh tensorflow-cuda-$(WITH_MPI) $(NGC_REGISTRY)/$(CUDA_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH)
 endif
 
 .PHONY: publish-pytorch-cpu
@@ -347,9 +347,9 @@ endif
 
 .PHONY: publish-deepspeed-gpt-neox
 publish-deepspeed-gpt-neox:
-	scripts/publish-versionless-docker.sh deepspeed-gpt-neox-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CUDA_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-versionless-docker.sh deepspeed-gpt-neox-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-versionless-docker.sh deepspeed-gpt-neox-$(WITH_MPI) $(NGC_REGISTRY)/$(CUDA_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH)
+	scripts/publish-versionless-docker.sh deepspeed-gpt-neox-$(WITH_MPI) $(NGC_REGISTRY)/$(GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH)
 endif
 
 .PHONY: publish-pytorch-ngc
