@@ -304,11 +304,12 @@ workflows:
                 - pytorch13-tf210-rocm56
                 - pytorch20-tf210-rocm56
             exclude:
-              - dev-mode: true
-                with-mpi: 1
-                image-type: 
-                  - pytorch13-tf210-rocm56
-                  - pytorch20-tf210-rocm56
+              - parameters:
+                  dev-mode: true
+                  with-mpi: 1
+                  image-type: 
+                    - pytorch13-tf210-rocm56
+                    - pytorch20-tf210-rocm56
 
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-dev
