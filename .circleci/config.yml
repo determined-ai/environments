@@ -245,7 +245,7 @@ workflows:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
-                - gpt-neox-deepspeed
+                - deepspeed-gpt-neox
                 - pytorch-ngc
       - build-and-publish-docker:
           name: build-and-publish-docker-<<matrix.image-type>>-<<matrix.with-mpi>>-<<matrix.with-ofi>>
@@ -328,7 +328,7 @@ workflows:
                 - gpu.nvidia.small.multi
               with-mpi: [0]
               image-type:
-                - gpt-neox-deepspeed
+                - deepspeed-gpt-neox
                 - pytorch-ngc
 
       - build-and-publish-docker:
