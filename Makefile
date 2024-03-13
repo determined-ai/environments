@@ -708,11 +708,6 @@ publish-pytorch13-tf210-rocm57:
 publish-pytorch20-tf210-rocm57:
 	scripts/publish-docker.sh pytorch20-tf210-rocm57-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM57_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
-.PHONY: publish-pytorch-ngc
-publish-pytorch-ngc:
-	scripts/publish-versionless-docker.sh pytorch-ngc $(DOCKERHUB_REGISTRY)/pytorch-ngc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-	scripts/publish-versionless-docker.sh pytorch-ngc-hpc $(DOCKERHUB_REGISTRY)/pytorch-ngc-hpc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-
 .PHONY: publish-pytorch13-tf210-rocm60
 publish-pytorch13-tf210-rocm60:
 	scripts/publish-docker.sh pytorch13-tf210-rocm60-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM60_TORCH13_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
@@ -725,24 +720,6 @@ publish-pytorch20-tf210-rocm60:
 publish-pytorch-ngc:
 	scripts/publish-versionless-docker.sh pytorch-ngc $(DOCKERHUB_REGISTRY)/pytorch-ngc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 	scripts/publish-versionless-docker.sh pytorch-ngc-hpc $(DOCKERHUB_REGISTRY)/pytorch-ngc-hpc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-
-.PHONY: publish-tensorflow-ngc
-publish-tensorflow-ngc:
-	scripts/publish-versionless-docker.sh tensorflow-ngc $(DOCKERHUB_REGISTRY)/tensorflow-ngc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-	scripts/publish-versionless-docker.sh tensorflow-ngc-hpc $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-
-.PHONY: publish-pytorch13-tf210-rocm57
-publish-pytorch13-tf210-rocm57:
-	scripts/publish-docker.sh pytorch13-tf210-rocm57-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM57_TORCH13_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-
-.PHONY: publish-pytorch20-tf210-rocm57
-publish-pytorch20-tf210-rocm57:
-	scripts/publish-docker.sh pytorch20-tf210-rocm57-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM57_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-
-.PHONY: publish-tensorflow-ngc
-publish-tensorflow-ngc:
-	scripts/publish-versionless-docker.sh tensorflow-ngc $(DOCKERHUB_REGISTRY)/tensorflow-ngc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-	scripts/publish-versionless-docker.sh tensorflow-ngc-hpc $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tensorflow-ngc
 publish-tensorflow-ngc:

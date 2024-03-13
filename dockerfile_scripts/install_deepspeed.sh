@@ -15,7 +15,6 @@ pip install accelerate==0.22.0 arrow==1.2.3 datasets==2.14.5 huggingface-hub==0.
 #export DS_BUILD_OPS=1
 #Precompile supported deepspeed ops except sparse_attn
 export DS_BUILD_OPS=1
->>>>>>> main
 export DS_BUILD_SPARSE_ATTN=0
 export DS_BUILD_EVOFORMER_ATTN=0
 export DS_BUILD_CUTLASS_OPS=0
