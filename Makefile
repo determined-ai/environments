@@ -85,8 +85,8 @@ build-cpu-py-39-base:
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME)-$(SHORT_GIT_HASH) \
+		--load \
 		. \
-		--load
 
 .PHONY: build-cpu-py-310-base
 build-cpu-py-310-base:
@@ -100,12 +100,12 @@ build-cpu-py-310-base:
 		--build-arg "$(MPI_BUILD_ARG)" \
 		--build-arg "$(OFI_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(SHORT_GIT_HASH) \
+		--load \
 		. \
-		--load
 
 .PHONY: build-cuda-113-base
 build-cuda-113-base:
-	docker build -f Dockerfile-base-cuda \
+	docker buildx build -f Dockerfile-base-cuda \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.3.1-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_39)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
@@ -114,12 +114,12 @@ build-cuda-113-base:
 		--build-arg "$(OFI_BUILD_ARG)" \
 		--build-arg "$(NCCL_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH) \
-		. \
-		--load
+		--load \
+		.
 
 .PHONY: build-cuda-118-base
 build-cuda-118-base:
-	docker build -f Dockerfile-base-cuda \
+	docker buildx build -f Dockerfile-base-cuda \
 		--build-arg BASE_IMAGE="nvidia/cuda:11.8.0-cudnn8-devel-$(UBUNTU_VERSION)" \
 		--build-arg PYTHON_VERSION="$(PYTHON_VERSION_310)" \
 		--build-arg UBUNTU_VERSION="$(UBUNTU_VERSION)" \
@@ -128,8 +128,8 @@ build-cuda-118-base:
 		--build-arg "$(OFI_BUILD_ARG)" \
 		--build-arg "$(NCCL_BUILD_ARG)" \
 		-t $(DOCKERHUB_REGISTRY)/$(CUDA_118_BASE_NAME)-$(SHORT_GIT_HASH) \
-		. \
-		--load
+		--load \
+		.
 
 NGC_PYTORCH_PREFIX := nvcr.io/nvidia/pytorch
 NGC_TENSORFLOW_PREFIX := nvcr.io/nvidia/tensorflow
