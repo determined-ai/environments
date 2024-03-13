@@ -126,39 +126,39 @@ jobs:
                 username: ${NGC_API_USERNAME}
                 password: ${NGC_API_KEY}
             - unless:
-              condition:
-                equal: [ 1, <<parameter.with-ofi>> ]
-              steps:
+                condition:
+                 equal: [ 1, <<parameter.with-ofi>> ]
+                steps:
                 - run: 
-                    no_output_timeout: 30m
-                    command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+                   no_output_timeout: 30m
+                   command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
                 - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
             - when:
-              condition:
-                equal: [ 1, <<parameter.with-ofi>> ]
-              steps:
+                condition:
+                  equal: [ 1, <<parameter.with-ofi>> ]
+                steps:
                 - run:
-                    no_output_timeout: 30m
-                    command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
+                   no_output_timeout: 30m
+                   command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
                 - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
       - when:
           condition: <<parameters.dev-mode>>
           steps:
             - unless:
-              condition:
-                equal: [ 1, <<parameters.with-ofi>> ]
-              steps:
+                condition:
+                  equal: [ 1, <<parameters.with-ofi>> ]
+                steps:
                 - run:
-                    no_output_timeout: 30m
-                    command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+                   no_output_timeout: 30m
+                   command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
                 - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
             - when:
-              condition:
-                equal: [ 1, <<parameters.with-ofi>> ]
-              steps:
+                condition:
+                  equal: [ 1, <<parameters.with-ofi>> ]
+                steps:
                 - run:
-                    no_output_timeout: 30m
-                    command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
+                   no_output_timeout: 30m
+                   command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
                 - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
       - store_artifacts:
           path: /tmp/artifacts
