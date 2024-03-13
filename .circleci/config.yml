@@ -84,8 +84,8 @@ jobs:
         type: integer
         default: 0
       with-ofi:
-        type: string
-        default: HPC_OFI=
+        type: integer
+        default: 0
     machine:
       image: <<parameters.ci-image>>
     resource_class: <<parameters.ci-resource_class>>
@@ -125,17 +125,41 @@ jobs:
                 repository: nvcr.io
                 username: ${NGC_API_USERNAME}
                 password: ${NGC_API_KEY}
-            - run:
-                no_output_timeout: 30m
-                command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> <<parameters.with-ofi>>
-            - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> <<parameters.with-ofi>>
+            - unless:
+              condition:
+                equal: [ 1, <<parameter.with-ofi>> ]
+              steps:
+                - run: 
+                    no_output_timeout: 30m
+                    command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+                - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
+            - when:
+              condition:
+                equal: [ 1, <<parameter.with-ofi>> ]
+              steps:
+                - run:
+                    no_output_timeout: 30m
+                    command: make build-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
+                - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
       - when:
           condition: <<parameters.dev-mode>>
           steps:
-            - run:
-                no_output_timeout: 30m
-                command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> <<parameters.with-ofi>>
-            - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> <<parameters.with-ofi>>
+            - unless:
+              condition:
+                equal: [ 1, <<parameters.with-ofi>> ]
+              steps:
+                - run:
+                    no_output_timeout: 30m
+                    command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+                - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>>
+            - when:
+              condition:
+                equal: [ 1, <<parameters.with-ofi>> ]
+              steps:
+                - run:
+                    no_output_timeout: 30m
+                    command: make build-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
+                - run: make publish-<<parameters.image-type>> NGC_PUBLISH= REGISTRY_REPO=environments-dev WITH_MPI=<<parameters.with-mpi>> WITH_OFI=1 WITH_NCCL=1
       - store_artifacts:
           path: /tmp/artifacts
 
@@ -231,10 +255,10 @@ workflows:
             branches:
               only: main
           matrix:
-            alias: build-docker-all-hpc
+            alias: build-docker-all-ofi
             parameters:
               with-mpi: [1]
-              with-ofi: [WITH_OFI=1 WITH_NCCL=1]
+              with-ofi: [1]
               image-type:
                 - tf2-gpu
       - publish-cloud-images:
@@ -245,7 +269,7 @@ workflows:
           requires:
             - build-docker-all-cpu
             - build-docker-all-gpu
-            - build-docker-all-hpc
+            - build-docker-all-ofi
 
   publish-dev:
     jobs:
@@ -314,11 +338,11 @@ workflows:
           requires:
             - request-publish-dev-docker
           matrix:
-            alias: build-docker-all-hpc
+            alias: build-docker-all-ofi
             parameters:
               dev-mode: [true]
               with-mpi: [1]
-              with-ofi: [WITH_OFI=1 WITH_NCCL=1]
+              with-ofi: [1]
               image-type:
                 - tf2-gpu
 
@@ -329,6 +353,6 @@ workflows:
           requires:
             - build-docker-all-cpu
             - build-docker-all-gpu
-            - build-docker-all-hpc
+            - build-docker-all-ofi
             - request-publish-dev-cloud
           dev-mode: true
