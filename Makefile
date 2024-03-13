@@ -341,11 +341,11 @@ ifneq ($(NGC_PUBLISH),)
 	scripts/publish-versionless-docker.sh pytorch-cuda-$(WITH_MPI) $(NGC_REGISTRY)/$(CUDA_PYTORCH_ENVIRONMENT_NAME) $(SHORT_GIT_HASH)
 endif
 
-.PHONY: publish-gpt-neox-deepspeed
-publish-gpt-neox-deepspeed:
-	scripts/publish-versionless-docker.sh gpt-neox-deepspeed-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CUDA_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+.PHONY: publish-deepspeed-gpt-neox
+publish-deepspeed-gpt-neox:
+	scripts/publish-versionless-docker.sh deepspeed-gpt-neox-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CUDA_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 ifneq ($(NGC_PUBLISH),)
-	scripts/publish-versionless-docker.sh gpt-neox-deepspeed-$(WITH_MPI) $(NGC_REGISTRY)/$(CUDA_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH)
+	scripts/publish-versionless-docker.sh deepspeed-gpt-neox-$(WITH_MPI) $(NGC_REGISTRY)/$(CUDA_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME) $(SHORT_GIT_HASH)
 endif
 
 .PHONY: publish-pytorch-ngc
