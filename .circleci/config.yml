@@ -305,7 +305,7 @@ workflows:
                 - pytorch20-tf210-rocm56
             exclude:
               - dev-mode: true
-                with-mpi: [1]
+                with-mpi: 1
                 image-type: 
                   - pytorch13-tf210-rocm56
                   - pytorch20-tf210-rocm56
