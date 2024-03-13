@@ -127,7 +127,7 @@ jobs:
                 password: ${NGC_API_KEY}
             - unless:
                 condition:
-                 equal: [ 1, <<parameter.with-ofi>> ]
+                 equal: [ 1, <<parameters.with-ofi>> ]
                 steps:
                 - run: 
                    no_output_timeout: 30m
@@ -135,7 +135,7 @@ jobs:
                 - run: make publish-<<parameters.image-type>> WITH_MPI=<<parameters.with-mpi>>
             - when:
                 condition:
-                  equal: [ 1, <<parameter.with-ofi>> ]
+                  equal: [ 1, <<parameters.with-ofi>> ]
                 steps:
                 - run:
                    no_output_timeout: 30m
