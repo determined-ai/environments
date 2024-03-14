@@ -33,7 +33,7 @@ ifeq "$(WITH_MPI)" "1"
 	HOROVOD_WITH_MPI := 1
 	HOROVOD_WITHOUT_MPI := 0
 	HOROVOD_CPU_OPERATIONS := MPI
-	CUDA_SUFFIX := -cuda-mpi
+	CUDA_SUFFIX := -cuda
 	WITH_AWS_TRACE := 0
 	NCCL_BUILD_ARG := WITH_NCCL
         ifeq "$(WITH_NCCL)" "1"
@@ -45,11 +45,11 @@ ifeq "$(WITH_MPI)" "1"
 	MPI_BUILD_ARG := WITH_MPI=1
 
 	ifeq "$(WITH_OFI)" "1"
-	        CUDA_SUFFIX := -cuda-mpi-ofi
-		CPU_SUFFIX := -cpu-mpi-ofi
+	        CUDA_SUFFIX := -cuda
+		CPU_SUFFIX := -cpu
 		OFI_BUILD_ARG := WITH_OFI=1
 	else
-		CPU_SUFFIX := -cpu-mpi
+		CPU_SUFFIX := -cpu
 		OFI_BUILD_ARG := WITH_OFI
 	endif
 else
@@ -229,6 +229,7 @@ export CUDA_TF_ENVIRONMENT_NAME := pytorch-tensorflow$(CUDA_SUFFIX)$(HPC_SUFFIX)
 ifeq ($(NGC_PUBLISH),)
 define CPU_TF_TAGS
 -t $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH)
+
 endef
 else
 define CPU_TF_TAGS
@@ -325,7 +326,7 @@ build-pytorch-cuda: build-cuda-118-base
 # tf1 and tf2.4 images are not published to NGC due to vulnerabilities.
 .PHONY: publish-tensorflow-cpu
 publish-tensorflow-cpu:
-	scripts/publish-versionless-docker.sh tensorflow-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME ) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-versionless-docker.sh tensorflow-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
 .PHONY: publish-tensorflow-cuda
 publish-tensorflow-cuda:
