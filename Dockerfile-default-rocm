@@ -207,6 +207,9 @@ RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get inst
 RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& python -m pip install  pydantic==1.10.11 && git clone https://github.com/ROCmSoftwarePlatform/DeepSpeed.git && cd DeepSpeed && python3 setup.py  build && python3 setup.py install && python -m deepspeed.env_report; fi
 RUN if [ -n "$DEEPSPEED_PIP" ]; then python -m deepspeed.env_report ; fi
 
+RUN pip uninstall -y tensorboard tb-nightly tensorboard-plugin-wit
+RUN pip install tensorboard==1.15
+
 ENTRYPOINT ["/container/bin/scrape_libs.sh"]
 CMD ["/bin/bash"]
 USER root
