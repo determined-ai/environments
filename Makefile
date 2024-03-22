@@ -306,7 +306,7 @@ build-pytorch-cpu: build-cpu-py-310-base
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
-		$(CPU_PYTORCH_TAGS) \
+		-t $(CPU_PYTORCH_TAGS) \
 		.
 
 .PHONY: build-pytorch-cuda
