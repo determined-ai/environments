@@ -231,7 +231,6 @@ export CUDA_TF_ENVIRONMENT_NAME := pytorch-tensorflow$(CUDA_SUFFIX)$(HPC_SUFFIX)
 ifeq ($(NGC_PUBLISH),)
 define CPU_TF_TAGS
 -t $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH)
-
 endef
 else
 define CPU_TF_TAGS
@@ -251,7 +250,8 @@ build-tensorflow-cpu: build-cpu-py-39-base
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
-		-t $(CPU_TF_TAGS) \
+		$(CPU_TF_TAGS) \
+		--push \
 		.
 
 .PHONY: build-tensorflow-cuda
@@ -306,7 +306,8 @@ build-pytorch-cpu: build-cpu-py-310-base
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
-		-t $(CPU_PYTORCH_TAGS) \
+		$(CPU_PYTORCH_TAGS) \
+		--push \
 		.
 
 .PHONY: build-pytorch-cuda
