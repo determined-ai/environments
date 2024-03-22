@@ -251,7 +251,7 @@ build-tensorflow-cpu: build-cpu-py-39-base
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
 		--build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
-		$(CPU_TF_TAGS) \
+		-t $(CPU_TF_TAGS) \
 		.
 
 .PHONY: build-tensorflow-cuda
