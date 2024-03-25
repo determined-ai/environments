@@ -329,7 +329,7 @@ build-pytorch-cuda: build-cuda-118-base
 # tf1 and tf2.4 images are not published to NGC due to vulnerabilities.
 .PHONY: publish-tensorflow-cpu
 publish-tensorflow-cpu:
-	scripts/publish-versionless-docker.sh tensorflow-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	scripts/publish-versionless-docker.sh tensorflow-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
 
 .PHONY: publish-tensorflow-cuda
 publish-tensorflow-cuda:
