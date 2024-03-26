@@ -43,6 +43,15 @@ RUN rm -rf /opt/hpcx
 		
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
+ARG WITH_NCCL
+# Make it look for the system nccl, which hopefully is the newer one we built
+# and installed
+
+ENV HOROVOD_NCCL_HOME=${WITH_NCCL:+"/container/nccl"}
+ENV HOROVOD_NCCL_LINK=${WITH_NCCL:+SHARED}
+
+RUN if [ -n "${WITH_NCCL}" ]; then /tmp/det_dockerfile_scripts/build_nccl.sh; fi
+
 # Try overriding the default GCC to an older one to hopefully enable
 # horovod to compile.
 #RUN apt-get update \
@@ -95,7 +104,6 @@ ENV PATH=/container/ompi/bin:$PATH
 ENV LD_LIBRARY_PATH=/container/ompi/lib:$LD_LIBRARY_PATH
 RUN which mpicxx
 
-
 #USING UCX
 #ENV PATH=${PATH:-$CONDA:${WITH_MPI:+$UCX_PATH_DIR:$OMPI_PATH_DIR}}
 
@@ -117,8 +125,6 @@ ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM ${WITH_MPI:+1}
 # base container, which is not built correctly for libfabric
 ENV OPAL_PREFIX=/container/ompi
 # Install Horovod
-#ENV HOROVOD_NCCL_HOME=${WITH_NCCL:+"/container/nccl"}
-ENV HOROVOD_NCCL_LINK=${WITH_NCCL:+SHARED}
 #RUN if [ -n "${WITH_NCCL}" ]; then ; fi
 #RUN /tmp/det_dockerfile_scripts/build_nccl.sh
 ARG HOROVOD_PIP=""
@@ -155,10 +161,6 @@ RUN if [ "$WITH_OFI" = "1" ]; then /tmp/det_dockerfile_scripts/build_aws.sh "$WI
 #USING OFI
 ARG AWS_LIB_DIR=${AWS_PLUGIN_INSTALL_DIR}/lib
 ENV LD_LIBRARY_PATH=${WITH_OFI:+$AWS_LIB_DIR:}$LD_LIBRARY_PATH
-
-
-
-
 
 # We uninstall these packages after installing. This ensures that we can
 # successfully install these packages into containers running as non-root.

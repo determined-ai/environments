@@ -231,7 +231,6 @@ NGC_GH_TF_VERSION=tf2-py3
 .PHONY: build-gpu-ngc-tf-gh-base
 build-gpu-ngc-tf-gh-base:
 	docker build -f Dockerfile-ngc-tf \
-                --no-cache \
                 --build-arg BASE_IMAGE=$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION) \
                 --build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
                 --build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
