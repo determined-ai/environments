@@ -231,7 +231,6 @@ NGC_GH_TF_VERSION=tf2-py3
 .PHONY: build-gpu-ngc-tf-gh-base
 build-gpu-ngc-tf-gh-base:
 	docker build -f Dockerfile-ngc-tf \
-                --no-cache \
                 --build-arg BASE_IMAGE=$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION) \
                 --build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
                 --build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
@@ -295,7 +294,34 @@ build-gpu-ngc-py38-gh-neox: build-gpu-ngc-py38-gh-base
 build-pytorch-ngc:
 	docker build -f Dockerfile-pytorch-ngc \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
-		--build-arg DEEPSPEED_PIP="deepspeed==$(NGC_DEEPSPEED_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH) \
+		.
+	docker build -f Dockerfile-ngc-hpc \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH)" \
+		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc-hpc:$(SHORT_GIT_HASH) \
+		.
+
+.PHONY: build-tensorflow-ngc
+build-tensorflow-ngc:
+	docker build -f Dockerfile-tensorflow-ngc \
+		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
+		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH) \
+		.
+	docker build -f Dockerfile-ngc-hpc \
+		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH)" \
+		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc:$(SHORT_GIT_HASH) \
+		.
+
+NGC_PYTORCH_PREFIX := nvcr.io/nvidia/pytorch
+NGC_TENSORFLOW_PREFIX := nvcr.io/nvidia/tensorflow
+NGC_PYTORCH_VERSION := 23.12-py3
+NGC_TENSORFLOW_VERSION := 23.12-tf2-py3
+
+# build hpc together since hpc is dependent on the normal build
+.PHONY: build-pytorch-ngc
+build-pytorch-ngc:
+	docker build -f Dockerfile-pytorch-ngc \
+		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH) \
 		.
 	docker build -f Dockerfile-ngc-hpc \
@@ -428,7 +454,6 @@ build-deepspeed: build-gpu-cuda-113-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
-		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg "$(NCCL_BUILD_ARG)" \
@@ -446,7 +471,6 @@ build-gpt-neox-deepspeed: build-gpu-cuda-113-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
-		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg "$(NCCL_BUILD_ARG)" \
@@ -501,9 +525,7 @@ build-tf2-cpu: build-cpu-py-39-base
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="$(TF2_PIP_CPU)" \
-		--build-arg TF_PROFILER_PIP="$(TF_PROFILER_PIP)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_CPU)" \
-		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
@@ -518,7 +540,6 @@ build-pt-cpu: build-cpu-py-39-base
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_39_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_CPU)" \
-		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
@@ -533,8 +554,6 @@ build-tf2-gpu: build-gpu-cuda-113-base
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TENSORFLOW_PIP="$(TF2_PIP_GPU)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_GPU)" \
-		--build-arg TF_PROFILER_PIP="$(TF_PROFILER_PIP)" \
-		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
@@ -559,7 +578,6 @@ build-pt-gpu: build-gpu-cuda-113-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_113_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH_PIP_GPU)" \
-		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="3.7;6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
 		--build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
@@ -601,7 +619,6 @@ build-pt2-cpu: build-cpu-py-310-base
 	    --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(CPU_PY_310_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH2_PIP_CPU)" \
-		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
 		--build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
 		--build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
@@ -615,7 +632,6 @@ build-pt2-gpu: build-gpu-cuda-118-base
 	docker build -f Dockerfile-default-gpu \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(GPU_CUDA_118_BASE_NAME)-$(SHORT_GIT_HASH)" \
 		--build-arg TORCH_PIP="$(TORCH2_PIP_GPU)" \
-		--build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
 		--build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
 		--build-arg APEX_GIT=$(TORCH2_APEX_GIT_URL) \
 		--build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
@@ -708,14 +724,6 @@ publish-pytorch-ngc:
 publish-tensorflow-ngc:
 	scripts/publish-versionless-docker.sh tensorflow-ngc $(DOCKERHUB_REGISTRY)/tensorflow-ngc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 	scripts/publish-versionless-docker.sh tensorflow-ngc-hpc $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-
-.PHONY: publish-pytorch13-tf210-rocm57
-publish-pytorch13-tf210-rocm57:
-	scripts/publish-docker.sh pytorch13-tf210-rocm57-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM57_TORCH13_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
-
-.PHONY: publish-pytorch20-tf210-rocm57
-publish-pytorch20-tf210-rocm57:
-	scripts/publish-docker.sh pytorch20-tf210-rocm57-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM57_TORCH_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-cloud-images
 publish-cloud-images:

@@ -8,6 +8,8 @@ RUN chown root:root /usr/lib
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
 RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
+RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
+RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
 
 # We uninstall these packages after installing. This ensures that we can
 # successfully install these packages into containers running as non-root.
@@ -15,26 +17,18 @@ RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
 # installed.
 RUN python -m pip install determined && python -m pip uninstall -y determined
 
-RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements-torch.txt \
+RUN python -m pip install  \
+    -r /tmp/det_dockerfile_scripts/additional-requirements-torch.txt \
     -r /tmp/det_dockerfile_scripts/additional-requirements.txt \
     -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
 
-# Install jupyter notebook requirements
-RUN python -m pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
 ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
 ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
 ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
 
-RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
-
 RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 
-ARG DEEPSPEED_PIP
-RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed.sh; fi
-
-RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
-
-# NGC has nonroot files in /usr/lib
-RUN chown root:root /usr/lib
+ENV DEEPSPEED_PIP="deepspeed==0.13.0"
+RUN /tmp/det_dockerfile_scripts/install_deepspeed.sh
 
 RUN rm -r /tmp/*
