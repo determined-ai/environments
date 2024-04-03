@@ -209,6 +209,7 @@ RUN if [ -n "$DEEPSPEED_PIP" ]; then python -m deepspeed.env_report ; fi
 
 RUN pip uninstall -y tensorboard tb-nightly tensorboard-plugin-wit
 RUN pip install tensorboard==1.15
+ENV MIOPEN_DEBUG_SAVE_TEMP_DIR=1
 
 ENTRYPOINT ["/container/bin/scrape_libs.sh"]
 CMD ["/bin/bash"]
