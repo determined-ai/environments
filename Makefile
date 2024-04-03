@@ -184,14 +184,14 @@ export TORCH_TB_PROFILER_PIP := torch-tb-profiler==0.4.1
 
 NGC_PYTORCH_PREFIX := nvcr.io/nvidia/pytorch
 NGC_TENSORFLOW_PREFIX := nvcr.io/nvidia/tensorflow
-NGC_PYTORCH_VERSION := 23.12-py3
-NGC_TENSORFLOW_VERSION := 23.12-tf2-py3
-NGC_DEEPSPEED_VERSION := 0.13.0
 
 NGC_GH_PYTORCH_VERSION=23.10-py3
-NGC_GH_PYTORCH_38_VERSION=22.12-py3
-NGCPLUS_GH_BASE=pytorch-gh-ngc-base
-NGCPLUS_GH_DS=pytorch-gh-ds-ngc
+NGC_GH_PYTORCH_38_VERSION=23.03-py3
+NGC_GH_BASE=pytorch-gh-ngc-base
+NGC_GH_DS=pytorch-gh-ds-ngc
+
+NGC_TENSORFLOW_38_VERSION := 23.03-tf2-py3
+NGC_TF=tf-ngc
 
 HOROVOD_PIP_COMMAND := horovod==0.28.1
 
@@ -212,40 +212,18 @@ build-gpu-ngc-gh-base:
                 --build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
                 --build-arg HOROVOD_GPU_OPERATIONS="$(HOROVOD_GPU_OPERATIONS)" \
                 --build-arg HOROVOD_GPU_ALLREDUCE="$(HOROVOD_GPU_ALLREDUCE)" \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-$(NGC_GH_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-$(NGC_GH_PYTORCH_VERSION)-$(VERSION) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_GH_BASE)-$(NGC_GH_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_GH_BASE)-$(NGC_GH_PYTORCH_VERSION)-$(VERSION) \
                 .
 
 .PHONY: build-gpu-ngc-gh-deepspeed
 build-gpu-ngc-gh-deepspeed: build-gpu-ngc-gh-base
 	docker build -f Dockerfile-ngc-ds \
-                --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-$(NGC_GH_PYTORCH_VERSION)-$(VERSION)" \
+                --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_GH_BASE)-$(NGC_GH_PYTORCH_VERSION)-$(VERSION)" \
                 --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0;9.0" \
                 --build-arg DEEPSPEED_PIP="deepspeed==0.11.1"   \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-$(NGC_GH_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-$(NGC_GH_PYTORCH_VERSION)-$(VERSION) \
-                .
-
-NGCPLUS_TF_BASE=tf-ngc-base
-NGC_GH_TF_VERSION=tf2-py3
-.PHONY: build-gpu-ngc-tf-gh-base
-build-gpu-ngc-tf-gh-base:
-	docker build -f Dockerfile-ngc-tf \
-                --build-arg BASE_IMAGE=$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION) \
-                --build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
-                --build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
-                --build-arg INTERNAL_AWS_DS="$(INTERNAL_AWS_DS)" \
-                --build-arg INTERNAL_AWS_PATH="$(INTERNAL_AWS_PATH)" \
-                --build-arg "$(MPI_BUILD_ARG)" \
-                --build-arg "$(OFI_BUILD_ARG)" \
-                --build-arg "$(NCCL_BUILD_ARG)" \
-                --build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
-                --build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
-                --build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
-                --build-arg HOROVOD_GPU_OPERATIONS="$(HOROVOD_GPU_OPERATIONS)" \
-                --build-arg HOROVOD_GPU_ALLREDUCE="$(HOROVOD_GPU_ALLREDUCE)" \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_TF_BASE)-$(NGC_GH_TF_VERSION)-$(SHORT_GIT_HASH) \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_TF_BASE)-$(NGC_GH_TF_VERSION)-$(VERSION) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_GH_DS)-$(NGC_GH_PYTORCH_VERSION)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_GH_DS)-$(NGC_GH_PYTORCH_VERSION)-$(VERSION) \
                 .
 
 .PHONY: build-gpu-ngc-py38-gh-base
@@ -265,52 +243,58 @@ build-gpu-ngc-py38-gh-base:
                 --build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
                 --build-arg HOROVOD_GPU_OPERATIONS="$(HOROVOD_GPU_OPERATIONS)" \
                 --build-arg HOROVOD_GPU_ALLREDUCE="$(HOROVOD_GPU_ALLREDUCE)" \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(SHORT_GIT_HASH) \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_GH_BASE)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_GH_BASE)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION) \
                 .
 
 .PHONY: build-gpu-ngc-py38-gh-deepspeed
 build-gpu-ngc-py38-gh-deepspeed: build-gpu-ngc-py38-gh-base
 	docker build -f Dockerfile-ngc-ds \
-                --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION)" \
+                --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_GH_BASE)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION)" \
                 --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0;9.0" \
                 --build-arg DEEPSPEED_PIP="git+https://github.com/EleutherAI/DeeperSpeed@v2.0"   \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(SHORT_GIT_HASH) \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_GH_DS)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_GH_DS)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION) \
                 .
-
 .PHONY: build-gpu-ngc-py38-gh-neox
 build-gpu-ngc-py38-gh-neox: build-gpu-ngc-py38-gh-base
 	docker build -f Dockerfile-ngc-neox \
-                --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_BASE)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION)" \
+                --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_GH_BASE)-py38-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION)" \
                 --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0;9.0" \
                 --build-arg DEEPSPEED_PIP="git+https://github.com/EleutherAI/DeeperSpeed@v2.0"   \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-neox-$(NGC_GH_PYTORCH_38_VERSION)-$(SHORT_GIT_HASH) \
-                -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-neox-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_GH_DS)-py38-neox-$(NGC_GH_PYTORCH_38_VERSION)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_GH_DS)-py38-neox-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION) \
                 .
 
-# build hpc together since hpc is dependent on the normal build
-.PHONY: build-pytorch-ngc
-build-pytorch-ngc:
-	docker build -f Dockerfile-pytorch-ngc \
-		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
-		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH) \
-		.
-	docker build -f Dockerfile-ngc-hpc \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH)" \
-		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc-hpc:$(SHORT_GIT_HASH) \
-		.
+.PHONY: build-gpu-ngc-py38-tf-gh-base
+build-gpu-ngc-py38-tf-gh-base:
+	docker build -f Dockerfile-ngc-tf \
+                --build-arg BASE_IMAGE=$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_38_VERSION) \
+                --build-arg HOROVOD_PIP="$(HOROVOD_PIP_COMMAND)" \
+                --build-arg WITH_AWS_TRACE="$(WITH_AWS_TRACE)" \
+                --build-arg INTERNAL_AWS_DS="$(INTERNAL_AWS_DS)" \
+                --build-arg INTERNAL_AWS_PATH="$(INTERNAL_AWS_PATH)" \
+                --build-arg "$(MPI_BUILD_ARG)" \
+                --build-arg "$(OFI_BUILD_ARG)" \
+                --build-arg "$(NCCL_BUILD_ARG)" \
+                --build-arg HOROVOD_WITH_MPI="$(HOROVOD_WITH_MPI)" \
+                --build-arg HOROVOD_WITHOUT_MPI="$(HOROVOD_WITHOUT_MPI)" \
+                --build-arg HOROVOD_CPU_OPERATIONS="$(HOROVOD_CPU_OPERATIONS)" \
+                --build-arg HOROVOD_GPU_OPERATIONS="$(HOROVOD_GPU_OPERATIONS)" \
+                --build-arg HOROVOD_GPU_ALLREDUCE="$(HOROVOD_GPU_ALLREDUCE)" \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_TF)-base-py38-$(NGC_TENSORFLOW_38_VERSION)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_TF)-base-py38-$(NGC_TENSORFLOW_38_VERSION)-$(VERSION) \
+                .
 
-.PHONY: build-tensorflow-ngc
-build-tensorflow-ngc:
-	docker build -f Dockerfile-tensorflow-ngc \
-		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
-		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH) \
-		.
-	docker build -f Dockerfile-ngc-hpc \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH)" \
-		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc:$(SHORT_GIT_HASH) \
-		.
+.PHONY: build-gpu-ngc-py38-tf-gh-deepspeed
+build-gpu-ngc-py38-tf-gh-deepspeed: build-gpu-ngc-py38-tf-gh-base
+	docker build -f Dockerfile-ngc-ds \
+                --build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_TF)-base-py38-$(NGC_TENSORFLOW_38_VERSION)-$(VERSION)" \
+                --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0;9.0" \
+                --build-arg DEEPSPEED_PIP="git+https://github.com/EleutherAI/DeeperSpeed@v2.0"   \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_TF)-py38-$(NGC_TENSORFLOW_38_VERSION)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(NGC_TF)-py38-$(NGC_TENSORFLOW_38_VERSION)-$(VERSION) \
+                .
 
 NGC_PYTORCH_PREFIX := nvcr.io/nvidia/pytorch
 NGC_TENSORFLOW_PREFIX := nvcr.io/nvidia/tensorflow

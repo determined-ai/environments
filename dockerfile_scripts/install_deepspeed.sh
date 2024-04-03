@@ -13,13 +13,8 @@ pip install accelerate==0.22.0 arrow==1.2.3 datasets==2.14.5 huggingface-hub==0.
 # Skip precompiling since this fails when using the NGC base image.
 # Need to verify that DS can use NCCL correctly for the comms, etc.
 #export DS_BUILD_OPS=1
-#Precompile supported deepspeed ops except sparse_attn
-export DS_BUILD_OPS=1
 export DS_BUILD_SPARSE_ATTN=0
 export DS_BUILD_EVOFORMER_ATTN=0
-export DS_BUILD_CUTLASS_OPS=0
-export DS_BUILD_RAGGED_DEVICE_OPS=0
-
 cuda_ver_str=`echo $CUDA_VERSION | awk -F "." '{print $1"."$2}'`
 
 ARCH_TYPE=`uname -m`
