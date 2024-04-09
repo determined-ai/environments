@@ -28,7 +28,7 @@ HOROVOD_GPU_OPERATIONS := NCCL
 
 ifeq "$(WITH_MPI)" "1"
 # 	Don't bother supporting or building arm64+mpi builds.
-   HPC_SUFFIX := -hpc
+	HPC_SUFFIX := -hpc
 	PLATFORMS := $(PLATFORM_LINUX_AMD_64)
 	HOROVOD_WITH_MPI := 1
 	HOROVOD_WITHOUT_MPI := 0
@@ -326,7 +326,6 @@ build-pytorch-cuda: build-cuda-118-base
 		-t $(NGC_REGISTRY)/$(CUDA_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
 		.
 
-# tf1 and tf2.4 images are not published to NGC due to vulnerabilities.
 .PHONY: publish-tensorflow-cpu
 publish-tensorflow-cpu:
 	scripts/publish-versionless-docker.sh tensorflow-cpu-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR) --no-push
