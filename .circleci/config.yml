@@ -259,7 +259,7 @@ workflows:
               with-mpi: [1]
               with-ofi: [1]
               image-type:
-                - tf2-gpu
+                - tensorflow-cuda
       - publish-cloud-images:
           context: determined-production
           filters:
@@ -344,7 +344,7 @@ workflows:
               with-mpi: [1]
               with-ofi: [1]
               image-type:
-                - tf2-gpu
+                - tensorflow-cuda
 
       - publish-cloud-images:
           name: publish-cloud-images-dev
