@@ -29,8 +29,8 @@
         "-e ansible_python_interpreter=/usr/bin/python3",
         "-e linux_kernel_suffix=aws",
         "-e build_type={{ build_type }}",
-        "-e cpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf2_environment_name` }}",
-        "-e gpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf2_environment_name` }}",
+        "-e cpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf2_environment_name` }}:",
+        "-e gpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf2_environment_name` }}:",
         "-e short_git_hash={{ user `short_git_hash` }}",
         "-e image_suffix={{ user `image_suffix` }}"
       ],
@@ -48,14 +48,14 @@
         "-e ansible_python_interpreter=/usr/bin/python3",
         "-e linux_kernel_suffix=gcp",
         "-e build_type={{ build_type }}",
-        "-e cpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf2_environment_name` }}",
-        "-e gpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf2_environment_name` }}",
+        "-e cpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `cpu_tf2_environment_name` }}:",
+        "-e gpu_tf2_environment_name={{ user `docker_registry` }}/{{ user `gpu_tf2_environment_name` }}:",
         "-e short_git_hash={{ user `short_git_hash` }}",
         "-e image_suffix={{ user `image_suffix` }}"
       ],
       "user": "ubuntu",
       "only": [
-        "det-environments{{ user `image_suffix` }}"
+        "det-environments-{{ user `image_suffix` }}"
       ]
     },
     {
@@ -97,7 +97,7 @@
       "run_tags": {
         "managed-by": "packer"
       },
-      "ami_name": "det-environments{{ user `image_suffix` }}",
+      "ami_name": "det-environments-{{ user `image_suffix` }}",
       "ami_description": "{{ user `image_description` }}",
       "ami_groups": [
         "all"
@@ -127,7 +127,7 @@
       "run_tags": {
         "managed-by": "packer"
       },
-      "ami_name": "det-environments{{ user `image_suffix` }}",
+      "ami_name": "det-environments-{{ user `image_suffix` }}",
       "ami_description": "{{ user `image_description` }}",
       "ami_groups": [
         "all"
@@ -135,7 +135,7 @@
     },
     {
       "type": "googlecompute",
-      "name": "det-environments{{ user `image_suffix` }}",
+      "name": "det-environments-{{ user `image_suffix` }}",
       "project_id": "determined-ai",
       "source_image": "{{ user `gcp_base_image`}}",
       "ssh_username": "packer",
@@ -147,7 +147,7 @@
       "accelerator_type": "zones/us-west1-b/acceleratorTypes/nvidia-tesla-t4",
       "accelerator_count": 1,
       "state_timeout": "20m",
-      "image_name": "det-environments{{ user `image_suffix` }}",
+      "image_name": "det-environments-{{ user `image_suffix` }}",
       "image_description": "{{ user `image_description` }}"
     }
   ],
