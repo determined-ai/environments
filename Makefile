@@ -377,6 +377,6 @@ publish-tensorflow-ngc:
 publish-cloud-images:
 	mkdir -p $(ARTIFACTS_DIR)
 	cd cloud \
-		&& packer build $(PACKER_FLAGS) -machine-readable -var "image_suffix=-$(SHORT_GIT_HASH)" environments-packer.json \
+		&& packer build $(PACKER_FLAGS) -machine-readable -var "image_suffix=:$(SHORT_GIT_HASH)" environments-packer.json \
 		| tee $(ARTIFACTS_DIR)/packer-log
 
