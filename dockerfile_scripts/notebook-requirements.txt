@@ -1,6 +1,3 @@
-# jupyerlab 3.6.x requires jupyter-ydoc and jupyter-server-ydoc, which require y-py, which requires Rust.
-# For now, let's avoid needing to install Rust. When the time comes, see here: https://stackoverflow.com/questions/49676490/when-installing-rust-toolchain-in-docker-bash-source-command-doesnt-work
-jupyterlab~=3.5.0
+jupyterlab~=3.6.7
 jupyter-archive~=3.2
-jupyterlab-server~=2.10,<=2.16.5
 ipywidgets

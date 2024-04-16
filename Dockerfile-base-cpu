@@ -7,6 +7,8 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PIP_NO_CACHE_DIR=1
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
 
+RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
+
 ENV PATH="/opt/conda/bin:${PATH}"
 ARG CONDA="${PATH}"
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
@@ -58,7 +60,7 @@ ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM ${WITH_MPI:+1}
 # installed.
 RUN pip install determined && pip uninstall -y determined
 
-RUN pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt
+RUN pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt && jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
 ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
 ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime

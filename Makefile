@@ -288,30 +288,6 @@ build-gpu-ngc-py38-gh-neox: build-gpu-ngc-py38-gh-base
                 -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-neox-$(NGC_GH_PYTORCH_38_VERSION)-$(SHORT_GIT_HASH) \
                 -t $(DOCKERHUB_REGISTRY)/$(NGCPLUS_GH_DS)-py38-neox-$(NGC_GH_PYTORCH_38_VERSION)-$(VERSION) \
                 .
-
-# build hpc together since hpc is dependent on the normal build
-.PHONY: build-pytorch-ngc
-build-pytorch-ngc:
-	docker build -f Dockerfile-pytorch-ngc \
-		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
-		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH) \
-		.
-	docker build -f Dockerfile-ngc-hpc \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/pytorch-ngc:$(SHORT_GIT_HASH)" \
-		-t $(DOCKERHUB_REGISTRY)/pytorch-ngc-hpc:$(SHORT_GIT_HASH) \
-		.
-
-.PHONY: build-tensorflow-ngc
-build-tensorflow-ngc:
-	docker build -f Dockerfile-tensorflow-ngc \
-		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
-		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH) \
-		.
-	docker build -f Dockerfile-ngc-hpc \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/tensorflow-ngc:$(SHORT_GIT_HASH)" \
-		-t $(DOCKERHUB_REGISTRY)/tensorflow-ngc-hpc:$(SHORT_GIT_HASH) \
-		.
-
 NGC_PYTORCH_PREFIX := nvcr.io/nvidia/pytorch
 NGC_TENSORFLOW_PREFIX := nvcr.io/nvidia/tensorflow
 NGC_PYTORCH_VERSION := 23.12-py3
