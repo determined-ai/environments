@@ -263,10 +263,6 @@ workflows:
               with-ofi: [1]
               image-type:
                 - tf2-gpu
-                - gpu-ngc-gh-deepspeed
-                - gpu-ngc-py38-gh-deepspeed
-                - gpu-ngc-py38-tf-gh-deepspeed
-
       - publish-cloud-images:
           context: determined-production
           filters:
@@ -355,9 +351,6 @@ workflows:
               with-ofi: [1]
               image-type:
                 - tf2-gpu
-                - gpu-ngc-gh-deepspeed
-                - gpu-ngc-py38-gh-deepspeed
-                - gpu-ngc-py38-tf-gh-deepspeed
 
       - publish-cloud-images:
           name: publish-cloud-images-dev
