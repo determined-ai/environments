@@ -176,9 +176,6 @@ jobs:
       - gcp-cli/install
       - activate-service-account
       - install-ansible
-      - login-docker:
-          username: ${DOCKER_USER}
-          password: ${DOCKER_PASS}
       - unless:
           condition: <<parameters.dev-mode>>
           steps:
