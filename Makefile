@@ -296,6 +296,9 @@ define CPU_PYTORCH_TAGS
 endef
 endif
 
+export DEFAULT_CPU_IMAGE=$(DOCKERHUB_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH)
+export DEFAULT_CUDA_IMAGE=$(DOCKERHUB_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH)
+
 .PHONY: build-pytorch-cpu
 build-pytorch-cpu: build-cpu-py-310-base
 	docker buildx build -f Dockerfile-default-cpu \
