@@ -8,8 +8,8 @@
     "gov_aws_base_image": "ami-0cbd5dbd94f397bdd",
     "gcp_base_image": "ubuntu-2004-focal-v20220118",
     "image_description": "Determined environments",
-    "cpu_tf2_environment_name": "{{ env `DEFAULT_CPU_IMAGE` }}",
-    "gpu_tf2_environment_name": "{{ env `DEFAULT_CUDA_IMAGE` }}",
+    "cpu_tf2_environment_name": "{{ env `NGC_PYTORCH_REPO` }}",
+    "gpu_tf2_environment_name": "{{ env `NGC_PYTORCH_REPO` }}",
     "short_git_hash": "{{ env `short_git_hash` }}",
     "image_suffix": "",
     "docker_registry": "{{ env `DOCKERHUB_REGISTRY` }}"
