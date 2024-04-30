@@ -1,0 +1,12 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+
+ARG TORCH_CUDA_ARCH_LIST
+ARG DEEPSPEED_PIP
+RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_neox.sh; fi
+
+RUN pip uninstall -y soundfile
+RUN rm -r /tmp/*
+

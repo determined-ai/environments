@@ -219,13 +219,13 @@ workflows:
                 - tensorflow-cuda
                 - pytorch-cuda
                 - tensorflow-ngc
-                - pytorch13-tf210-rocm56
-                - pytorch20-tf210-rocm56
+                - pytorch13-tf210-rocm57
+                - pytorch20-tf210-rocm57
             exclude:
               - with-mpi: 1
-                image-type: pytorch13-tf210-rocm56
+                image-type: pytorch13-tf210-rocm57
               - with-mpi: 1
-                image-type: pytorch20-tf210-rocm56
+                image-type: pytorch20-tf210-rocm57
               - with-mpi: 1
                 image-type: tensorflow-ngc
       - build-and-publish-docker:
@@ -297,15 +297,15 @@ workflows:
                 - tensorflow-cuda
                 - pytorch-cuda
                 - tensorflow-ngc
-                - pytorch13-tf210-rocm56
-                - pytorch20-tf210-rocm56
+                - pytorch13-tf210-rocm57
+                - pytorch20-tf210-rocm57
             exclude:
               - dev-mode: true
                 with-mpi: 1
-                image-type: pytorch13-tf210-rocm56
+                image-type: pytorch13-tf210-rocm57
               - dev-mode: true
                 with-mpi: 1
-                image-type: pytorch20-tf210-rocm56
+                image-type: pytorch20-tf210-rocm57
               - dev-mode: true
                 with-mpi: 1
                 image-type: tensorflow-ngc

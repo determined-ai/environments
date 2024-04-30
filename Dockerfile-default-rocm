@@ -148,7 +148,7 @@ ARG HOROVOD_GPU_OPERATIONS=NCCL
 ARG HOROVOD_WITHOUT_MPI=0
 ARG HOROVOD_WITH_MPI=1
 ARG HOROVOD_GPU=ROCM
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH;/opt/rocm/lib:/opt/rocm/hip/lib
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/rocm/lib:/opt/rocm/hip/lib
 
 ENV HOROVOD_PIP $HOROVOD_PIP
 ENV HOROVOD_WITH_TENSORFLOW $HOROVOD_WITH_TENSORFLOW
@@ -194,6 +194,22 @@ ARG WITH_RCCL=1
 ENV WITH_RCCL=$WITH_RCCL
 ARG WITH_NFS_WORKAROUND=1
 ENV WITH_NFS_WORKAROUND=$WITH_NFS_WORKAROUND
+
+ARG DEEPSPEED_PIP
+ENV DEEPSPEED_PIP=$DEEPSPEED_PIP
+ENV DEEPDEEP=1
+
+ARG BASE_IMAGE
+
+RUN if [ "$HOROVOD_PIP" != "0" ]; then if [ ! `echo "$BASE_IMAGE"|grep  rocm6.0` ] ; then pip install "${HOROVOD_PIP}" ; fi ; fi;
+
+RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& git clone https://github.com/ROCmSoftwarePlatform/triton.git && cd triton && git checkout triton-mlir && cd python && pip3 install ninja cmake && pip install -e .;fi
+RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& python -m pip install  pydantic==1.10.11 && git clone https://github.com/ROCmSoftwarePlatform/DeepSpeed.git && cd DeepSpeed && python3 setup.py  build && python3 setup.py install && python -m deepspeed.env_report; fi
+RUN if [ -n "$DEEPSPEED_PIP" ]; then python -m deepspeed.env_report ; fi
+
+#MIOPEN_DEBUG_SAVE_TEMP_DIR is required to prevent 
+# PAD-133
+ENV MIOPEN_DEBUG_SAVE_TEMP_DIR=1
 
 ENTRYPOINT ["/container/bin/scrape_libs.sh"]
 CMD ["/bin/bash"]
