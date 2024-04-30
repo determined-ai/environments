@@ -66,7 +66,7 @@ if [ "$OFI" = "1" ]; then
     git clone https://github.com/ROCmSoftwarePlatform/aws-ofi-rccl && \
     cd aws-ofi-rccl                               && \
     ./autogen.sh                                  && \
-    CC=hipcc ./configure ${AWS_CONFIG_OPTIONS}    && \
+    CC=hipcc CFLAGS="-D__HIP_PLATFORM_AMD__" ./configure ${AWS_CONFIG_OPTIONS}    && \
     make                                          && \
     make install                                  && \
     cd /tmp                                       && \
