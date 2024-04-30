@@ -5,6 +5,7 @@ RUN rm -f /etc/apt/sources.list.d/*
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PIP_NO_CACHE_DIR=1
 
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
 
 RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
 
