@@ -2,8 +2,8 @@
 - name: Build and install AWS EFS utilities.
   become: yes
   shell: |
-    sudo apt-get update
-    sudo apt-get -y install git binutils rustc cargo pkg-config libssl-dev
+    apt-get update
+    apt-get -y install git binutils rustc cargo pkg-config libssl-dev
     git clone https://github.com/aws/efs-utils
     cd efs-utils
     ./build-deb.sh
