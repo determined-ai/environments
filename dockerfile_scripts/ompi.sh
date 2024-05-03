@@ -15,7 +15,7 @@ OS_VER=$1
 OFI=$2
 if [ "$OFI" = "1" ]; then
   # Install OFI
-  OFI_VER=1.15.1
+  OFI_VER=1.18.1
   OFI_CONFIG_OPTIONS="--prefix ${OFI_INSTALL_DIR}"
   OFI_SRC_DIR=/tmp/ofi-src
   OFI_BASE_URL="https://github.com/ofiwg/libfabric/releases/download"
@@ -24,7 +24,7 @@ if [ "$OFI" = "1" ]; then
   mkdir -p ${OFI_SRC_DIR}                              && \
     cd ${OFI_SRC_DIR}                                  && \
     wget ${OFI_URL}                                    && \
-    tar -xf libfabric-${OFI_VER}.tar.bz2              && \
+    tar -xf libfabric-${OFI_VER}.tar.bz2               && \
     cd libfabric-${OFI_VER}                            && \
     ./configure ${OFI_CONFIG_OPTIONS}                  && \
     make install                                       && \
@@ -79,7 +79,7 @@ fi
 
 # Install OMPI
 OMPI_VER=v4.1
-OMPI_VER_NUM=4.1.0
+OMPI_VER_NUM=4.1.5
 OMPI_CONFIG_OPTIONS=${OMPI_CONFIG_OPTIONS_VAR}
 OMPI_SRC_DIR=/tmp/openmpi-src
 OMPI_BASE_URL="https://download.open-mpi.org/release/open-mpi"
