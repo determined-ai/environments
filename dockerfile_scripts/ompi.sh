@@ -79,7 +79,7 @@ fi
 
 # Install OMPI
 OMPI_VER=v4.1
-OMPI_VER_NUM=4.1.5
+OMPI_VER_NUM=4.1.0
 OMPI_CONFIG_OPTIONS=${OMPI_CONFIG_OPTIONS_VAR}
 OMPI_SRC_DIR=/tmp/openmpi-src
 OMPI_BASE_URL="https://download.open-mpi.org/release/open-mpi"
