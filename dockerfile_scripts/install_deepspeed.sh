@@ -8,7 +8,7 @@ apt-get update -y && DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh liba
 python -m pip install pydantic==1.10.11
 
 # Install some dependencies for the LLM test
-pip install accelerate==0.22.0 arrow==1.2.3 datasets==2.14.5 huggingface-hub==0.17.3 packaging==23.1 safetensors==0.3.3 setuptools==65.7.0 tokenizers==0.14.1 transformers==4.34.1 xxhash==3.3.0 evaluate pytest==8.0.0
+pip install accelerate==0.22.0 arrow==1.2.3 datasets==2.14.5 huggingface-hub==0.17.3 packaging==23.1 safetensors==0.3.3 setuptools==65.7.0 tokenizers==0.14.1 transformers==4.34.1 xxhash==3.3.0 evaluate
 #Precompile deepspeed ops except sparse_attn which has dubious support
 # Skip precompiling since this fails when using the NGC base image.
 # Need to verify that DS can use NCCL correctly for the comms, etc.
