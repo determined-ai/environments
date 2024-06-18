@@ -1,6 +1,9 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
+# Python env vars
+ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
+
 # NGC images contain user owned files in /usr/lib
 RUN chown root:root /usr/lib
 
