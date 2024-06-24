@@ -1,6 +1,6 @@
 ---
 # NVIDIA Driver Settings
 # todo: When updating the major driver version, remember to also update the FabricManager version
-driver_version: "535.161.08"
+driver_version: "535.183.01"
 driver_script_name: "NVIDIA-Linux-x86_64-{{ driver_version }}.run"
 driver_url: "https://us.download.nvidia.com/tesla/{{ driver_version }}/{{ driver_script_name }}"
