@@ -127,7 +127,10 @@ RUN /tmp/det_dockerfile_scripts/install_google_cloud_sdk.sh
 # latest google-api-python-client requires protobuf >= 3.20.1
 
 ARG TENSORFLOW_PIP
-RUN if [ "$TENSORFLOW_PIP" ]; then pip install --no-cache-dir $TENSORFLOW_PIP; fi
+# Fix flake. The sha256sum of tensorboard_plugin_wit-1.8.1-py3-none-any.whl sometimes
+# doesn't match the one in cache.
+RUN rm -rf ~/.cache/pip
+RUN if [ "$TENSORFLOW_PIP" ]; then pip install $TENSORFLOW_PIP; fi
 
 ARG TORCH_TB_PROFILER_PIP
 RUN if [ "$TORCH_TB_PROFILER_PIP" ]; then pip install $TORCH_TB_PROFILER_PIP; fi
