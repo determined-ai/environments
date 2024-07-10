@@ -1,0 +1,6 @@
+# Default owner of environments is Model Development Team
+*                     @determined-ai/model-dev
+
+# CI and Cloud-specific images are infra
+/.circleci            @determined-ai/infrastructure
+/cloud                @determined-ai/infrastructure
