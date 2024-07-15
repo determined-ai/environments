@@ -1,0 +1,7 @@
+---
+- name: Master Base Environment
+  hosts: all
+  roles:
+    - { role: prevent-kernel-upgrades, tags: "prevent-kernel-upgrades" }
+    - { role: docker, tags: "docker" }
+    - { role: aws-fs, tags: "aws-fs", when: "build_type == 'amazon-ebs'"}
