@@ -1,6 +1,6 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
-
+#why no highlighting?
 ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 
 RUN mkdir -p /var/run/sshd
@@ -41,14 +41,9 @@ ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
 #RUN ldconfig  #TODO: check if this is necessary
 
 #TODO: finish iterating here, preferably turn it into a shell script.
-RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& git clone https://github.com/ROCmSoftwarePlatform/triton.git && cd triton && git checkout triton-mlir && cd python && pip3 install ninja cmake && pip install -e .;fi
-#RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& python -m pip install  pydantic==1.10.11 && git clone https://github.com/ROCmSoftwarePlatform/DeepSpeed.git && cd DeepSpeed && python3 setup.py  build && python3 setup.py install && python -m deepspeed.env_report; fi
-RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& python -m pip install  pydantic==1.10.11 && git clone https://github.com/ROCmSoftwarePlatform/DeepSpeed.git ; fi
-#RUN if [ -n "$DEEPSPEED_PIP" ]; then cd DeepSpeed && python3 setup.py  build && python3 setup.py install && python -m deepspeed.env_report; fi
-RUN if [ -n "$DEEPSPEED_PIP" ]; then cd DeepSpeed && DS_BUILD_SPARSE_ATTN=0 DS_BUILD_RANDOM_LTD=0 DS_BUILD_EVOFORMER_ATTN=0 python3 setup.py  build ; fi
-RUN if [ -n "$DEEPSPEED_PIP" ]; then cd DeepSpeed && python3 setup.py install && echo TIME FOR DEEPSPEED ENV REPORT || TIME FOR DEEPSPEED ENV REPORT && python -m deepspeed.env_report; fi
-#RUN exit 1
-#RUN if [ -n "$DEEPSPEED_PIP" ]; then python -m deepspeed.env_report ; fi
+RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& git clone https://github.com/ROCmSoftwarePlatform/triton.git && cd triton && git checkout triton-mlir && cd python && pip3 install ninja cmake && python setup.py install;fi
+RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& python -m pip install  pydantic==1.10.11 && git clone https://github.com/ROCmSoftwarePlatform/DeepSpeed.git && cd DeepSpeed && python3 setup.py  build && python3 setup.py install && python -m deepspeed.env_report; fi
+RUN if [ -n "$DEEPSPEED_PIP" ]; then python -m deepspeed.env_report ; fi
 
 # MIOPEN_DEBUG_SAVE_TEMP_DIR is required to prevent
 # PAD-133

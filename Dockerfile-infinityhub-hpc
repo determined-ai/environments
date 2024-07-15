@@ -11,6 +11,7 @@ RUN apt remove -y openmpi ucx
 #Let's remove existing /opt/ompi; and, link to our version.
 RUN rm -rf /opt/ompi
 RUN ln -s /container/ompi /opt
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
 # SHOULDN'T NEED TO SET SOME OF THESE VARIABLES
 #USING OFI
