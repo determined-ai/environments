@@ -222,9 +222,6 @@ ROCM61_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-mpich
 else
 ROCM61_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-ompi
 endif
-                #--build-arg BASE_IMAGE="rocm/pytorch:rocm6.0_ubuntu20.04_py3.9_pytorch_2.1.1" \
-                #?? --build-arg BASE_IMAGE="amdih/uif-pytorch:uif1.2_rocm5.6.1_vai3.5_py3.8_pytorch1.13" \
-                #--build-arg BASE_IMAGE="rocm/pytorch:rocm6.0.2_ubuntu22.04_py3.10_pytorch_2.1.2" \
 
 export ROCM61_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_60_PREFIX)$(ROCM61_TORCH_MPI)
 .PHONY: build-pytorch20-tf210-rocm60
@@ -277,10 +274,7 @@ build-pytorch20-rocm61:
 
 
 
-#export ROCM60_TF_ENVIRONMENT_NAME := $(ROCM_60_PREFIX)$(ROCM61_TORCH_MPI)
 export ROCM60_TF_ENVIRONMENT_NAME := $(ROCM_60_TF_PREFIX)
-                #--build-arg BASE_IMAGE="rocm/tensorflow:rocm6.0-tf2.12-dev" \
-.PHONY: build-tf210-rocm60
 build-tf210-rocm60:
 	docker build -f Dockerfile-tensorflow-rocm \
                 --build-arg BASE_IMAGE="rocm/tensorflow:rocm6.1-py3.9-tf2.15-dev" \
@@ -312,10 +306,6 @@ build-pytorch20-tf210-rocm57-deepspeed:
                 -t $(DOCKERHUB_REGISTRY)/$(ROCM57_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED)-$(SHORT_GIT_HASH) \
                 -t $(DOCKERHUB_REGISTRY)/$(ROCM57_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED)-$(VERSION) \
                 .
-
-
-                #--build-arg BASE_IMAGE="rocm/pytorch:rocm6.0_ubuntu20.04_py3.9_pytorch_2.1.1" \
-        #DOCKER_BUILDKIT=0 docker build --shm-size='1gb' -f Dockerfile-default-rocm \
 
 export ROCM61_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED := $(ROCM_61_PREFIX)pytorch-2.0-tf-2.10-rocm-deepspeed
 .PHONY: build-pytorch20-tf210-rocm61-deepspeed
