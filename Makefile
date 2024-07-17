@@ -380,5 +380,5 @@ publish-cloud-images:
 	packer build $(PACKER_FLAGS) -machine-readable -var "image_suffix=$(SHORT_GIT_HASH)" environments-packer.json \
 	| tee $(ARTIFACTS_DIR)/packer-log
 	packer build $(PACKER_FLAGS) -machine-readable -var "image_suffix=master-$(SHORT_GIT_HASH)" \
-	environments-master-packer.json | tee $(ARTIFACTS_DIR)/packer-log
+	environments-master-packer.json | tee -a $(ARTIFACTS_DIR)/packer-log
 
