@@ -8,7 +8,7 @@
     "gov_aws_base_image": "ami-0cbd5dbd94f397bdd",
     "image_description": "Determined master environments",
     "short_git_hash": "{{ env `short_git_hash` }}",
-    "image_suffix": "master"
+    "image_suffix": ""
   },
   "provisioners": [
     {
