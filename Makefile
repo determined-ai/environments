@@ -376,9 +376,8 @@ publish-tensorflow-ngc:
 .PHONY: publish-cloud-images
 publish-cloud-images:
 	mkdir -p $(ARTIFACTS_DIR)
-	cd cloud
-	packer build $(PACKER_FLAGS) -machine-readable -var "image_suffix=$(SHORT_GIT_HASH)" environments-packer.json \
-	| tee $(ARTIFACTS_DIR)/packer-log
-	packer build $(PACKER_FLAGS) -machine-readable -var "image_suffix=master-$(SHORT_GIT_HASH)" \
-	environments-master-packer.json | tee -a $(ARTIFACTS_DIR)/packer-log
+	cd cloud && packer build $(PACKER_FLAGS) -machine-readable -var "image_suffix=$(SHORT_GIT_HASH)" \
+	 environments-packer.json | tee $(ARTIFACTS_DIR)/packer-log
+	cd cloud && packer build $(PACKER_FLAGS) -machine-readable -var "image_suffix=master-$(SHORT_GIT_HASH)" \
+	 environments-master-packer.json | tee -a $(ARTIFACTS_DIR)/packer-log
 
