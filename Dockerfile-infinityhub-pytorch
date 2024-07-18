@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
 
 RUN mkdir -p /var/run/sshd
 RUN rm /etc/apt/sources.list.d/rocm.list
-RUN pip install pip install --upgrade pip
+RUN pip install --upgrade pip
 
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 

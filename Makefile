@@ -183,11 +183,6 @@ export ROCM61_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED := $(ROCM_61_PREFIX)pytorch-2.
 build-pytorch-infinityhub:
 	docker build --shm-size='1gb' -f Dockerfile-infinityhub-pytorch \
                 --build-arg BASE_IMAGE="rocm/pytorch:rocm6.1_ubuntu22.04_py3.10_pytorch_2.1.2" \
-                --build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
-                --build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
-                --build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
-                --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
-                --build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
                 --build-arg DEEPSPEED_PIP="deepspeed==$(DEEPSPEED_VERSION)" \
                 -t $(DOCKERHUB_REGISTRY)/$(INFINITYHUB_PYTORCH_REPO)-$(SHORT_GIT_HASH) \
                 .

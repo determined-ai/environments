@@ -1,12 +1,10 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
-# MAY NOT BE IMPORTANT ANYMORE
+
 RUN apt install rocm-libs
-
-
 # THIS FIX IS FOR SAWMILL, UNCLEAR IF NECESSARY FOR GENERAL USERS
-#TODO: is this necessary?
+# TODO: describe the acutal problem that this fixes instead of "sawmill"
 RUN apt remove -y openmpi ucx
 #Let's remove existing /opt/ompi; and, link to our version.
 RUN rm -rf /opt/ompi
