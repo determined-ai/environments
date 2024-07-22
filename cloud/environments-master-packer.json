@@ -47,7 +47,7 @@
       ],
       "user": "ubuntu",
       "only": [
-        "det-environments-{{ user `image_suffix` }}"
+        "det-environments-master-{{ user `image_suffix` }}"
       ]
     },
     {
@@ -89,7 +89,7 @@
       "run_tags": {
         "managed-by": "packer"
       },
-      "ami_name": "det-environments-{{ user `image_suffix` }}",
+      "ami_name": "det-environments-master-{{ user `image_suffix` }}",
       "ami_description": "{{ user `image_description` }}",
       "ami_groups": [
         "all"
@@ -119,7 +119,7 @@
       "run_tags": {
         "managed-by": "packer"
       },
-      "ami_name": "det-environments-{{ user `image_suffix` }}",
+      "ami_name": "det-environments-master-{{ user `image_suffix` }}",
       "ami_description": "{{ user `image_description` }}",
       "ami_groups": [
         "all"
