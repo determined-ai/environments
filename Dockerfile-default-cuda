@@ -73,6 +73,8 @@ RUN if [ -n "${HOROVOD_PIP}" ]; then ldconfig /usr/local/cuda/targets/x86_64-lin
     ldconfig; fi
 
 RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
+# numpy 2.x breaks tensorflow. Using NGC recommended version.
+RUN pip install numpy==1.24.4
 
 ARG DEEPSPEED_PIP
 RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed.sh; fi

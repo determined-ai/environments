@@ -45,5 +45,7 @@ RUN pip install cmake==3.22.4 protobuf==3.20.3
 RUN pip install "$HOROVOD_PIP"
 
 RUN pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
+# numpy 2.x breaks tensorflow. Using NGC recommended version.
+RUN pip install numpy==1.24.4
 
 RUN rm -r /tmp/*
