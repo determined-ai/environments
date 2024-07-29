@@ -43,7 +43,7 @@ RUN apt-get update \
         && rm /etc/ssh/ssh_host_ecdsa_key \
         && rm /etc/ssh/ssh_host_ed25519_key \
         && rm /etc/ssh/ssh_host_rsa_key
-RUN pip install pip install --upgrade pip
+RUN pip install --upgrade pip
 
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
 
