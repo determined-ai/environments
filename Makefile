@@ -178,12 +178,13 @@ build-tensorflow-ngc:
 		.
 
 
+ROCM_DEEPSPEED_VERSION==0.14.4
 export ROCM61_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED := $(ROCM_61_PREFIX)pytorch-2.0-tf-2.10-rocm-deepspeed
 .PHONY: build-pytorch-infinityhub
 build-pytorch-infinityhub:
 	docker build --shm-size='1gb' -f Dockerfile-infinityhub-pytorch \
                 --build-arg BASE_IMAGE="rocm/pytorch:rocm6.1_ubuntu22.04_py3.10_pytorch_2.1.2" \
-                --build-arg DEEPSPEED_PIP="deepspeed==$(DEEPSPEED_VERSION)" \
+                --build-arg DEEPSPEED_PIP="deepspeed==$(ROCM_DEEPSPEED_VERSION)" \
                 -t $(DOCKERHUB_REGISTRY)/$(INFINITYHUB_PYTORCH_REPO)-$(SHORT_GIT_HASH) \
                 .
 	docker build --shm-size='1gb' -f Dockerfile-infinityhub-hpc \
