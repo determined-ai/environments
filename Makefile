@@ -145,7 +145,7 @@ NGC_TF_HPC_REPO := tensorflow-ngc-hpc-dev
 build-pytorch-ngc:
 	docker buildx create --name builder --driver docker-container --use
 	docker buildx build -f Dockerfile-pytorch-ngc \
-		--platform "$(PLATFORMS)" \
+	  --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) \
 		.
@@ -158,8 +158,8 @@ build-pytorch-ngc:
 .PHONY: build-tensorflow-ngc
 build-tensorflow-ngc:
 	docker buildx create --name builder --driver docker-container --use
-	docker build -f Dockerfile-tensorflow-ngc \
-		--platform "$(PLATFORMS)" \
+	docker buildx build -f Dockerfile-tensorflow-ngc \
+	  --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) \
 		.
