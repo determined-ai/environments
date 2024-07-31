@@ -143,22 +143,28 @@ NGC_TF_HPC_REPO := tensorflow-ngc-hpc-dev
 # build hpc together since hpc is dependent on the normal build
 .PHONY: build-pytorch-ngc
 build-pytorch-ngc:
-	docker build -f Dockerfile-pytorch-ngc \
+	docker buildx create --name builder --driver docker-container --use
+	docker buildx build -f Dockerfile-pytorch-ngc \
+		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) \
 		.
-	docker build -f Dockerfile-ngc-hpc \
+	docker buildx build -f Dockerfile-ngc-hpc \
+		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) \
 		.
 
 .PHONY: build-tensorflow-ngc
 build-tensorflow-ngc:
+	docker buildx create --name builder --driver docker-container --use
 	docker build -f Dockerfile-tensorflow-ngc \
+		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) \
 		.
 	docker build -f Dockerfile-ngc-hpc \
+		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO):$(SHORT_GIT_HASH) \
 		.
