@@ -148,13 +148,13 @@ build-pytorch-ngc:
 	  --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) \
-		--load \
+		--push \
 		.
 	docker buildx build -f Dockerfile-ngc-hpc \
 		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) \
-		--load \
+		--push \
 		.
 
 .PHONY: build-tensorflow-ngc
@@ -164,13 +164,13 @@ build-tensorflow-ngc:
 	  --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) \
-		--load \
+		--push \
 		.
 	docker build -f Dockerfile-ngc-hpc \
 		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO):$(SHORT_GIT_HASH) \
-		--load \
+		--push \
 		.
 
 ifeq ($(WITH_MPICH),1)
@@ -367,8 +367,7 @@ endif
 
 .PHONY: publish-pytorch-ngc
 publish-pytorch-ngc:
-	scripts/publish-versionless-docker.sh pytorch-ngc $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-	scripts/publish-versionless-docker.sh pytorch-ngc-hpc $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	echo ok
 
 .PHONY: publish-pytorch13-tf210-rocm56
 publish-pytorch13-tf210-rocm56:
@@ -380,8 +379,7 @@ publish-pytorch20-tf210-rocm56:
 
 .PHONY: publish-tensorflow-ngc
 publish-tensorflow-ngc:
-	scripts/publish-versionless-docker.sh tensorflow-ngc $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
-	scripts/publish-versionless-docker.sh tensorflow-ngc-hpc $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
+	echo ok
 
 .PHONY: publish-cloud-images
 publish-cloud-images:
