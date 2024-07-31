@@ -148,11 +148,13 @@ build-pytorch-ngc:
 	  --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) \
+		--load \
 		.
 	docker buildx build -f Dockerfile-ngc-hpc \
 		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) \
+		--load \
 		.
 
 .PHONY: build-tensorflow-ngc
@@ -162,11 +164,13 @@ build-tensorflow-ngc:
 	  --platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) \
+		--load \
 		.
 	docker build -f Dockerfile-ngc-hpc \
 		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO):$(SHORT_GIT_HASH) \
+		--load \
 		.
 
 ifeq ($(WITH_MPICH),1)
