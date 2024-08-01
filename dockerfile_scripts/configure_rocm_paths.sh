@@ -2,6 +2,7 @@ export UCX_INSTALL_DIR=/container/ucx
 export OMPI_INSTALL_DIR=/container/ompi
 export MPICH_INSTALL_DIR=/container/mpich
 export OFI_INSTALL_DIR=/container/ofi
+export ROCM_DIR=/opt/rocm
 
 # Make sure OMPI/UCX show up in the right paths
 export VERBS_LIB_DIR=/usr/lib/libibverbs
