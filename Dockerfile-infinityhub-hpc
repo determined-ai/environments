@@ -18,12 +18,12 @@ ARG WITH_MPICH
 ARG OMPI_WITH_ROCM=1
 # set up paths and maybe build MPI
 RUN ["/bin/bash", "-c", "source /tmp/det_dockerfile_scripts/configure_rocm_paths.sh"]
-RUN if [ "$WITH_MPI" = "1" ]; then /tmp/det_dockerfile_scripts/ompi_rocm.sh "$UBUNTU_VERSION" "$WITH_OFI" "$OMPI_WITH_ROCM" "$WITH_MPICH"; fi
+RUN if [ "$WITH_MPI" = "1" ]; then . /tmp/det_dockerfile_scripts/ompi_rocm.sh "$UBUNTU_VERSION" "$WITH_OFI" "$OMPI_WITH_ROCM" "$WITH_MPICH"; fi
 
 ARG WITH_AWS_TRACE
 ARG INTERNAL_AWS_DS
 ARG INTERNAL_AWS_PATH
-RUN if [ "$WITH_OFI" = "1" ]; then /tmp/det_dockerfile_scripts/build_aws_rocm.sh "$WITH_OFI" "$WITH_AWS_TRACE" "$WITH_MPICH"; fi
+RUN if [ "$WITH_OFI" = "1" ]; then . /tmp/det_dockerfile_scripts/build_aws_rocm.sh "$WITH_OFI" "$WITH_AWS_TRACE" "$WITH_MPICH"; fi
 
 # Set an entrypoint that can scrape up the host libfabric.so and then
 # run the user command. This is intended to enable performant execution
