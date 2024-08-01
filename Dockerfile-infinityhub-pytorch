@@ -29,7 +29,7 @@ ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
 ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
 ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
 
-#TODO: finish iterating here, preferably turn it into a shell script.
+ARG DEEPSPEED_PIP
 RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed_rocm.sh; fi
 
 # MIOPEN_DEBUG_SAVE_TEMP_DIR is required
