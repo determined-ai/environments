@@ -5,6 +5,10 @@ OMPI_INSTALL_DIR=/container/ompi
 MPICH_INSTALL_DIR=/container/mpich
 OFI_INSTALL_DIR=/container/ofi
 ROCM_DIR=/opt/rocm
+export UCX_INSTALL_DIR
+export OMPI_INSTALL_DIR
+export MPICH_INSTALL_DIR
+export OFI_INSTALL_DIR
 export ROCM_DIR
 
 # Make sure OMPI/UCX show up in the right paths
