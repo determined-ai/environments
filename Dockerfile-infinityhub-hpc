@@ -17,7 +17,7 @@ ARG WITH_OFI=1
 ENV WITH_OFI=$WITH_OFI
 ARG WITH_MPICH
 ARG OMPI_WITH_ROCM=1
-RUN /tmp/det_dockerfile_scripts/configure_rocm_paths.sh
+RUN . /tmp/det_dockerfile_scripts/configure_rocm_paths.sh
 RUN if [ "$WITH_MPI" = "1" ]; then /tmp/det_dockerfile_scripts/ompi_rocm.sh "$UBUNTU_VERSION" "$WITH_OFI" "$OMPI_WITH_ROCM" "$WITH_MPICH"; fi
 
 ARG WITH_AWS_TRACE
