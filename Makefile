@@ -179,6 +179,7 @@ build-tensorflow-ngc:
 
 
 ROCM_DEEPSPEED_VERSION==0.14.4
+WITH_MPICH=1
 export ROCM61_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED := $(ROCM_61_PREFIX)pytorch-2.0-tf-2.10-rocm-deepspeed
 .PHONY: build-pytorch-infinityhub
 build-pytorch-infinityhub:
