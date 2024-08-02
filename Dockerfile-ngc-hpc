@@ -1,24 +1,58 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
-# Copy various shell scripts that group dependencies for install
-COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+ARG SCRIPT_DIR=/tmp/det_dockerfile_scripts
+RUN mkdir -p ${SCRIPT_DIR}
+
+# Remove the ompi/ucx, etc that is in the base image
+# Seems that the torch installed in the NGC image links against this.
+# Wonder if that will cause problems? We can have it use our OMPI but it
+# also wants libucs, etc, from UCX. The NGC container must be building
+# torch from source and enabling torch distributed with mpi backend.
+#RUN rm -rf /opt/hpcx /usr/local/mpi
+
+# Should we just use /container as the install dir and put
+# everything (ie, ucx/ofi/ompi/mpich) under /container/{bin|lib}
+# to clean up these arguments?
+ARG WITH_MPI
+ARG WITH_OFI
+ARG MPI_TYPE
+# Install all HPC related tools under /container (e.g., mpi, ofi, etc).
+ARG OMPI_INSTALL_DIR=/container/ompi
+ARG OFI_INSTALL_DIR=/container/ofi
+ARG OMPI_WITH_CUDA=1
+COPY dockerfile_scripts/ompi.sh ${SCRIPT_DIR}
+RUN if [ "$WITH_MPI" = "1" ]; then \
+    ${SCRIPT_DIR}/ompi.sh "$UBUNTU_VERSION" \
+		 "$WITH_OFI" "$OMPI_WITH_CUDA"; \
+    fi
+
+# Add our OMPI/OFI bin/lib dirs to the container paths. 
+ENV LD_LIBRARY_PATH=${WITH_MPI:+$OMPI_INSTALL_DIR/lib:$OFI_INSTALL_DIR/lib:}$LD_LIBRARY_PATH
+ENV PATH=${WITH_MPI:+$OMPI_INSTALL_DIR/bin:$OFI_INSTALL_DIR/bin:}$PATH
+
+# Enable running OMPI as root. Note that we only need this if we use OMPI. 
+ENV OMPI_ALLOW_RUN_AS_ROOT ${WITH_MPI:+1}
+ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM ${WITH_MPI:+1}
+# Need to override this so we don't try using the OMPI built into the
+# base container, which is not built correctly for libfabric
+ENV OPAL_PREFIX=${WITH_MPI:+$OMPI_INSTALL_DIR}
 
 ARG AWS_PLUGIN_INSTALL_DIR=/container/aws
 ARG WITH_AWS_TRACE
 ARG INTERNAL_AWS_DS
 ARG INTERNAL_AWS_PATH
-RUN if [ "$WITH_OFI" = "1" ]; then /tmp/det_dockerfile_scripts/build_aws.sh "$WITH_OFI" "$WITH_AWS_TRACE"; fi
-
-#USING OFI
-ARG AWS_LIB_DIR=${AWS_PLUGIN_INSTALL_DIR}/lib
-ENV LD_LIBRARY_PATH=${WITH_OFI:+$AWS_LIB_DIR:}$LD_LIBRARY_PATH
+COPY dockerfile_scripts/build_aws.sh ${SCRIPT_DIR}
+RUN if [ "$WITH_OFI" = "1" ]; then \
+    ${SCRIPT_DIR}/build_aws.sh "$WITH_OFI" "$WITH_AWS_TRACE"; \
+    fi
 
 # Set an entrypoint that can scrape up the host libfabric.so and then
 # run the user command. This is intended to enable performant execution
 # on non-IB systems that have a proprietary libfabric.
+COPY dockerfile_scripts/scrape_libs.sh ${SCRIPT_DIR}
 RUN mkdir -p /container/bin && \
-    cp /tmp/det_dockerfile_scripts/scrape_libs.sh /container/bin
+    cp ${SCRIPT_DIR}/scrape_libs.sh /container/bin
 ENTRYPOINT ["/container/bin/scrape_libs.sh"]
 
 RUN rm -r /tmp/*

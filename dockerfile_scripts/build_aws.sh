@@ -17,8 +17,10 @@ if [ "$OFI" = "1" ]; then
                 tcsh
 
   # Install AWS_OFI_NCCL
-  AWS_VER=v1.6.0
-  AWS_VER_NUM=1.6.0
+#  AWS_VER=v1.6.0
+#  AWS_VER_NUM=1.6.0
+  AWS_VER=v1.9.2
+  AWS_VER_NUM=1.9.2
   AWS_NAME=aws-ofi-nccl
   AWS_FILE="${AWS_NAME}-${AWS_VER_NUM}"
   # cuda install dir likely dependent on BaseOS (i.e. ubuntu 20.02)
@@ -33,11 +35,15 @@ if [ "$OFI" = "1" ]; then
     CUDA_DIR="/usr/local/cuda-$cuda_ver_str/targets/sbsa-linux"
   fi
 
+  # AWS_CONFIG_OPTIONS="--prefix ${AWS_PLUGIN_INSTALL_DIR} \
+  # 	  --with-libfabric=${OFI_INSTALL_DIR}            \
+  # 	  --with-nccl=${HOROVOD_NCCL_HOME}               \
+  # 	  --with-mpi=${OMPI_INSTALL_DIR}                 \
+  # 	  --with-gdrcopy=${GDRCOPY_HOME}                 \
+  # 	  --with-cuda=${CUDA_DIR} ${WITH_AWS_TRACE}"
   AWS_CONFIG_OPTIONS="--prefix ${AWS_PLUGIN_INSTALL_DIR} \
 	  --with-libfabric=${OFI_INSTALL_DIR}            \
-	  --with-nccl=${HOROVOD_NCCL_HOME}               \
 	  --with-mpi=${OMPI_INSTALL_DIR}                 \
-	  --with-gdrcopy=${GDRCOPY_HOME}                 \
 	  --with-cuda=${CUDA_DIR} ${WITH_AWS_TRACE}"
   AWS_SRC_DIR=/tmp/aws-ofi-nccl
   AWS_BASE_URL="https://github.com/aws/aws-ofi-nccl/archive/refs/tags"
@@ -49,20 +55,24 @@ if [ "$OFI" = "1" ]; then
   then
     echo "Using EXTERNAL AWS $AWS_URL" 
     # aws-ofi-nccl-1.4.0
-    AWS_NAME="${AWS_NAME}-${AWS_VER_NUM}"
+    AWS_BASE_URL="https://github.com/aws/aws-ofi-nccl/releases/download"
+    AWS_NAME="${AWS_NAME}-${AWS_VER_NUM}-aws"
+    AWS_URL="${AWS_BASE_URL}/${AWS_VER}-aws/${AWS_NAME}.tar.gz"
   else
     AWS_BASE_URL="http://${INTERNAL_AWS_DS}${INTERNAL_AWS_PATH}"
     AWS_URL="${AWS_BASE_URL}/${AWS_NAME}.tar.gz"
     echo "Using INTERNAL AWS $AWS_URL" 
   fi
-
+  
   mkdir -p ${AWS_SRC_DIR}                         && \
     cd ${AWS_SRC_DIR}                             && \
     #    wget -O "${AWS_FILE}.tar.gz" ${AWS_URL}       && \
     #    tar -xzf ${AWS_FILE}.tar.gz                   && \
     #    cd ${AWS_FILE}                                && \
-    wget -O ${AWS_NAME}.tar.gz ${AWS_URL}         && \
-    tar -xzf ${AWS_NAME}.tar.gz                   && \
+    #    wget -O ${AWS_NAME}.tar.gz ${AWS_URL}         && \
+    #tar -xzf ${AWS_NAME}.tar.gz                   && \
+    wget ${AWS_URL} && \
+    tar -xzf ${AWS_NAME}.tar.gz --no-same-owner   && \
     cd ${AWS_NAME}                                && \
     ./autogen.sh                                  && \
     ./configure ${AWS_CONFIG_OPTIONS}             && \

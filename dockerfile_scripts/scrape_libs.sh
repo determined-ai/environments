@@ -3,6 +3,7 @@
 WHOAMI=$(whoami)
 # Only scrape host libs if AWS/NCCL/OFI was built for this image
 if [ -d /container/aws/lib ]
+#if [ -d /container/lib ]
 then
    host_dir="/det_libfabric"
    if [ ! -d "$host_dir" ]; then
@@ -51,6 +52,7 @@ then
        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$host_dir/usr/local/lib64
    fi # end if /det_host exists
    export LD_LIBRARY_PATH=/container/aws/lib:$LD_LIBRARY_PATH
+#   export LD_LIBRARY_PATH=/container/lib:$LD_LIBRARY_PATH
 
    tmp_nvcache_dir=$(mktemp -d -p /var/tmp ${WHOAMI}-nvcache-XXXXXXXX)
 

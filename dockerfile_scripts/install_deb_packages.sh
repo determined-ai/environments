@@ -32,6 +32,8 @@ apt-get update \
     libnuma1 \
     libnuma-dev \
     libpmi2-0-dev \
+    hwloc \
+    libhwloc-dev \
     unattended-upgrades \
   && unattended-upgrade \
   && rm -rf /var/lib/apt/lists/* \
