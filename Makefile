@@ -186,12 +186,12 @@ build-pytorch-infinityhub:
 	docker build --shm-size='1gb' -f Dockerfile-infinityhub-pytorch \
                 --build-arg BASE_IMAGE="rocm/pytorch:rocm6.1_ubuntu22.04_py3.10_pytorch_2.1.2" \
                 --build-arg DEEPSPEED_PIP="deepspeed==$(ROCM_DEEPSPEED_VERSION)" \
-                -t $(DOCKERHUB_REGISTRY)/$(INFINITYHUB_PYTORCH_REPO)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(INFINITYHUB_PYTORCH_REPO):$(SHORT_GIT_HASH) \
                 .
 	docker build --shm-size='1gb' -f Dockerfile-infinityhub-hpc \
-                --build-arg BASE_IMAGE=$(DOCKERHUB_REGISTRY)/$(INFINITYHUB_PYTORCH_REPO)-$(SHORT_GIT_HASH) \
+                --build-arg BASE_IMAGE=$(DOCKERHUB_REGISTRY)/$(INFINITYHUB_PYTORCH_REPO):$(SHORT_GIT_HASH) \
                 --build-arg WITH_MPICH=$(WITH_MPICH) \
-                -t $(DOCKERHUB_REGISTRY)/$(INFINITYHUB_PYTORCH_HPC_REPO)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(INFINITYHUB_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) \
                 .
 
 
