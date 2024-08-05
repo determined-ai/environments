@@ -1,0 +1,74 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+#why no highlighting?
+ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0 TT=0
+
+RUN mkdir -p /var/run/sshd
+RUN rm /etc/apt/sources.list.d/rocm.list
+RUN pip install --upgrade pip
+
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+
+RUN apt-get update && /tmp/det_dockerfile_scripts/install_deb_packages.sh
+RUN python --version
+#RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
+
+# LIBFABRIC ISSUE
+# USE CONDA FOR WORKAROUND
+#TODO: MAY NOT BE A PROBLEM ANYMORE?
+# protect this image from slurm
+#ENV PATH="/opt/conda/envs/py_3.8/bin:${PATH}"
+ARG CONDA="${PATH}"
+
+#RUN exit 1
+# Install fixed version of FFI package for Ubuntu 20.04.
+# This is done after above stuff to make sure we get right version.
+RUN /tmp/det_dockerfile_scripts/install_package_fixes.sh
+RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
+RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
+
+
+RUN pip install determined && pip uninstall -y determined
+RUN apt update 
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y cargo
+
+RUN python -m pip install  -r /tmp/det_dockerfile_scripts/additional-requirements-rocm.txt
+
+RUN python -m pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt && \
+    jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
+
+ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
+ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
+ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
+
+#ENV HSA_FORCE_FINE_GRAIN_PCIE=1 #TODO: check if this is necessary
+
+#RUN ldconfig  #TODO: check if this is necessary
+RUN echo A 
+#TODO: finish iterating here, preferably turn it into a shell script.
+ARG DEEPSPEED_PIP
+ARG DS_BUILD_CUTLASS_OPS=0
+ENV DS_BUILD_CUTLASS_OPS=0
+
+#RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& git clone https://github.com/ROCmSoftwarePlatform/triton.git && cd triton && git checkout triton-mlir && cd python && pip3 install ninja cmake && python setup.py install;fi
+#RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& git clone https://github.com/ROCmSoftwarePlatform/triton.git && cd triton && git checkout triton-mlir && cd python && pip3 install ninja cmake && python setup.py install;fi
+RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&&pip3 install ninja cmake;pip3 install triton==2.3.1;fi  
+#RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& python -m pip install  pydantic==1.10.11 && git clone https://github.com/microsoft/DeepSpeed.git && cd DeepSpeed && DS_BUILD_OPS=1 DS_BUILD_SPARSE_ATTN=0 DS_BUILD_EVOFORMER_ATTN=0 python3 setup.py build && python3 setup.py install && python -m deepspeed.env_report; fi
+RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& python -m pip install  pydantic==1.10.11 && git clone https://github.com/microsoft/DeepSpeed.git && cd DeepSpeed &&  DS_BUILD_OPS=1 DS_BUILD_RAGGED_DEVICE_OPS=0  DS_BUILD_CUTLASS_OPS=0 DS_BUILD_SPARSE_ATTN=0 DS_BUILD_EVOFORMER_ATTN=0  DS_BUILD_RANDOM_LTD=0 DS_BUILD_FUSED_ADAM=0 DS_BUILD_CCL_COMM=0 python3 setup.py build && python3 setup.py install && python -m deepspeed.env_report; fi
+#RUN if [ -n "$DEEPSPEED_PIP" ]; then DEBIAN_FRONTEND=noninteractive apt-get install -y pdsh libaio-dev&& python -m pip install  pydantic==1.10.11 && git clone https://github.com/ROCmSoftwarePlatform/DeepSpeed.git && cd DeepSpeed && python3 setup.py  build && python3 setup.py install && python -m deepspeed.env_report; fi
+RUN if [ -n "$DEEPSPEED_PIP" ]; then python -m deepspeed.env_report ; fi
+RUN pip list | grep -i deepspeed
+RUN echo "$DEEPSPEED_PIP"
+
+RUN pip install tokenizers>=0.19
+RUN pip install transformers==4.43.3 
+RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
+#RUN exit 1
+# MIOPEN_DEBUG_SAVE_TEMP_DIR is required to prevent
+# PAD-133
+ENV MIOPEN_DEBUG_SAVE_TEMP_DIR=1
+
+CMD ["/bin/bash"]
+USER root
+
+RUN rm -r /tmp/*

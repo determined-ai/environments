@@ -13,6 +13,11 @@ CPU_PREFIX_310 := $(REGISTRY_REPO):py-3.10-
 CUDA_113_PREFIX := $(REGISTRY_REPO):cuda-11.3-
 CUDA_118_PREFIX := $(REGISTRY_REPO):cuda-11.8-
 ROCM_56_PREFIX := $(REGISTRY_REPO):rocm-5.6-
+ROCM_57_PREFIX := $(REGISTRY_REPO):rocm-5.7-
+ROCM_60_PREFIX := $(REGISTRY_REPO):rocm-6.0-
+ROCM_61_PREFIX := $(REGISTRY_REPO):rocm-6.1-
+ROCM_60_TF_PREFIX := tensorflow-infinity-hub:tensorflow-infinity-hub
+
 
 CPU_SUFFIX := -cpu
 CUDA_SUFFIX := -cuda
@@ -140,6 +145,15 @@ NGC_PYTORCH_HPC_REPO := pytorch-ngc-hpc-dev
 NGC_TF_REPO := tensorflow-ngc-dev
 NGC_TF_HPC_REPO := tensorflow-ngc-hpc-dev
 
+INFINITYHUB_PYTORCH_PREFIX := rocm/pytorch
+INFINITYHUB_TENSORFLOW_PREFIX := rocm/tensorflow
+INFINITYHUB_PYTORCH_VERSION := 2.1.2
+INFINITYHUB_TENSORFLOW_VERSION := 
+export INFINITYHUB_PYTORCH_REPO := pytorch-infinityhub-dev
+INFINITYHUB_PYTORCH_HPC_REPO := pytorch-infinityhub-hpc-dev
+INFINITYHUB_TF_REPO := tensorflow-infinityhub-dev
+INFINITYHUB_TF_HPC_REPO := tensorflow-infinityhub-hpc-dev
+
 # build hpc together since hpc is dependent on the normal build
 .PHONY: build-pytorch-ngc
 build-pytorch-ngc:
@@ -163,39 +177,157 @@ build-tensorflow-ngc:
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO):$(SHORT_GIT_HASH) \
 		.
 
-ifeq ($(WITH_MPICH),1)
-ROCM56_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-mpich
-else
-ROCM56_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-ompi
-endif
-export ROCM56_TORCH13_TF_ENVIRONMENT_NAME := $(ROCM_56_PREFIX)$(ROCM56_TORCH13_MPI)
-.PHONY: build-pytorch13-tf210-rocm56
-build-pytorch13-tf210-rocm56:
-	docker build -f Dockerfile-default-rocm \
-		--build-arg BASE_IMAGE="rocm/pytorch:rocm5.6_ubuntu20.04_py3.8_pytorch_1.13.1"\
-		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
-		--build-arg HOROVOD_PIP="horovod==0.28.1" \
-		--build-arg WITH_MPICH=$(WITH_MPICH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(VERSION) \
-		.
+
+	#DOCKER_BUILDKIT=0 docker build --shm-size='1gb' -f Dockerfile-infinityhub-pytorch \
+	#docker build --shm-size='1gb' -f Dockerfile-infinityhub-pytorch \
+                --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
+
+DEEPSPEED_VERSION := 0.13.0
+export ROCM61_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED := $(ROCM_61_PREFIX)pytorch-2.0-tf-2.10-rocm-deepspeed
+.PHONY: build-pytorch-infinityhub
+build-pytorch-infinityhub:
+	docker build --shm-size='1gb' -f Dockerfile-infinityhub-pytorch \
+                --build-arg BASE_IMAGE="rocm/pytorch:rocm6.1_ubuntu22.04_py3.10_pytorch_2.1.2" \
+                --build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
+                --build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
+                --build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
+                --build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
+                --build-arg DEEPSPEED_PIP="deepspeed==$(DEEPSPEED_VERSION)" \
+                -t $(DOCKERHUB_REGISTRY)/$(INFINITYHUB_PYTORCH_REPO)-$(SHORT_GIT_HASH) \
+                .
+	docker build --shm-size='1gb' -f Dockerfile-infinityhub-hpc \
+                --build-arg BASE_IMAGE=$(DOCKERHUB_REGISTRY)/$(INFINITYHUB_PYTORCH_REPO)-$(SHORT_GIT_HASH) \
+                --build-arg WITH_MPICH=$(WITH_MPICH) \
+                -t $(DOCKERHUB_REGISTRY)/$(INFINITYHUB_PYTORCH_HPC_REPO)-$(SHORT_GIT_HASH) \
+                .
+
 
 ifeq ($(WITH_MPICH),1)
-ROCM56_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-mpich
+ROCM61_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-mpich
 else
-ROCM56_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-ompi
+ROCM61_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-ompi
 endif
-export ROCM56_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_56_PREFIX)$(ROCM56_TORCH_MPI)
-.PHONY: build-pytorch20-tf210-rocm56
-build-pytorch20-tf210-rocm56:
+export ROCM61_TORCH13_TF_ENVIRONMENT_NAME := $(ROCM_60_PREFIX)$(ROCM61_TORCH13_MPI)
+.PHONY: build-pytorch13-tf210-rocm60
+build-pytorch13-tf210-rocm60:
 	docker build -f Dockerfile-default-rocm \
-		--build-arg BASE_IMAGE="rocm/pytorch:rocm5.6_ubuntu20.04_py3.8_pytorch_2.0.1" \
-		--build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
-		--build-arg HOROVOD_PIP="horovod==0.28.1" \
+                --build-arg BASE_IMAGE="rocm/pytorch:rocm6.0_ubuntu20.04_py3.9_pytorch_1.13.1" \
+                --build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
+                --build-arg HOROVOD_PIP="horovod==0.28.1" \
                 --build-arg WITH_MPICH=$(WITH_MPICH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
-		.
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH13_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH13_TF_ENVIRONMENT_NAME)-$(VERSION) \
+                .
+
+
+
+ifeq ($(WITH_MPICH),1)
+ROCM61_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-mpich
+else
+ROCM61_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-ompi
+endif
+
+export ROCM61_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_60_PREFIX)$(ROCM61_TORCH_MPI)
+.PHONY: build-pytorch20-tf210-rocm60
+build-pytorch20-tf210-rocm60:
+	docker build -f Dockerfile-default-rocm \
+                --build-arg BASE_IMAGE="rocm/pytorch:rocm6.1_ubuntu22.04_py3.10_pytorch_2.1.2" \
+                --build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
+                --build-arg HOROVOD_PIP="0" \
+                --build-arg WITH_MPICH=$(WITH_MPICH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
+                .
+
+
+
+ifeq ($(WITH_MPICH),1)
+ROCM61_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-mpich
+else
+ROCM61_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-ompi
+endif
+export ROCM61_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_61_PREFIX)$(ROCM61_TORCH_MPI)
+.PHONY: build-pytorch20-tf210-rocm61
+build-pytorch20-tf210-rocm61:
+	docker build -f Dockerfile-default-rocm \
+                --build-arg BASE_IMAGE="rocm/pytorch:rocm6.1_ubuntu22.04_py3.10_pytorch_2.1.2" \
+                --build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
+                --build-arg HOROVOD_PIP="0" \
+                --build-arg WITH_MPICH=$(WITH_MPICH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
+                .
+
+ifeq ($(WITH_MPICH),1)
+ROCM61_TORCH_MPI :=pytorch-3.10-rocm-mpich
+else
+ROCM61_TORCH_MPI :=pytorch-3.10-rocm-ompi
+endif
+export ROCM61_TORCH_ENVIRONMENT_NAME := $(ROCM_61_PREFIX)$(ROCM61_TORCH_MPI)
+.PHONY: build-pytorch20-rocm61
+build-pytorch20-rocm61:
+	docker build -f Dockerfile-default-rocm \
+                --build-arg BASE_IMAGE="rocm/pytorch:rocm6.1_ubuntu22.04_py3.10_pytorch_2.1.2" \
+                --build-arg TENSORFLOW_PIP="0" \
+                --build-arg HOROVOD_PIP="0" \
+                --build-arg WITH_MPICH=$(WITH_MPICH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH_ENVIRONMENT_NAME)-$(VERSION) \
+                .
+
+
+
+
+export ROCM60_TF_ENVIRONMENT_NAME := $(ROCM_60_TF_PREFIX)
+build-tf210-rocm60:
+	docker build -f Dockerfile-tensorflow-rocm \
+                --build-arg BASE_IMAGE="rocm/tensorflow:rocm6.1-py3.9-tf2.15-dev" \
+                --build-arg HOROVOD_PIP="0" \
+                --build-arg WITH_MPICH=$(WITH_MPICH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM60_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM60_TF_ENVIRONMENT_NAME)-$(VERSION) \
+                .
+
+
+export GPU_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-deepspeed-$(DEEPSPEED_VERSION)$(GPU_SUFFIX)
+export GPU_GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := $(CUDA_113_PREFIX)pytorch-1.10-gpt-neox-deepspeed$(GPU_SUFFIX)
+export TORCH_PIP_DEEPSPEED_GPU := torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==0.10.2+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
+
+export ROCM57_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED := $(ROCM_57_PREFIX)pytorch-2.0-tf-2.10-rocm-deepspeed
+.PHONY: build-pytorch20-tf210-rocm57-deepspeed
+build-pytorch20-tf210-rocm57-deepspeed:
+	docker build --shm-size='1gb' -f Dockerfile-default-rocm \
+                --build-arg BASE_IMAGE="rocm/pytorch:rocm5.7_ubuntu20.04_py3.9_pytorch_2.1.1" \
+                --build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
+                --build-arg HOROVOD_PIP="horovod==0.28.1" \
+                --build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
+                --build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
+                --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
+                --build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
+                --build-arg DEEPSPEED_PIP="deepspeed==$(DEEPSPEED_VERSION)" \
+                --build-arg WITH_MPICH=$(WITH_MPICH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM57_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM57_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED)-$(VERSION) \
+                .
+
+export ROCM61_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED := $(ROCM_61_PREFIX)pytorch-2.0-tf-2.10-rocm-deepspeed
+.PHONY: build-pytorch20-tf210-rocm61-deepspeed
+build-pytorch20-tf210-rocm61-deepspeed:
+	docker build --shm-size='1gb' -f Dockerfile-default-rocm \
+                --build-arg BASE_IMAGE="rocm/pytorch:rocm6.1_ubuntu22.04_py3.10_pytorch_2.1.2" \
+                --build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
+                --build-arg HOROVOD_PIP="0" \
+                --build-arg TORCH_PIP="$(TORCH_PIP_DEEPSPEED_GPU)" \
+                --build-arg TORCH_TB_PROFILER_PIP="$(TORCH_TB_PROFILER_PIP)" \
+                --build-arg TORCH_CUDA_ARCH_LIST="6.0;6.1;6.2;7.0;7.5;8.0" \
+                --build-arg APEX_GIT="https://github.com/determined-ai/apex.git@3caf0f40c92e92b40051d3afff8568a24b8be28d" \
+                --build-arg DEEPSPEED_PIP="deepspeed==$(DEEPSPEED_VERSION)" \
+                --build-arg WITH_MPICH=$(WITH_MPICH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED)-$(SHORT_GIT_HASH) \
+                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH_TF_ENVIRONMENT_NAME_DEEPSPEED)-$(VERSION) \
+                .
+
+
 
 DEEPSPEED_VERSION := 0.8.3
 export GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := deepspeed-cuda-gpt-neox
