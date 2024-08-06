@@ -47,6 +47,12 @@ RUN if [ "$WITH_OFI" = "1" ]; then \
     ${SCRIPT_DIR}/build_aws.sh "$WITH_OFI" "$WITH_AWS_TRACE"; \
     fi
 
+# Try installing Horovod
+COPY dockerfile_scripts/build_horovod.sh ${SCRIPT_DIR}
+RUN if [ "$WITH_MPI" = "1" ] ; then \
+    ${SCRIPT_DIR}/build_horovod.sh ; \
+    fi
+
 # Set an entrypoint that can scrape up the host libfabric.so and then
 # run the user command. This is intended to enable performant execution
 # on non-IB systems that have a proprietary libfabric.
