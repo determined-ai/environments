@@ -148,11 +148,8 @@ NGC_TF_HPC_REPO := tensorflow-ngc-hpc-dev
 INFINITYHUB_PYTORCH_PREFIX := rocm/pytorch
 INFINITYHUB_TENSORFLOW_PREFIX := rocm/tensorflow
 INFINITYHUB_PYTORCH_VERSION := 2.1.2
-INFINITYHUB_TENSORFLOW_VERSION := 
-export INFINITYHUB_PYTORCH_REPO := pytorch-infinityhub-dev
+INFINITYHUB_PYTORCH_REPO := pytorch-infinityhub-dev
 INFINITYHUB_PYTORCH_HPC_REPO := pytorch-infinityhub-hpc-dev
-INFINITYHUB_TF_REPO := tensorflow-infinityhub-dev
-INFINITYHUB_TF_HPC_REPO := tensorflow-infinityhub-hpc-dev
 
 # build hpc together since hpc is dependent on the normal build
 .PHONY: build-pytorch-ngc
