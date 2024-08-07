@@ -380,3 +380,7 @@ publish-cloud-images:
 		&& packer build $(PACKER_FLAGS) -machine-readable -var "image_suffix=$(SHORT_GIT_HASH)" environments-packer.json \
 		| tee $(ARTIFACTS_DIR)/packer-log
 
+.PHONY: test
+test:
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) pytest -m pytorch tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) pytest -m pytorch tests

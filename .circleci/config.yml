@@ -197,6 +197,12 @@ jobs:
     steps:
       - checkout
       - run: echo hello
+  
+  test-docker-image:
+    docker:
+      - image: cimg/python:3.8
+    steps:
+      - run: make test
 
 
 workflows:
@@ -269,6 +275,10 @@ workflows:
             - build-docker-all-cpu
             - build-docker-all-gpu
             - build-docker-all-ofi
+      - tests:
+          context: determined-production
+          requires:
+            - publish-cloud-images
 
   publish-dev:
     jobs:
