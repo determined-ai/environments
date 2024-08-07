@@ -366,3 +366,7 @@ workflows:
             - build-docker-all-ofi
             - request-publish-dev-cloud
           dev-mode: true
+      - test-docker-image:
+          context: determined-production
+          requires:
+            - publish-cloud-images
