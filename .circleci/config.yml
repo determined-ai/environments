@@ -275,7 +275,7 @@ workflows:
             - build-docker-all-cpu
             - build-docker-all-gpu
             - build-docker-all-ofi
-      - tests:
+      - test-docker-image:
           context: determined-production
           requires:
             - publish-cloud-images
