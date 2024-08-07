@@ -369,4 +369,4 @@ workflows:
       - test-docker-image:
           context: determined-production
           requires:
-            - publish-cloud-images
+            - publish-cloud-images-dev
