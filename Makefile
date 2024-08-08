@@ -151,8 +151,8 @@ build-pytorch-ngc:
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) \
 		.
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) pytest -m pytorch tests
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) pytest -m pytorch tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) pytest -m pytorch /workspace/tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) pytest -m pytorch /workspace/tests
 
 .PHONY: build-tensorflow-ngc
 build-tensorflow-ngc:
@@ -164,8 +164,8 @@ build-tensorflow-ngc:
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO):$(SHORT_GIT_HASH) \
 		.
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) pytest -m tensorflow tests
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO):$(SHORT_GIT_HASH) pytest -m tensorflow tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) pytest -m tensorflow /workspace/tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO):$(SHORT_GIT_HASH) pytest -m tensorflow /workspace/tests
 
 ifeq ($(WITH_MPICH),1)
 ROCM56_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-mpich
@@ -183,7 +183,7 @@ build-pytorch13-tf210-rocm56:
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(VERSION) \
 		.
-		docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(VERSION) pytest -m pytorch tests
+		docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(VERSION) pytest -m pytorch /workspace/tests
 
 
 ifeq ($(WITH_MPICH),1)
@@ -202,7 +202,7 @@ build-pytorch20-tf210-rocm56:
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
 		-t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
 		.
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) pytest -m pytorch tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) pytest -m pytorch /workspace/tests
 
 DEEPSPEED_VERSION := 0.8.3
 export GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME := deepspeed-cuda-gpt-neox
@@ -222,7 +222,7 @@ build-deepspeed-gpt-neox: build-cuda-113-base
 		-t $(DOCKERHUB_REGISTRY)/$(GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
 		.
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(NGC_REGISTRY)/$(GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) pytest -m deepspeed tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(GPT_NEOX_DEEPSPEED_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) pytest -m deepspeed /workspace/tests
 
 TORCH_VERSION := 1.12
 TF_VERSION_SHORT := 2.11
@@ -261,7 +261,7 @@ build-tensorflow-cpu: build-cpu-py-39-base
 		$(CPU_TF_TAGS) \
 		--push \
 		.
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) pytest -m tensorflow tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) pytest -m tensorflow /workspace/tests
 
 .PHONY: build-tensorflow-cuda
 build-tensorflow-cuda: build-cuda-113-base
@@ -285,7 +285,7 @@ build-tensorflow-cuda: build-cuda-113-base
 		-t $(DOCKERHUB_REGISTRY)/$(CUDA_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(CUDA_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
 		.
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(CUDA_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) pytest -m tensorflow tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(CUDA_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) pytest -m tensorflow /workspace/tests
 
 # torch 2.0 recipes
 TORCH2_VERSION := 2.0
@@ -319,7 +319,7 @@ build-pytorch-cpu: build-cpu-py-310-base
 		$(CPU_PYTORCH_TAGS) \
 		--push \
 		.
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) pytest -m pytorch tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) pytest -m pytorch /workspace/tests
 
 .PHONY: build-pytorch-cuda
 build-pytorch-cuda: build-cuda-118-base
@@ -336,7 +336,7 @@ build-pytorch-cuda: build-cuda-118-base
 		-t $(DOCKERHUB_REGISTRY)/$(CUDA_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
 		-t $(NGC_REGISTRY)/$(CUDA_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) \
 		.
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(CUDA_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) pytest -m pytorch tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(CUDA_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) pytest -m pytorch /workspace/tests
 
 .PHONY: publish-tensorflow-cpu
 publish-tensorflow-cpu:
@@ -394,5 +394,5 @@ publish-cloud-images:
 
 .PHONY: test
 test:
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) pytest -m pytorch tests
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) pytest -m pytorch tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) pytest -m pytorch /workspace/tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) pytest -m pytorch /workspace/tests
