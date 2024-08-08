@@ -4,3 +4,7 @@
 # CI and Cloud-specific images are infra
 /.circleci            @determined-ai/infrastructure
 /cloud                @determined-ai/infrastructure
+
+# Team-specific files
+Dockerfile-infinityhub-pytorch  @determined-ai/pad
+Dockerfile-infinityhub-hpc      @determined-ai/pad

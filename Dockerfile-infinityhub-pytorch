@@ -1,0 +1,42 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+ENV PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 PYTHONHASHSEED=0
+ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+
+RUN mkdir -p /var/run/sshd
+RUN rm /etc/apt/sources.list.d/rocm.list
+RUN pip install --upgrade pip
+
+COPY dockerfile_scripts /tmp/det_dockerfile_scripts
+
+RUN /tmp/det_dockerfile_scripts/install_deb_packages.sh
+
+
+# Install fixed version of FFI package for Ubuntu 20.04.
+# This is done after above stuff to make sure we get right version.
+RUN /tmp/det_dockerfile_scripts/install_package_fixes.sh
+RUN /tmp/det_dockerfile_scripts/add_det_nobody_user.sh
+RUN /tmp/det_dockerfile_scripts/install_libnss_determined.sh
+
+
+RUN python -m pip install determined && pip uninstall -y determined
+
+RUN python -m pip install  -r /tmp/det_dockerfile_scripts/additional-requirements-rocm.txt
+
+RUN python -m pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt && \
+    jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
+
+ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
+ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data
+ENV JUPYTER_RUNTIME_DIR=/run/determined/jupyter/runtime
+
+ARG DEEPSPEED_PIP
+RUN if [ -n "$DEEPSPEED_PIP" ]; then /tmp/det_dockerfile_scripts/install_deepspeed_rocm.sh; fi
+
+# MIOPEN_DEBUG_SAVE_TEMP_DIR is required
+ENV MIOPEN_DEBUG_SAVE_TEMP_DIR=1
+
+CMD ["/bin/bash"]
+USER root
+
+RUN rm -r /tmp/*
