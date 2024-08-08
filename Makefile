@@ -145,9 +145,6 @@ NGC_PYTORCH_HPC_REPO := pytorch-ngc-hpc-dev
 NGC_TF_REPO := tensorflow-ngc-dev
 NGC_TF_HPC_REPO := tensorflow-ngc-hpc-dev
 
-INFINITYHUB_PYTORCH_PREFIX := rocm/pytorch
-INFINITYHUB_TENSORFLOW_PREFIX := rocm/tensorflow
-INFINITYHUB_PYTORCH_VERSION := 2.1.2
 INFINITYHUB_PYTORCH_REPO := pytorch-infinityhub-dev
 INFINITYHUB_PYTORCH_HPC_REPO := pytorch-infinityhub-hpc-dev
 
@@ -217,7 +214,7 @@ else
 ROCM61_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-ompi
 endif
 
-export ROCM61_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_60_PREFIX)$(ROCM61_TORCH_MPI)
+export ROCM61_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_61_PREFIX)$(ROCM61_TORCH_MPI)
 .PHONY: build-pytorch20-tf210-rocm60
 build-pytorch20-tf210-rocm60:
 	docker build -f Dockerfile-default-rocm \
