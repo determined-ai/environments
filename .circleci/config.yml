@@ -61,7 +61,9 @@ commands:
       - run: sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
       - run: sudo systemctl restart docker
 
-
+  test-docker-image:
+    steps:
+      - run: make test
 
 jobs:
   build-and-publish-docker:
@@ -198,12 +200,6 @@ jobs:
     steps:
       - checkout
       - run: echo hello
-  
-  test-docker-image:
-    docker:
-      - image: cimg/python:3.8
-    steps:
-      - run: make test
 
 
 workflows:
