@@ -9,3 +9,8 @@ def test_pytorch_image():
 def test_tensorflow_image():
     import tensorflow as tf 
     print(tf.__version__)
+
+@pytest.mark.deepspeed
+def test_deepspeed_image():
+    import deepspeed
+    print(deepspeed.__version__)

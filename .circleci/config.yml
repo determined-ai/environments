@@ -61,6 +61,8 @@ commands:
       - run: sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
       - run: sudo systemctl restart docker
 
+
+
 jobs:
   build-and-publish-docker:
     parameters:
