@@ -188,6 +188,7 @@ jobs:
             - run:
                 no_output_timeout: 90m
                 command: make publish-cloud-images PACKER_FLAGS="-force" NGC_PUBLISH= REGISTRY_REPO=environments-dev
+      - test-docker-image
       - store_artifacts:
           path: /tmp/artifacts
 
@@ -275,10 +276,6 @@ workflows:
             - build-docker-all-cpu
             - build-docker-all-gpu
             - build-docker-all-ofi
-      - test-docker-image:
-          context: determined-production
-          requires:
-            - publish-cloud-images
 
   publish-dev:
     jobs:
@@ -366,7 +363,3 @@ workflows:
             - build-docker-all-ofi
             - request-publish-dev-cloud
           dev-mode: true
-      - test-docker-image:
-          context: determined-production
-          requires:
-            - publish-cloud-images-dev
