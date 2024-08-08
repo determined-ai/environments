@@ -61,10 +61,6 @@ commands:
       - run: sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
       - run: sudo systemctl restart docker
 
-  test-docker-image:
-    steps:
-      - run: make test
-
 jobs:
   build-and-publish-docker:
     parameters:
@@ -190,7 +186,6 @@ jobs:
             - run:
                 no_output_timeout: 90m
                 command: make publish-cloud-images PACKER_FLAGS="-force" NGC_PUBLISH= REGISTRY_REPO=environments-dev
-      - test-docker-image
       - store_artifacts:
           path: /tmp/artifacts
 

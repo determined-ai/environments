@@ -151,6 +151,8 @@ build-pytorch-ngc:
 		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) \
 		.
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) pytest -m pytorch tests
+	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) pytest -m pytorch tests
 
 .PHONY: build-tensorflow-ngc
 build-tensorflow-ngc:
