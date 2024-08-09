@@ -48,9 +48,11 @@ RUN if [ "$WITH_OFI" = "1" ]; then \
     fi
 
 # Try installing Horovod
+ARG WITH_PT
+ARG WITH_TF
 COPY dockerfile_scripts/build_horovod.sh ${SCRIPT_DIR}
 RUN if [ "$WITH_MPI" = "1" ] ; then \
-    ${SCRIPT_DIR}/build_horovod.sh ; \
+    ${SCRIPT_DIR}/build_horovod.sh "$WITH_PT" "$WITH_TF"; \
     fi
 
 # Set an entrypoint that can scrape up the host libfabric.so and then

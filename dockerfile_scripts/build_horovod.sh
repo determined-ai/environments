@@ -8,8 +8,10 @@ export HOROVOD_CUDA_HOME=/usr/local/cuda
 export HOROVOD_NCCL_LINK=SHARED
 export HOROVOD_GPU_OPERATIONS=NCCL
 export HOROVOD_WITH_MPI=1
-export HOROVOD_WITH_PYTORCH=1
-export HOROVOD_WITHOUT_TENSORFLOW=1
+#export HOROVOD_WITH_PYTORCH=1
+#export HOROVOD_WITHOUT_TENSORFLOW=1
+export HOROVOD_WITH_PYTORCH=$1
+export HOROVOD_WITH_TENSORFLOW=$2
 export HOROVOD_WITHOUT_MXNET=1
 pip install --no-cache-dir git+https://github.com/thomas-bouvier/horovod.git@compile-cpp17
 
