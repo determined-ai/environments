@@ -3,7 +3,6 @@ FROM ${BASE_IMAGE}
 
 # Copy various shell scripts that group dependencies for install
 COPY dockerfile_scripts /tmp/det_dockerfile_scripts
-RUN pip install -r /tmp/det_dockerfile_scripts/requirements.txt
 
 ARG AWS_PLUGIN_INSTALL_DIR=/container/aws
 ARG WITH_AWS_TRACE

@@ -112,7 +112,7 @@ RUN pip install determined && pip uninstall -y determined
 RUN pip install google-auth-oauthlib
 
 
-RUN pip install -r /tmp/det_dockerfile_scripts/requirements.txt
+
 RUN pip install -r /tmp/det_dockerfile_scripts/notebook-requirements.txt && jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 ENV JUPYTER_CONFIG_DIR=/run/determined/jupyter/config
 ENV JUPYTER_DATA_DIR=/run/determined/jupyter/data

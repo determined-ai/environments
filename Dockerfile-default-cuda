@@ -72,7 +72,6 @@ RUN if [ -n "${HOROVOD_PIP}" ]; then ldconfig /usr/local/cuda/targets/x86_64-lin
     pip install "$HOROVOD_PIP" && \
     ldconfig; fi
 
-RUN pip install -r /tmp/det_dockerfile_scripts/requirements.txt
 RUN python -m pip install -r /tmp/det_dockerfile_scripts/additional-requirements.txt
 # numpy 2.x breaks tensorflow. Using NGC recommended version.
 RUN pip install numpy==1.24.4
