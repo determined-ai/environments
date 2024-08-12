@@ -213,26 +213,6 @@ ROCM61_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-mpich
 else
 ROCM61_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-ompi
 endif
-
-export ROCM61_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_61_PREFIX)$(ROCM61_TORCH_MPI)
-.PHONY: build-pytorch20-tf210-rocm61
-build-pytorch20-tf210-rocm61:
-	docker build -f Dockerfile-default-rocm \
-                --build-arg BASE_IMAGE="rocm/pytorch:rocm6.1_ubuntu22.04_py3.10_pytorch_2.1.2" \
-                --build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
-                --build-arg HOROVOD_PIP="0" \
-                --build-arg WITH_MPICH=$(WITH_MPICH) \
-                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH_TF_ENVIRONMENT_NAME)-$(VERSION) \
-                .
-
-
-
-ifeq ($(WITH_MPICH),1)
-ROCM61_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-mpich
-else
-ROCM61_TORCH_MPI :=pytorch-2.0-tf-2.10-rocm-ompi
-endif
 export ROCM61_TORCH_TF_ENVIRONMENT_NAME := $(ROCM_61_PREFIX)$(ROCM61_TORCH_MPI)
 .PHONY: build-pytorch20-tf210-rocm61
 build-pytorch20-tf210-rocm61:
