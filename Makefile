@@ -261,7 +261,7 @@ build-tensorflow-cpu: build-cpu-py-39-base
 		$(CPU_TF_TAGS) \
 		--push \
 		.
-	docker run --platform "$(PLATFORMS)" --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) /bin/bash -c "pip install pytest && pytest -m \"pytorch or tensorflow\" /workspace/tests"
+	docker run --platform linux/amd64 --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(CPU_TF_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) /bin/bash -c "pip install pytest && pytest -m \"pytorch or tensorflow\" /workspace/tests"
 
 .PHONY: build-tensorflow-cuda
 build-tensorflow-cuda: build-cuda-113-base
@@ -319,7 +319,7 @@ build-pytorch-cpu: build-cpu-py-310-base
 		$(CPU_PYTORCH_TAGS) \
 		--push \
 		.
-	docker run --platform "$(PLATFORMS)" --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) /bin/bash -c "pip install pytest && pytest -m pytorch /workspace/tests"
+	docker run --platform linux/amd64 --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(CPU_PYTORCH_ENVIRONMENT_NAME):$(SHORT_GIT_HASH) /bin/bash -c "pip install pytest && pytest -m pytorch /workspace/tests"
 
 .PHONY: build-pytorch-cuda
 build-pytorch-cuda: build-cuda-118-base
