@@ -190,21 +190,21 @@ build-pytorch-infinityhub:
 
 
 ifeq ($(WITH_MPICH),1)
-ROCM61_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-mpich
+ROCM56_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-mpich
 else
-ROCM61_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-ompi
+ROCM56_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-ompi
 endif
-export ROCM61_TORCH13_TF_ENVIRONMENT_NAME := $(ROCM_60_PREFIX)$(ROCM61_TORCH13_MPI)
-.PHONY: build-pytorch13-tf210-rocm61
-build-pytorch13-tf210-rocm61:
+export ROCM56_TORCH13_TF_ENVIRONMENT_NAME := $(ROCM_56_PREFIX)$(ROCM56_TORCH13_MPI)
+.PHONY: build-pytorch13-tf210-rocm56
+build-pytorch13-tf210-rocm56:
 	docker build -f Dockerfile-default-rocm \
-                --build-arg BASE_IMAGE="rocm/pytorch:rocm6.0_ubuntu20.04_py3.9_pytorch_1.13.1" \
-                --build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
-                --build-arg HOROVOD_PIP="horovod==0.28.1" \
-                --build-arg WITH_MPICH=$(WITH_MPICH) \
-                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH13_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
-                -t $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH13_TF_ENVIRONMENT_NAME)-$(VERSION) \
-                .
+               --build-arg BASE_IMAGE="rocm/pytorch:rocm5.6_ubuntu20.04_py3.8_pytorch_1.13.1"\
+               --build-arg TENSORFLOW_PIP="tensorflow-rocm==2.10.1.540" \
+               --build-arg HOROVOD_PIP="horovod==0.28.1" \
+               --build-arg WITH_MPICH=$(WITH_MPICH) \
+               -t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(SHORT_GIT_HASH) \
+               -t $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME)-$(VERSION) \
+               .
 
 
 
@@ -460,9 +460,9 @@ publish-pytorch-ngc:
 	scripts/publish-versionless-docker.sh pytorch-ngc $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 	scripts/publish-versionless-docker.sh pytorch-ngc-hpc $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO) $(SHORT_GIT_HASH) $(ARTIFACTS_DIR)
 
-.PHONY: publish-pytorch13-tf210-rocm61
-publish-pytorch13-tf210-rocm61:
-	scripts/publish-docker.sh pytorch13-tf210-rocm61-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM61_TORCH13_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
+.PHONY: publish-pytorch13-tf210-rocm56
+publish-pytorch13-tf210-rocm56:
+	scripts/publish-docker.sh pytorch13-tf210-rocm56-$(WITH_MPI) $(DOCKERHUB_REGISTRY)/$(ROCM56_TORCH13_TF_ENVIRONMENT_NAME) $(SHORT_GIT_HASH) $(VERSION) $(ARTIFACTS_DIR)
 
 .PHONY: publish-pytorch20-tf210-rocm61
 publish-pytorch20-tf210-rocm61:
