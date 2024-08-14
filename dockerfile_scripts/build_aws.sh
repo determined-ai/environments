@@ -19,10 +19,8 @@ if [ "$OFI" = "1" ]; then
   # Install AWS_OFI_NCCL
 #  AWS_VER=v1.6.0
 #  AWS_VER_NUM=1.6.0
-#  AWS_VER=v1.9.2
-#  AWS_VER_NUM=1.9.2
-  AWS_VER=v1.10.0
-  AWS_VER_NUM=1.10.0
+  AWS_VER=v1.9.2
+  AWS_VER_NUM=1.9.2
   AWS_NAME=aws-ofi-nccl
   AWS_FILE="${AWS_NAME}-${AWS_VER_NUM}"
   # cuda install dir likely dependent on BaseOS (i.e. ubuntu 20.02)
