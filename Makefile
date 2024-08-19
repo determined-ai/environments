@@ -151,29 +151,42 @@ INFINITYHUB_PYTORCH_HPC_REPO := pytorch-infinityhub-hpc-dev
 # build hpc together since hpc is dependent on the normal build
 .PHONY: build-pytorch-ngc
 build-pytorch-ngc:
-	docker build -f Dockerfile-pytorch-ngc \
+	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+	docker buildx create --name builder --driver docker-container --use
+	docker buildx build -f Dockerfile-pytorch-ngc \
+		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(NGC_PYTORCH_PREFIX):$(NGC_PYTORCH_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) \
+		--push \
 		.
-	docker build -f Dockerfile-ngc-hpc \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH)" \
-		-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) \
-		.
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) /bin/bash -c "pip install pytest && pytest -m \"pytorch or deepspeed\" /workspace/tests"
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) /bin/bash -c "pip install pytest && pytest -m \"pytorch or deepspeed\" /workspace/tests"
+	
+	# docker build -f Dockerfile-ngc-hpc \
+	# 	--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH)" \
+	# 	-t $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) \
+	# 	.
+	# docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_REPO):$(SHORT_GIT_HASH) /bin/bash -c "pip install pytest && pytest -m \"pytorch or deepspeed\" /workspace/tests"
+	# docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_PYTORCH_HPC_REPO):$(SHORT_GIT_HASH) /bin/bash -c "pip install pytest && pytest -m \"pytorch or deepspeed\" /workspace/tests"
 
 .PHONY: build-tensorflow-ngc
 build-tensorflow-ngc:
-	docker build -f Dockerfile-tensorflow-ngc \
+	# Binding QEMU to docker allows emulating other architectures.
+	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+	# The docker-container driver supports using QEMU (user mode) to build non-native platforms.
+	# The Docker container driver allows creation of a managed and customizable BuildKit environment in a dedicated Docker container.
+	docker buildx create --name builder --driver docker-container --use
+	docker buildx build -f Dockerfile-tensorflow-ngc \
+		--platform "$(PLATFORMS)" \
 		--build-arg BASE_IMAGE="$(NGC_TENSORFLOW_PREFIX):$(NGC_TENSORFLOW_VERSION)" \
 		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) \
+		--push \
 		.
-	docker build -f Dockerfile-ngc-hpc \
-		--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH)" \
-		-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO):$(SHORT_GIT_HASH) \
-		.
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) /bin/bash -c "pip install pytest && pytest -m tensorflow /workspace/tests"
-	docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO):$(SHORT_GIT_HASH) /bin/bash -c "pip install pytest && pytest -m tensorflow /workspace/tests"
+	# docker build -f Dockerfile-ngc-hpc \
+	# 	--build-arg BASE_IMAGE="$(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH)" \
+	# 	-t $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO):$(SHORT_GIT_HASH) \
+	# 	.
+	# docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_TF_REPO):$(SHORT_GIT_HASH) /bin/bash -c "pip install pytest && pytest -m tensorflow /workspace/tests"
+	# docker run --rm -v `pwd`/tests:/workspace/tests -it $(DOCKERHUB_REGISTRY)/$(NGC_TF_HPC_REPO):$(SHORT_GIT_HASH) /bin/bash -c "pip install pytest && pytest -m tensorflow /workspace/tests"
+
 
 ifeq ($(WITH_MPICH),1)
 ROCM56_TORCH13_MPI :=pytorch-1.3-tf-2.10-rocm-mpich

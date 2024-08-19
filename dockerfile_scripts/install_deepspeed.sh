@@ -13,6 +13,11 @@ export DS_BUILD_SPARSE_ATTN=0
 export DS_BUILD_EVOFORMER_ATTN=0
 export DS_BUILD_CUTLASS_OPS=0
 export DS_BUILD_RAGGED_DEVICE_OPS=0
+export DS_BUILD_AIO=0
+# ARM64 CPU doesn't have Adam, Adagrad and Lion optimizers
+export DS_BUILD_CPU_ADAM=0
+export DS_BUILD_CPU_ADAGRAD=0
+export DS_BUILD_CPU_LION=0
 
 #Remove 5.2 from TORCH_CUDA_ARCH_LIST, it is no longer supported by deepspeed
 export TORCH_CUDA_ARCH_LIST=`echo $TORCH_CUDA_ARCH_LIST|sed 's/5.2 //'`
