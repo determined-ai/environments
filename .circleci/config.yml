@@ -74,7 +74,7 @@ jobs:
         default: ubuntu-2004:2022.04.2
       ci-resource_class:
         type: string
-        default: xlarge
+        default: 2xlarge
       image-type:
         type: string
       dev-mode:
@@ -296,7 +296,7 @@ workflows:
                 # - pytorch-cpu
                 # - tensorflow-cuda
                 # - pytorch-cuda
-                - tensorflow-ngc
+                # - tensorflow-ngc
                 # - pytorch13-tf210-rocm56
                 # - pytorch20-tf210-rocm61
                 - pytorch-ngc
